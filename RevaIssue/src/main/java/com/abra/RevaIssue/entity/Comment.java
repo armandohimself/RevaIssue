@@ -1,4 +1,4 @@
-package com.abra.RevaIssue.entity;
+package com.abra.revaissue.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
