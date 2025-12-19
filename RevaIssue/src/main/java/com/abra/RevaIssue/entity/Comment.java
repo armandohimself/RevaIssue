@@ -1,4 +1,4 @@
-package com.abra.RevaIssue.entity;
+package com.abra.revaissue.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
