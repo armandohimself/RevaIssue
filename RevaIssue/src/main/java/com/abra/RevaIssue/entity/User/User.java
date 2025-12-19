@@ -1,4 +1,4 @@
-package com.abra.RevaIssue.entity.User;
+package com.abra.revaissue.entity.User;
 
 import java.util.UUID;
 
