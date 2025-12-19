@@ -1,8 +1,9 @@
-package com.abra.RevaIssue.repository;
+package com.abra.revaissue.repository;
 
-import com.abra.RevaIssue.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.abra.revaissue.entity.Comment;
 
 import java.util.UUID;
 

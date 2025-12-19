@@ -1,9 +1,10 @@
-package com.abra.RevaIssue.service;
+package com.abra.revaissue.service;
 
-import com.abra.RevaIssue.entity.Comment;
-import com.abra.RevaIssue.repository.CommentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.abra.revaissue.entity.Comment;
+import com.abra.revaissue.repository.CommentRepository;
 
 import java.util.List;
 
