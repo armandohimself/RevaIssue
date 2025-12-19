@@ -1,4 +1,4 @@
-package com.abra.RevaIssue.entity.user;
+package com.abra.revaissue.entity.user;
 
 public class UserEnum {
     public enum Role {

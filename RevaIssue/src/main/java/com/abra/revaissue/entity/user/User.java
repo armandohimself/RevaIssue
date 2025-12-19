@@ -1,8 +1,8 @@
-package com.abra.RevaIssue.entity.user;
+package com.abra.revaissue.entity.user;
 
 import java.util.UUID;
 
-import com.abra.RevaIssue.entity.user.UserEnum.Role;
+import com.abra.revaissue.entity.user.UserEnum.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
