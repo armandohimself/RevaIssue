@@ -16,13 +16,13 @@ public class Comment {
     @Id
     @Column(name = "comment_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID commentID;
+    private UUID commentId;
     @Column
     private String message;
     @Column
-    private UUID userID;
+    private UUID userId;
     @Column
-    private UUID issueID;
+    private UUID issueId;
     @Column
     private Date time;
 }
