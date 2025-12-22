@@ -10,5 +10,8 @@ import com.abra.revaissue.entity.user.UserEnum;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
     User findByRole(UserEnum.Role role);
-    List<User> findAllUsers();
+
+    // method name doesn’t match any valid pattern and is breaking build
+    // List<User> findAllUsers();
+    List<User> findAll();
 }
