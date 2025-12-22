@@ -32,7 +32,7 @@ public class UserService {
     public User createUser(User user) {
         if (user == null) { return null; }
     
-        User existingUser = userRepository.findByUsername(user.getUserName());
+        User existingUser = userRepository.findByUserName(user.getUserName());
         if (existingUser != null) {
             throw new RuntimeException("Username already taken");
         }
