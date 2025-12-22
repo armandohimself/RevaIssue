@@ -7,8 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "log_transaction")
-public class LogTransaction {
+@Table(name = "issue")
+public class Issue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // common for SQLite
