@@ -48,13 +48,13 @@ public class UserService {
     *   @return true if the user was successfully deleted, false otherwise
     */
     public boolean deleteUserByUUID(UUID uuid) {
-        User existingUser = userRepository.findByUUID(uuid);
+        User existingUser = userRepository.findByUserId(uuid);
         
         if (existingUser == null) { return false; }
         
         userRepository.delete(existingUser);
 
-        return userRepository.existsByUUID(uuid); // T/F
+        return userRepository.existsByUserId(uuid); // T/F
     }
 
     /**
@@ -68,7 +68,7 @@ public class UserService {
     *   @return the updated user entity
     */
     public User updateUserByUUID(UUID uuid, User updatedUser) {
-        User existingUser = userRepository.findByUUID(uuid);
+        User existingUser = userRepository.findByUserId(uuid);
         
         if (existingUser == null) { throw new RuntimeException("User not found"); }
 
@@ -88,10 +88,10 @@ public class UserService {
      * @return the user entity
     */
     public User getUserByUUID(UUID uuid) {
-        if (userRepository.findByUUID(uuid) == null){
+        if (userRepository.findByUserId(uuid) == null){
             throw new RuntimeException("User not found");
         }
-        return userRepository.findByUUID(uuid);
+        return userRepository.findByUserId(uuid);
     }
 
     /**

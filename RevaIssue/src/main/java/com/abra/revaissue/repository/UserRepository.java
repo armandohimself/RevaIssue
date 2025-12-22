@@ -10,8 +10,7 @@ import com.abra.revaissue.entity.user.UserEnum;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
     List<User> findAllByRole(UserEnum.Role role);
-    List<User> findAllUsers();
-    User findByUUID(UUID uuid);
+    User findByUserId(UUID uuid);
     User findByUserName(String userName);
-    Boolean existsByUUID(UUID uuid);
+    Boolean existsByUserId(UUID uuid);
 }
