@@ -40,6 +40,10 @@ public class Issue {
     @Column(name = "issue_priority", nullable = false)
     private IssuePriority priority;
 
+    @ManyToOne
+    @JoinColumn(name = "project_id", nullable = false)
+    private Project project;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     private User createdBy;
