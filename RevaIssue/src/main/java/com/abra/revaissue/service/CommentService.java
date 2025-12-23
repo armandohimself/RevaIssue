@@ -24,10 +24,10 @@ public class CommentService {
     }
 
     public List<Comment> getCommentsByIssueId(UUID issueId) {
-        return commentRepository.findAllByIssueId(issueId);
+        return commentRepository.findAllByIssue_IssueId(issueId);
     }
 
     public List<Comment> getCommentsByUserId(UUID userId) {
-        return commentRepository.findAllByUserId(userId);
+        return commentRepository.findAllByUser_UserId(userId);
     }
 }
