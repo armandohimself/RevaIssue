@@ -8,6 +8,9 @@ group = 'com.abra'
 version = '0.0.1-SNAPSHOT'
 description = 'Demo project for Spring Boot'
 
+/*
+	This is your javaToolchains which allows gradle to compile with a different JDK than the one shown when running the ./gradlew --version command. We are using JDK version 21. See gradle.properties file to see Project-level Gradle property. 
+ */
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
