@@ -7,14 +7,15 @@ import com.abra.revaissue.entity.Comment;
 import com.abra.revaissue.repository.CommentRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class CommentService {
 
     @Autowired
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
-    public Comment addComment(Comment comment) {
+    public Comment createComment(Comment comment) {
         return commentRepository.save(comment);
     }
 
@@ -22,4 +23,11 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
+    public List<Comment> getCommentsByIssueId(UUID issueId) {
+        return commentRepository.findAllByIssue_IssueId(issueId);
+    }
+
+    public List<Comment> getCommentsByUserId(UUID userId) {
+        return commentRepository.findAllByUser_UserId(userId);
+    }
 }
