@@ -5,8 +5,12 @@ import org.springframework.stereotype.Repository;
 
 import com.abra.revaissue.entity.Comment;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
+    List<Comment> findAllByIssueId(UUID issueId);
+
+    List<Comment> findAllByUserId(UUID userId);
 }
