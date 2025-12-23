@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 // import lombok.ToString;
-// Saving for later to include exclusions 
+// Saving for later to include exclusions if needed
 
 @Entity
 @Getter
@@ -28,7 +28,8 @@ import lombok.Setter;
 public class Project {
     @Id
     @Column(name = "project_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.UUID) // If UUID starts giving me trouble, I'll switch over to using @PrePersist
+    @GeneratedValue(strategy = GenerationType.UUID)
+    // If UUID starts giving me trouble, I'll switch over to using @PrePersist
     private UUID projectId;
 
     @Column(name = "project_name", nullable = false)
@@ -38,11 +39,8 @@ public class Project {
     private String projectDescription;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="project_status", nullable = false)
+    @Column(name = "project_status", nullable = false)
     private ProjectStatus projectStatus = ProjectStatus.ACTIVE;
-    // Nuances for default implementation, directly to field, in constructor, in @PrePersist
-
-    // private interface of members: projectMembers[]
 
     @Column(name = "created_by_user_id", nullable = false)
     private UUID createdByUserId;
@@ -53,13 +51,13 @@ public class Project {
     @Column(name = "status_updated_by_user_id")
     private UUID statusUpdatedByUserId;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
     @Column(name = "archived_at")
     private Instant archivedAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at") // needs to be not null after update
     private Instant updatedAt;
 
 }
