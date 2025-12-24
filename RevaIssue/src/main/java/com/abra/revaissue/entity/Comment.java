@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.abra.revaissue.entity.user.User;
 
@@ -20,11 +22,12 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID commentId;
 
-    @Column
+    @Column(nullable = false)
     private String message;
 
-    @Column
-    private Date time;
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant time;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
