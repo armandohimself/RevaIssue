@@ -7,11 +7,13 @@ import com.abra.revaissue.enums.IssuePriority;
 import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;
 import com.abra.revaissue.repository.IssueRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -53,6 +55,9 @@ public class IssueService {
     }
     public List<Issue> getIssuesByProjectAndCreatedByUser(Project project, User user){
         return issueRepository.findByProject_ProjectIdAndCreatedBy_UserId(project.getProjectId(), user.getUserId());
+    }
+    public Issue getIssueById(UUID issueId){
+        return issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found with id: " + issueId));
     }
     //UPDATE
     public Issue assignDeveloper(Issue issue, User user){
