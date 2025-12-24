@@ -7,6 +7,8 @@ import com.abra.revaissue.entity.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +18,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.abra.revaissue.enums.EntityType;
 
 @Entity
 @Getter
@@ -35,8 +38,9 @@ public class LogTransaction {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String entityType; // "Project" / "Issue"
+    private EntityType entityType;
 
     @Column(nullable = false)
     private UUID entityId;
