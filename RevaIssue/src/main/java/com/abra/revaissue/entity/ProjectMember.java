@@ -45,7 +45,7 @@ public class ProjectMember {
     @Column(name = "member_assigned_at", nullable = false)
     private Instant memberAssignedAt;
 
-    @Column(name = "removed_by_user_id")
+    @Column(name = "removed_by_user_id") // Can be null because a user may not 
     private UUID removedByUserId;
 
     @Column(name = "removed_at")
