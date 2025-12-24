@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.abra.revaissue.entity.user.User;
-import com.abra.revaissue.entity.user.UserEnum.Role;
+import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.repository.UserRepository;
 
 @Service
