@@ -3,11 +3,14 @@ package com.abra.revaissue.entity.user;
 import java.util.UUID;
 
 import com.abra.revaissue.entity.user.UserEnum.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -17,12 +20,14 @@ public class User {
 
     @Id
     @Column(name = "user_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
 
     @Column(nullable = false, unique = true)
     private String userName;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)

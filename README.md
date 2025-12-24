@@ -148,7 +148,7 @@ Planned improvements include:
 
 **Team Name:** ABRA-STUDIO
 
-- Team Member 1:
+- Team Member 1: [Armando Arteaga]()
 - Team Member 2:
 - Team Member 3:
 - Team Member 4:
