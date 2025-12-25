@@ -20,7 +20,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
 
     Optional<ProjectMember> findByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
 
-    Boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
+    boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
 
     List<ProjectMember> findByUserIdAndRemovedAtIsNull(UUID userId);
 }
