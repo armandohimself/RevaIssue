@@ -22,11 +22,10 @@ import java.util.UUID;
 import com.abra.revaissue.entity.ProjectMember;
 import com.abra.revaissue.enums.ProjectRole;
 
-// Repository is a “database helper” Spring gives you so you don’t write SQL for basic stuff.
 import org.springframework.data.jpa.repository.JpaRepository;
 
-// interface is a “promise” of what methods exist, without writing the method bodies.
 public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UUID> {
+
     /**
      * ? public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UUID>
      * * interface
@@ -71,6 +70,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param projectId
      * @return
      */
+
     List<ProjectMember> findByProjectId(UUID projectId);
     /**
      * * WHY/WHAT List: ordered collection (keeps insertion order) usually backed by ArrayList
@@ -108,7 +108,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param projectId
      * @return
      */
-    //List<ProjectMember> findByProjectIdAndRemovedAtIsNotNull(UUID projectId);
+    // List<ProjectMember> findByProjectIdAndRemovedAtIsNotNull(UUID projectId);
 
     /**
      * ? Find me the list of ALL the ACTIVE project members on THIS projectId BASED on THIS PROJECT ROLE
@@ -134,6 +134,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * 
      */
 
+
     /**
      * ? Is THIS userId ACTIVELY on THIS projectId
      * * WHY: Helps prevent duplicate entries
@@ -141,7 +142,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param userId
      * @return
      */
-    Boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
+    boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
 
     /**
      * ? What projects is THIS userId assigned to?
@@ -163,8 +164,4 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * - Complex reporting with joins across many tables
      * - Multi-tenant filtering
      */
-
-   
-    
-
 }

@@ -2,7 +2,7 @@ package com.abra.revaissue.entity.user;
 
 import java.util.UUID;
 
-import com.abra.revaissue.entity.user.UserEnum.Role;
+import com.abra.revaissue.enums.UserEnum.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
