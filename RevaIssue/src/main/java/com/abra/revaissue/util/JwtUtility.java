@@ -1,8 +1,12 @@
 package com.abra.revaissue.util;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -12,6 +16,15 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtility {
 
+    // private final SecretKey secretKey;
+
+    // // requires environment variable JWT.SECRET to be set for use
+    // // currently just use the one below for testing
+    // public JwtUtility(@Value("${JWT.SECRET}") String secret) {
+    // byte[] keyBytes = Base64.getDecoder().decode(secret);
+    // this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+    // }
+
     private final String SECRET_KEY = "your-key-should-be-at-least-32-bytes";
 
     public String generateAccessToken(UUID userId, String userName) {
@@ -20,13 +33,16 @@ public class JwtUtility {
                 .claim("userName", userName)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 minutes
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), Jwts.SIG.HS256)
+                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), Jwts.SIG.HS256) // if using constructor replace
+                                                                                     // args
+                                                                                     // with secretKey
                 .compact();
     }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) // if using constructor replace args with
+                                                                       // secretKey
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
