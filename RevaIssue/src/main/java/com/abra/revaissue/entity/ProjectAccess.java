@@ -18,16 +18,16 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "project_members")
+@Table(name = "project_access")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProjectMember {
+public class ProjectAccess {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "project_member_id", nullable = false)
-    private UUID projectMemberId;
+    @Column(name = "project_access_id", nullable = false)
+    private UUID projectAccessId;
 
     @Column(name = "project_id", nullable = false)
     private UUID projectId; // which project are we pointing to?
@@ -42,12 +42,12 @@ public class ProjectMember {
     @Column(name = "assigned_by_user_id", nullable = false)
     private UUID assignedByUserId;
 
-    @Column(name = "member_assigned_at", nullable = false)
-    private Instant memberAssignedAt;
+    @Column(name = "access_assigned_at", nullable = false)
+    private Instant accessAssignedAt;
 
     @Column(name = "removed_by_user_id")
     private UUID removedByUserId;
 
-    @Column(name = "removed_at")
-    private Instant removedAt; // null means still active in project
+    @Column(name = "revoked_access_at")
+    private Instant revokedAccessAt; // null means still active in project
 }

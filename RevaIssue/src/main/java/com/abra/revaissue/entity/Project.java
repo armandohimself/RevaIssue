@@ -32,7 +32,7 @@ public class Project {
     // If UUID starts giving me trouble, I'll switch over to using @PrePersist
     private UUID projectId;
 
-    @Column(name = "project_name", nullable = false)
+    @Column(name = "project_name", nullable = false, length = 100)
     private String projectName;
 
     @Column(name = "project_description")
