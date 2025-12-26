@@ -5,7 +5,6 @@ import java.util.List;
 // import java.util.Optional;
 import java.util.UUID;
 
-import com.abra.revaissue.dto.UpdateProjectRequestDTO;
 import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.enums.ProjectStatus;
 import com.abra.revaissue.repository.ProjectRepository;
@@ -76,16 +75,16 @@ public class ProjectService {
     }
 
     // UPDATE
-    public Project update(UUID projectId, UpdateProjectRequestDTO dto) {
+    // public Project update(UUID projectId, UpdateProjectRequestDTO dto) {
 
-        // TODO: Need to create DTO
+    //     TODO: Need to create DTO
 
-        Project project = getById(projectId);
+    //     Project project = getById(projectId);
 
-        // Update project
+    //     Update project
 
-        return project;
-    }
+    //     return project;
+    // }
 
     public Project updateByStatus(UUID projectId, ProjectStatus newStatus, UUID statusUpdatedByUserId) {
         Project project = getById(projectId);
