@@ -1,5 +1,8 @@
 package com.abra.revaissue.service;
 
+import java.util.Date;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,31 @@ public class JwtService {
     @Autowired
     public JwtService(JwtUtility jwtUtility) {
         this.jwtUtility = jwtUtility;
+    }
+
+    public String createToken(UUID userId, String userName) {
+        return jwtUtility.generateAccessToken(userId, userName);
+    }
+
+    public boolean validateToken(String token, UUID userId) {
+        return jwtUtility.validateToken(token, userId);
+    }
+
+    public String getUserNameFromToken(String token) {
+        return jwtUtility.extractUserName(token);
+    }
+
+    public UUID getUserIdFromToken(String token) {
+        String userIdStr = jwtUtility.extractId(token);
+        return UUID.fromString(userIdStr);
+    }
+
+    public boolean isTokenExpired(String token) {
+        return jwtUtility.isTokenExpired(token);
+    }
+
+    public Date getTokenExpirationDate(String token) {
+        return jwtUtility.extractExpiration(token);
     }
 
 }
