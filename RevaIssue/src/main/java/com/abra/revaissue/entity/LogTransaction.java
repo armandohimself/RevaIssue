@@ -29,7 +29,7 @@ public class LogTransaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID logId;
+    private Long logId;
 
     @Column(nullable = false)
     private String message;
