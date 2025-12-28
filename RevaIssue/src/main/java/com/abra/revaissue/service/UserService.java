@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.abra.revaissue.dto.LoginReq;
@@ -28,10 +29,8 @@ public class UserService {
     @Autowired
     private JwtService jwtService;
 
-    /**
-    *    this is where we would send back a DTO instead of the 
-    *    entity as to not expose sensitive information
-    */
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     /**
     *   Method accepts a user and actingUser entity and saves it to the database
@@ -54,6 +53,7 @@ public class UserService {
             throw new RuntimeException("Username already taken");
         }
 
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
         User createdUser = userRepository.save(user);
 
         if (actingUser == null) {
@@ -74,7 +74,7 @@ public class UserService {
             return null;
         }
 
-        if (user.getPasswordHash().equals(request.getPassword())) {
+        if (passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             String token = jwtService.createToken(user.getUserId(), request.getUserName());
             return new TokenTransport(token);
         }
