@@ -53,7 +53,7 @@ public class JwtUtility {
     }
 
     public String extractUserName(String token) {
-        return getClaims(token).get("username", String.class);
+        return getClaims(token).get("userName", String.class);
     }
 
     public Date extractExpiration(String token) {
