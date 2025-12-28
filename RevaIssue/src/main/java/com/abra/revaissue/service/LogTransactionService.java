@@ -1,5 +1,6 @@
 package com.abra.revaissue.service;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class LogTransactionService {
         log.setActingUser(actingUser);
         log.setAffectedEntityType(affectedEntityType);
         log.setAffectedEntityId(affectedEntityId);
+        log.setDate(Instant.now());
         logTransactionRepository.save(log);
     }
     
