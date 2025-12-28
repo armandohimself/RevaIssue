@@ -2,10 +2,15 @@ package com.abra.revaissue.service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.abra.revaissue.dto.LoginReq;
+import com.abra.revaissue.dto.TokenTransport;
+import com.abra.revaissue.dto.UpdateUserDTO;
 import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.EntityType;
 import com.abra.revaissue.enums.UserEnum.Role;
@@ -19,6 +24,9 @@ public class UserService {
     
     @Autowired
     private LogTransactionService logTransactionService;
+
+    @Autowired
+    private JwtService jwtService;
 
     /**
     *    this is where we would send back a DTO instead of the 
@@ -36,9 +44,11 @@ public class UserService {
     *   @param actingUser the entity of whos creating the new user
     *   @return the created user entity
     */
-    public User createUser(User user, User actingUser) {
+    public User createUser(User user, UUID actingUserId) {
         if (user == null) { return null; }
-    
+        
+        User actingUser = userRepository.findByUserId(actingUserId);
+
         User existingUser = userRepository.findByUserName(user.getUserName());
         if (existingUser != null) {
             throw new RuntimeException("Username already taken");
@@ -57,15 +67,31 @@ public class UserService {
         return createdUser;
     }
 
+    public TokenTransport login(LoginReq request) {
+        
+        User user = userRepository.findByUserName(request.getUserName());
+        if (user == null) {
+            return null;
+        }
+
+        if (user.getPasswordHash().equals(request.getPassword())) {
+            String token = jwtService.createToken(user.getUserId(), request.getUserName());
+            return new TokenTransport(token);
+        }
+        return new TokenTransport();
+    }
+
     /**
     *   Method accepts a user UUID, uses it to find the User and deletes 
     *   them from the database if found.
     *   
     *   @param uuid the UUID of the user to be deleted
+    *   @param actingUserId the UUID of the acting user
     *   @return true if the user was successfully deleted, false otherwise
     */
-    public boolean deleteUserByUUID(UUID uuid, User actingUser) {
+    public boolean deleteUserByUUID(UUID uuid, UUID actingUserId) {
         User existingUser = userRepository.findByUserId(uuid);
+        User actingUser = userRepository.findByUserId(actingUserId);
         
         if (existingUser == null) { return false; }
         
@@ -84,24 +110,32 @@ public class UserService {
     *     
     *   @throws RuntimeException if the user with the given UUID is not found
     * 
-    *   @param uuid the UUID of the user to be updated
+    *   @param uuid the UUID of the user doing the updating
     *   @param updatedUser the user entity with updated information
     *   @return the updated user entity
     */
-    public User updateUserByUUID(UUID uuid, User updatedUser, User actingUser) {
-        User existingUser = userRepository.findByUserId(uuid);
+    public User updateUserByUUID(UpdateUserDTO updatedUser, UUID actingUserId) {
+        User existingUser = userRepository.findByUserId(updatedUser.getUserId());
+        User actingUser = userRepository.findByUserId(actingUserId);
         
-        if (existingUser == null) { throw new RuntimeException("User not found"); }
-
-        existingUser.setUserName(updatedUser.getUserName());
-        existingUser.setPassword(updatedUser.getPassword());
-        existingUser.setRole(updatedUser.getRole());
+        if (existingUser == null) { 
+            throw new RuntimeException("User not found"); 
+        }
+        if (updatedUser.getUserName() != null) {
+            existingUser.setUserName(updatedUser.getUserName());
+        }
+        if (updatedUser.getPasswordHash() != null) {
+            existingUser.setPasswordHash(updatedUser.getPasswordHash());
+        }
+        if (updatedUser.getRole() != null) {
+            existingUser.setRole(Role.valueOf(updatedUser.getRole()));
+        }
 
         User savedUser = userRepository.save(existingUser);
 
         String logMessage = "User updated: " + savedUser.getUserName() +
                             (actingUser != null ? " by " + actingUser.getUserName() : "");
-        logTransactionService.logAction(logMessage, savedUser, EntityType.USER, uuid);
+        logTransactionService.logAction(logMessage, actingUser, EntityType.USER, savedUser.getUserId());
 
         return savedUser;
     }
@@ -138,5 +172,17 @@ public class UserService {
      */
     public List<User> getUsersByRole(Role role) {
         return userRepository.findAllByRole(role);
+    }
+
+    /**
+     * Method to get all the roles
+     * 
+     * @return a list of all roles that are possible in the system
+     */
+    public List<String> getAllRoles() {
+        List<String> roles = Stream.of(Role.values())
+                              .map(Role::name)
+                              .collect(Collectors.toList());
+        return roles;
     }
 }
