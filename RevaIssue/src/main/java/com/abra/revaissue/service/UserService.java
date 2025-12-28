@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.abra.revaissue.dto.LoginReq;
+import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.TokenTransport;
 import com.abra.revaissue.dto.UpdateUserDTO;
 import com.abra.revaissue.entity.user.User;
@@ -67,7 +67,7 @@ public class UserService {
         return createdUser;
     }
 
-    public TokenTransport login(LoginReq request) {
+    public TokenTransport login(LoginRequestDTO request) {
         
         User user = userRepository.findByUserName(request.getUserName());
         if (user == null) {

@@ -3,7 +3,7 @@ package com.abra.revaissue.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.abra.revaissue.dto.LoginReq;
+import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.TokenTransport;
 import com.abra.revaissue.dto.UpdateUserDTO;
 import com.abra.revaissue.entity.ProjectAccess;
@@ -57,7 +57,7 @@ public class UserController {
 
     // login - accepts username and passwrod, returns jwt if valid
     @PostMapping("/login")
-    public ResponseEntity<TokenTransport> login(@RequestBody LoginReq request) {
+    public ResponseEntity<TokenTransport> login(@RequestBody LoginRequestDTO request) {
         
         TokenTransport token = userService.login(request);
         if (token.getToken() != "") {
