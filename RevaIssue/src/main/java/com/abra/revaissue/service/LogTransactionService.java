@@ -17,12 +17,12 @@ public class LogTransactionService {
     private LogTransactionRepository logTransactionRepository;
 
     // log the transaction
-    public void logAction(String message, User user, EntityType entityType, UUID entityId) {
+    public void logAction(String message, User actingUser, EntityType affectedEntityType, UUID affectedEntityId) {
         LogTransaction log = new LogTransaction();
         log.setMessage(message);
-        log.setUser(user);
-        log.setEntityType(entityType);
-        log.setEntityId(entityId);
+        log.setActingUser(actingUser);
+        log.setAffectedEntityType(affectedEntityType);
+        log.setAffectedEntityId(affectedEntityId);
         logTransactionRepository.save(log);
     }
     
