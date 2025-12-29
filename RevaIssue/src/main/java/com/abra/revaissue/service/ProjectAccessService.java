@@ -11,6 +11,7 @@ import com.abra.revaissue.enums.ProjectRole;
 import com.abra.revaissue.enums.ProjectStatus;
 import com.abra.revaissue.repository.ProjectAccessRepository;
 import com.abra.revaissue.repository.ProjectRepository;
+import com.abra.revaissue.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -19,21 +20,26 @@ public class ProjectAccessService {
 
     private final ProjectAccessRepository projectAccessRepository;
     private final ProjectRepository projectRepository;
+    private final AuthzService authzService;
 
-    public ProjectAccessService(ProjectAccessRepository projectAccessRepository, ProjectRepository projectRepository) {
+    public ProjectAccessService(ProjectAccessRepository projectAccessRepository, ProjectRepository projectRepository, AuthzService authzService) {
         this.projectAccessRepository = projectAccessRepository;
         this.projectRepository = projectRepository;
+        this.authzService = authzService;
     }
 
-    // CREATE
+    //! CREATE
     public ProjectAccess assignAccess(UUID projectId, UUID userId, ProjectRole projectRole, UUID assignedByUserId) {
         // Guard rails
         if (projectId == null || userId == null || projectRole == null || assignedByUserId == null) {
             throw new IllegalArgumentException("Missing required fields!");
         }
 
+        // * Admin-only
+        authzService.mustBeAdmin(assignedByUserId);
+
         Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
+            .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
 
         // If project is archived, you shouldn't be able to assign someone to it.
         if (project.getProjectStatus() == ProjectStatus.ARCHIVED) {
@@ -59,7 +65,7 @@ public class ProjectAccessService {
         return projectAccessRepository.save(projectAccess);
     }
 
-    // READ
+    //! READ
     public List<ProjectAccess> findActiveAccessByProjectId(UUID projectId) {
         return projectAccessRepository.findByProjectIdAndRevokedAccessAtIsNull(projectId);
     }
@@ -72,15 +78,18 @@ public class ProjectAccessService {
         return projectAccessRepository.findByProjectIdAndProjectRoleAndRevokedAccessAtIsNull(projectId, projectRole);
     }
 
-    // UPDATE/"DELETE"
+    //! UPDATE
     public ProjectAccess revokeAccess(UUID projectId, UUID userId, UUID removedByUserId) {
 
         if (projectId == null || userId == null || removedByUserId == null) {
             throw new IllegalArgumentException("Missing required fields!");
         }
 
+        // * Admin-only
+        authzService.mustBeAdmin(userId);
+
         ProjectAccess projectAccess = this.findActiveAccessByProjectIdAndUserId(projectId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("Active access was not found!"));
+            .orElseThrow(() -> new IllegalArgumentException("Active access was not found!"));
 
         projectAccess.setRemovedByUserId(removedByUserId);
         projectAccess.setRevokedAccessAt(Instant.now());
@@ -88,4 +97,5 @@ public class ProjectAccessService {
         return projectAccessRepository.save(projectAccess);
     }
 
+    //! "DELETE"
 }
