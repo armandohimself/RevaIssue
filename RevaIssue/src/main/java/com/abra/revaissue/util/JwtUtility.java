@@ -16,16 +16,12 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtility {
 
-    // private final SecretKey secretKey;
+    private final SecretKey secretKey;
 
-    // // requires environment variable JWT.SECRET to be set for use
-    // // currently just use the one below for testing
-    // public JwtUtility(@Value("${JWT.SECRET}") String secret) {
-    // byte[] keyBytes = Base64.getDecoder().decode(secret);
-    // this.secretKey = Keys.hmacShaKeyFor(keyBytes);
-    // }
-
-    private final String SECRET_KEY = "your-key-should-be-at-least-32-bytes";
+    public JwtUtility(@Value("${JWT.SECRET}") String secret) {
+        byte[] keyBytes = Base64.getDecoder().decode(secret);
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String generateAccessToken(UUID userId, String userName) {
         return Jwts.builder()
@@ -33,16 +29,13 @@ public class JwtUtility {
                 .claim("userName", userName)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 minutes
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), Jwts.SIG.HS256) // if using constructor replace
-                                                                                     // args
-                                                                                     // with secretKey
+                .signWith(secretKey, Jwts.SIG.HS256)
                 .compact();
     }
 
     private Claims getClaims(String token) {
         return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes())) // if using constructor replace args with
-                                                                       // secretKey
+                .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
