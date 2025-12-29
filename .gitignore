@@ -99,3 +99,4 @@ HELP.md
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+RevaIssue/env
