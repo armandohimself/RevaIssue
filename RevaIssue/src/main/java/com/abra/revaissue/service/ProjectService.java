@@ -19,17 +19,16 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
-    // private final ProjectAccessRepository
 
     public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
     }
 
-    // ! CREATE
+    //! CREATE
 
     // * Create project (Admin-only)
-    public Project create(Project project) {
+    public Project create(Project project, UUID userId) {
         // Guard rails
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null!");
@@ -39,16 +38,18 @@ public class ProjectService {
             throw new IllegalArgumentException("Project name cannot be null or blank!");
         }
 
-        if (project.getCreatedByUserId() == null) {
-            throw new IllegalArgumentException("User's ID who created project cannot be null!");
+        if (userId == null) {
+            throw new IllegalArgumentException("No userId in the header!");
         }
 
-        // ! Admin-only
-        checkIfRoleAdmin(project.getCreatedByUserId());
-
+        // * Admin-only
+        checkIfRoleAdmin(userId);
+        
         Instant now = Instant.now();
-
+        
         // Set defaults
+        project.setCreatedByUserId(userId);
+
         if (project.getProjectStatus() == null) {
             project.setProjectStatus(ProjectStatus.ACTIVE);
         }
@@ -63,7 +64,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    // ! READ
+    //! READ
 
     // * Get all projects as list
     public List<Project> getAll() {
@@ -82,7 +83,7 @@ public class ProjectService {
         return projectRepository.findByProjectStatus(status);
     }
 
-    // ! UPDATE
+    //! UPDATE
 
     // * Update project details
     public Project update(UUID projectId, UpdateProjectRequest updateProjectRequest, UUID userId) {
@@ -93,7 +94,7 @@ public class ProjectService {
 
         if (userId == null) throw new IllegalArgumentException("User Id is required to update a project!");
 
-        // ! Admin-only
+        // * Admin-only
         checkIfRoleAdmin(userId);
         
         Project project = checkIfProjectExists(projectId);
@@ -110,11 +111,11 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    // ! DELETE
+    //! DELETE
 
     
 
-    // ! Helper Functions
+    //! Helper Functions
     public void checkIfRoleAdmin(UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("User not found!"));
@@ -172,5 +173,4 @@ public class ProjectService {
             project.setArchivedAt(null);
         }
     }
-
 }

@@ -16,20 +16,16 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-// import lombok.ToString;
-// Saving for later to include exclusions if needed
 
 @Entity
 @Getter
 @Setter
-// @ToString
 @NoArgsConstructor
 @Table(name = "projects")
 public class Project {
     @Id
     @Column(name = "project_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    // If UUID starts giving me trouble, I'll switch over to using @PrePersist
     private UUID projectId;
 
     @Column(name = "project_name", nullable = false, length = 100)
@@ -59,5 +55,4 @@ public class Project {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
-
 }

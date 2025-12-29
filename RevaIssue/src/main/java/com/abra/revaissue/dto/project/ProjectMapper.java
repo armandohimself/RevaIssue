@@ -15,5 +15,4 @@ public final class ProjectMapper {
             project.getCreatedAt(), 
             project.getUpdatedAt());
     }
-    
 }

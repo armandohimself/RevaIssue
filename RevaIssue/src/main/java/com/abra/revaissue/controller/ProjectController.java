@@ -26,28 +26,24 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProjectController {
     private final ProjectService projectService;
 
-    private ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService) {
         this.projectService = projectService;
     }
 
-    // ! POST
+    //! POST
     @PostMapping
-    public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request) {
+    public ResponseEntity<ProjectResponse> create(@RequestBody CreateProjectRequest request, @RequestHeader("X-User-Id") UUID userId) {
 
         Project newProject = new Project();
         newProject.setProjectName(request.projectName());
         newProject.setProjectDescription(request.projectDescription());
-        newProject.setCreatedByUserId(request.createdByUserId());
 
-        Project createdProject = projectService.create(newProject);
+        Project createdProject = projectService.create(newProject, userId);
 
         return ResponseEntity.ok(ProjectMapper.toResponse(createdProject));
     }
 
-    // TODO: "/projects/{projectId}/access" also ProjectAccess table?
-
-    // ! GET
-
+    //! GET
     @GetMapping
     public ResponseEntity<List<ProjectResponse>> listAll() {
 
@@ -66,10 +62,7 @@ public class ProjectController {
         return ResponseEntity.ok(ProjectMapper.toResponse(getProject));
     }
 
-    // TODO: "/projects/{userId}" instead? Maybe in ProjectAccess table tbh
-    @GetMapping("/{projectId}/{userId}")
-
-    // ! PUT
+    //! PUT
     @PatchMapping("/{projectId}")
     public ResponseEntity<ProjectResponse> update(@PathVariable UUID projectId,
             @RequestBody UpdateProjectRequest updateProjectRequest, @RequestHeader("X-User-Id") UUID userId) {
@@ -78,7 +71,6 @@ public class ProjectController {
         return ResponseEntity.ok(ProjectMapper.toResponse(updatedProject));
     }
 
-    // ! "DELETE"
+    //! "DELETE"
     // @DeleteMapping("/{projectId}")
-
 }
