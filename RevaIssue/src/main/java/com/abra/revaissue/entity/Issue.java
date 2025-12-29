@@ -4,10 +4,12 @@ import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.IssuePriority;
 import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,22 +42,25 @@ public class Issue {
     @Column(name = "issue_priority", nullable = false)
     private IssuePriority priority;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by_user_id", nullable = false)
     private User createdBy;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @ManyToOne
     @JoinColumn(name = "assigned_to_user_id")
     private User assignedTo;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
 }
