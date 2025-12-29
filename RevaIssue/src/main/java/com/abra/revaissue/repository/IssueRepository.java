@@ -6,10 +6,12 @@ import com.abra.revaissue.enums.IssuePriority;
 import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 
+@Repository
 public interface IssueRepository extends JpaRepository<Issue, UUID> {
     /**Returns all issues for a project*/
     List<Issue> findByProject_ProjectId(UUID projectId);

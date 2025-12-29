@@ -29,21 +29,21 @@ public class LogTransaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID logId;
+    private Long logId;
 
     @Column(nullable = false)
     private String message;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User actingUser;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EntityType entityType;
+    private EntityType affectedEntityType;
 
     @Column(nullable = false)
-    private UUID entityId;
+    private UUID affectedEntityId;
 
     @Column(nullable = false)
     private Instant date;
