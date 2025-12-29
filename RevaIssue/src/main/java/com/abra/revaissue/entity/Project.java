@@ -57,7 +57,7 @@ public class Project {
     @Column(name = "archived_at")
     private Instant archivedAt;
 
-    @Column(name = "updated_at") // needs to be not null after update
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
 }
