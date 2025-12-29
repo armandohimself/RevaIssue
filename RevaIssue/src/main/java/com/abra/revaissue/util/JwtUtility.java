@@ -18,14 +18,10 @@ public class JwtUtility {
 
     private final SecretKey secretKey;
 
-    // requires environment variable JWT.SECRET to be set for use
-    // currently just use the one below for testing
     public JwtUtility(@Value("${JWT.SECRET}") String secret) {
         byte[] keyBytes = Base64.getDecoder().decode(secret);
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
-
-    // private final String SECRET_KEY = "your-key-should-be-at-least-32-bytes";
 
     public String generateAccessToken(UUID userId, String userName) {
         return Jwts.builder()
