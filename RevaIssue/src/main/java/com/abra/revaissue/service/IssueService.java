@@ -10,6 +10,7 @@ import com.abra.revaissue.enums.IssuePriority;
 import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;
 import com.abra.revaissue.enums.UserEnum;
+import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.IssueRepository;
 import com.abra.revaissue.util.IssueMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -40,7 +41,7 @@ public class IssueService {
     public IssueResponseDTO createIssue(IssueCreateDTO dto, Project project, User actingUser){
         UserEnum.Role role = actingUser.getRole();
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new RuntimeException("Only TESTERS OR ADMINS can create issues");
+            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can create issues");
         }
         Issue issue = issueMapper.toIssue(dto);
         issue.setProject(project);
@@ -108,7 +109,7 @@ public class IssueService {
     public IssueResponseDTO updateIssue(UUID issueId, IssueUpdateDTO dto, User actingUser){
         UserEnum.Role role = actingUser.getRole();
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new RuntimeException("Only TESTERS OR ADMINS can update issue details");
+            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can update issue details");
         }
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issueMapper.updateEntity(dto, issue);
@@ -118,11 +119,11 @@ public class IssueService {
     public IssueResponseDTO assignDeveloper(UUID issueId, UUID userId, User actingUser){
         UserEnum.Role role = actingUser.getRole();
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new RuntimeException("Only TESTERS OR ADMINS can assign issues");
+            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can assign issues");
         }
         User assignedUser = userService.getUserByUUID(userId);
         if(assignedUser.getRole() != UserEnum.Role.DEVELOPER){
-            throw new RuntimeException("Only users with DEVELOPER role can be assigned");
+            throw new UnauthorizedOperation("Only users with DEVELOPER role can be assigned");
         }
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issue.setUpdatedAt(Instant.now());
@@ -135,16 +136,16 @@ public class IssueService {
         switch (role) {
             case DEVELOPER -> {
                 if(status != IssueStatus.IN_PROGRESS && status != IssueStatus.RESOLVED){
-                    throw new RuntimeException("Developers can only move issues to in progress or resolved");
+                    throw new UnauthorizedOperation("Developers can only move issues to in progress or resolved");
                 }
             }
             case TESTER -> {
                 if(status != IssueStatus.OPEN && status != IssueStatus.CLOSED){
-                    throw new RuntimeException("Testers can only move issues to open or closed");
+                    throw new UnauthorizedOperation("Testers can only move issues to open or closed");
                 }
             }
             case ADMIN -> {}
-            default -> throw new RuntimeException("Role not permitted to change issue status");
+            default -> throw new UnauthorizedOperation("Role not permitted to change issue status");
         }
         issue.setStatus(status);
         issue.setUpdatedAt(Instant.now());
@@ -155,7 +156,7 @@ public class IssueService {
         Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         UserEnum.Role role = actingUser.getRole();
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new RuntimeException("Only TESTERS OR ADMINS can delete issues");
+            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can delete issues");
         }
         issueRepository.delete(issue);
     }
