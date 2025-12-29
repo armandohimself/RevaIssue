@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/projects")
+@RequestMapping("/api/projects")
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -62,7 +62,7 @@ public class ProjectController {
         return ResponseEntity.ok(ProjectMapper.toResponse(getProject));
     }
 
-    //! PUT
+    //! PATCH
     @PatchMapping("/{projectId}")
     public ResponseEntity<ProjectResponse> update(@PathVariable UUID projectId,
             @RequestBody UpdateProjectRequest updateProjectRequest, @RequestHeader("X-User-Id") UUID userId) {

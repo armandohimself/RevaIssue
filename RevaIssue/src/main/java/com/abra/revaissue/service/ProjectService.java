@@ -18,14 +18,14 @@ import org.springframework.stereotype.Service;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final AuthzService authzService;
 
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectService(ProjectRepository projectRepository, AuthzService authzService) {
         this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+        this.authzService = authzService;
     }
 
-    //! CREATE
+    // ! CREATE
 
     // * Create project (Admin-only)
     public Project create(Project project, UUID userId) {
@@ -43,10 +43,10 @@ public class ProjectService {
         }
 
         // * Admin-only
-        checkIfRoleAdmin(userId);
-        
+        authzService.mustBeAdmin(userId);
+
         Instant now = Instant.now();
-        
+
         // Set defaults
         project.setCreatedByUserId(userId);
 
@@ -64,7 +64,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    //! READ
+    // ! READ
 
     // * Get all projects as list
     public List<Project> getAll() {
@@ -83,22 +83,25 @@ public class ProjectService {
         return projectRepository.findByProjectStatus(status);
     }
 
-    //! UPDATE
+    // ! UPDATE
 
     // * Update project details
     public Project update(UUID projectId, UpdateProjectRequest updateProjectRequest, UUID userId) {
         // Guard rails
-        if (projectId == null) throw new IllegalArgumentException("Project Id is required to update a project!");
+        if (projectId == null)
+            throw new IllegalArgumentException("Project Id is required to update a project!");
 
-        if (updateProjectRequest == null) throw new IllegalArgumentException("updateProjectRequest is required to update a project!");
+        if (updateProjectRequest == null)
+            throw new IllegalArgumentException("updateProjectRequest is required to update a project!");
 
-        if (userId == null) throw new IllegalArgumentException("User Id is required to update a project!");
+        if (userId == null)
+            throw new IllegalArgumentException("User Id is required to update a project!");
 
         // * Admin-only
-        checkIfRoleAdmin(userId);
-        
+        authzService.mustBeAdmin(userId);
+
         Project project = checkIfProjectExists(projectId);
-        
+
         Instant now = Instant.now();
 
         // Patch Updates
@@ -111,30 +114,19 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    //! DELETE
+    // ! DELETE
 
-    
-
-    //! Helper Functions
-    public void checkIfRoleAdmin(UUID userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new IllegalArgumentException("User not found!"));
-
-        if(user.getRole() != Role.ADMIN) {
-            throw new IllegalStateException("Admin privilege required to perform action!");
-        }
-    }
-
+    // ! Helper Functions
     private Project checkIfProjectExists(UUID projectId) {
         Project project = projectRepository.findById(projectId)
-            .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
 
         return project;
     }
 
     private void applyPatchFields(Project project, UpdateProjectRequest updateProjectRequest) {
-        // Guard rail 
-        
+        // Guard rail
+
         // * Project Name
         if (updateProjectRequest.projectName() != null) {
             if (updateProjectRequest.projectName().isBlank()) {
@@ -153,9 +145,11 @@ public class ProjectService {
 
     private void applyStatusTransition(Project project, ProjectStatus newProjectStatus, UUID userId, Instant now) {
         // Guard rail
-        if (newProjectStatus == null) return;
+        if (newProjectStatus == null)
+            return;
         // no change, nothing to audit
-        if (newProjectStatus == project.getProjectStatus()) return; 
+        if (newProjectStatus == project.getProjectStatus())
+            return;
 
         // * Project Status
         // TODO: Create record of who made the change + update status change
