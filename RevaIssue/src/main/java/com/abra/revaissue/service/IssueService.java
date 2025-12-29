@@ -160,4 +160,8 @@ public class IssueService {
         }
         issueRepository.delete(issue);
     }
+    public Issue getIssueEntityById(UUID issueId) {
+        return issueRepository.findById(issueId)
+                .orElseThrow(() -> new EntityNotFoundException("Issue not found"));
+    }
 }
