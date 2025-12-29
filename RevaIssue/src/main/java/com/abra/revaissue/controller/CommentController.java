@@ -41,7 +41,7 @@ public class CommentController {
     public CommentDTO createComment(@RequestBody CommentRequestDTO request) {
         // Fetch User and Issue entities
         User user = userService.getUserByUUID(request.userId());
-        Issue issue = issueService.getIssueById(request.issueId());
+        Issue issue = issueService.getIssueEntityById(request.issueId());
         // Build Comment entity
         Comment newComment = new Comment();
         newComment.setMessage(request.message());
