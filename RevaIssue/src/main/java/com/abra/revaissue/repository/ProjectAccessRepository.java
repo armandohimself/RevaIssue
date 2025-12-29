@@ -8,7 +8,9 @@ import com.abra.revaissue.entity.ProjectAccess;
 import com.abra.revaissue.enums.ProjectRole;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProjectAccessRepository extends JpaRepository<ProjectAccess, UUID> {
     List<ProjectAccess> findByProjectId(UUID projectId);
 
