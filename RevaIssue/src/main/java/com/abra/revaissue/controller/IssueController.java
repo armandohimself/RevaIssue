@@ -23,19 +23,22 @@ import java.util.UUID;
 
 @RestController
 public class IssueController {
+    private final IssueService issueService;
+    private final UserService userService;
+    private final ProjectService projectService;
+    private final JwtUtility jwtUtility;
     @Autowired
-    private IssueService issueService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private ProjectService projectService;
-    @Autowired
-    private JwtUtility jwtUtility;
+    public IssueController(IssueService issueService, UserService userService, ProjectService projectService, JwtUtility jwtUtility){
+        this.issueService = issueService;
+        this.userService = userService;
+        this.projectService = projectService;
+        this.jwtUtility = jwtUtility;
+    }
 
     @PostMapping("/projects/{projectId}/issues")
     public ResponseEntity<IssueResponseDTO> createIssue(@PathVariable UUID projectId, @RequestBody IssueCreateDTO dto, @RequestHeader(name = "Authorization") String token){
         User actingUser = getActingUser(token);
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getById(projectId);
         IssueResponseDTO created = issueService.createIssue(dto, project, actingUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -44,7 +47,7 @@ public class IssueController {
                                            @RequestParam(required = false)IssueStatus status,
                                            @RequestParam(required = false) IssueSeverity severity,
                                            @RequestParam(required = false)IssuePriority priority){
-        Project project = projectService.getProjectById(projectId);
+        Project project = projectService.getById(projectId);
         List<IssueResponseDTO> resultList;
         if(status != null){
             resultList = issueService.getIssuesByProjectAndStatus(project, status);
