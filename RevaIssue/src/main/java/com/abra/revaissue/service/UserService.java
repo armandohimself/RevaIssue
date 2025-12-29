@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.abra.revaissue.entity.user.User;
-import com.abra.revaissue.entity.user.UserEnum.Role;
+import com.abra.revaissue.enums.EntityType;
+import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.repository.UserRepository;
 
 @Service
@@ -15,6 +16,9 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private LogTransactionService logTransactionService;
 
     /**
     *    this is where we would send back a DTO instead of the 
@@ -22,14 +26,17 @@ public class UserService {
     */
 
     /**
-    *   Method accepts a user entity and saves it to the database
-    *   
+    *   Method accepts a user and actingUser entity and saves it to the database
+    *   if an admin is creating the account we need to know who it is.     
+    * 
+    * 
     *   @throws RuntimeException if the username is already taken
     * 
     *   @param user the entity to be created
+    *   @param actingUser the entity of whos creating the new user
     *   @return the created user entity
     */
-    public User createUser(User user) {
+    public User createUser(User user, User actingUser) {
         if (user == null) { return null; }
     
         User existingUser = userRepository.findByUserName(user.getUserName());
@@ -37,7 +44,17 @@ public class UserService {
             throw new RuntimeException("Username already taken");
         }
 
-        return userRepository.save(user);
+        User createdUser = userRepository.save(user);
+
+        if (actingUser == null) {
+            String logMessage = "User registered" + createdUser.getUserName();
+            logTransactionService.logAction(logMessage, actingUser, EntityType.USER, createdUser.getUserId());
+        } else {
+            String logMessage = "User created" + createdUser.getUserName() + " by " + actingUser.getUserName();
+            logTransactionService.logAction(logMessage, actingUser, EntityType.USER, createdUser.getUserId());
+        }
+
+        return createdUser;
     }
 
     /**
@@ -47,14 +64,18 @@ public class UserService {
     *   @param uuid the UUID of the user to be deleted
     *   @return true if the user was successfully deleted, false otherwise
     */
-    public boolean deleteUserByUUID(UUID uuid) {
+    public boolean deleteUserByUUID(UUID uuid, User actingUser) {
         User existingUser = userRepository.findByUserId(uuid);
         
         if (existingUser == null) { return false; }
         
         userRepository.delete(existingUser);
 
-        return userRepository.existsByUserId(uuid); // T/F
+        String logMessage = "User deleted: " + existingUser.getUserName() +
+                            (actingUser != null ? " by " + actingUser.getUserName() : "");
+        logTransactionService.logAction(logMessage, actingUser, EntityType.USER, uuid);
+
+        return !userRepository.existsByUserId(uuid); // T/F
     }
 
     /**
@@ -67,7 +88,7 @@ public class UserService {
     *   @param updatedUser the user entity with updated information
     *   @return the updated user entity
     */
-    public User updateUserByUUID(UUID uuid, User updatedUser) {
+    public User updateUserByUUID(UUID uuid, User updatedUser, User actingUser) {
         User existingUser = userRepository.findByUserId(uuid);
         
         if (existingUser == null) { throw new RuntimeException("User not found"); }
@@ -76,7 +97,13 @@ public class UserService {
         existingUser.setPassword(updatedUser.getPassword());
         existingUser.setRole(updatedUser.getRole());
 
-        return userRepository.save(existingUser);
+        User savedUser = userRepository.save(existingUser);
+
+        String logMessage = "User updated: " + savedUser.getUserName() +
+                            (actingUser != null ? " by " + actingUser.getUserName() : "");
+        logTransactionService.logAction(logMessage, savedUser, EntityType.USER, uuid);
+
+        return savedUser;
     }
 
     /**
