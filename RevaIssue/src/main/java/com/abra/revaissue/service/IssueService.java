@@ -68,13 +68,13 @@ public class IssueService {
         return issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found with id: " + issueId));
     }
     //UPDATE
-    public Issue assignDeveloper(Issue issue, User actingUser){
+    public Issue assignDeveloper(Issue issue, User assignedUser, User actingUser){
         UserEnum.Role role = actingUser.getRole();
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
             throw new RuntimeException("Only TESTERS OR ADMINS can assign issues");
         }
         issue.setUpdatedAt(Instant.now());
-        issue.setAssignedTo(user);
+        issue.setAssignedTo(assignedUser);
         return issueRepository.save(issue);
     }
     public Issue updateStatus(Issue issue, IssueStatus status, User actingUser){

@@ -73,8 +73,8 @@ public class IssueController {
         UUID actingUserId = UUID.fromString(jwtUtility.extractId(slicedToken));
         User actingUser = userService.getUserByUUID(actingUserId);
         Issue issue = issueService.getIssueById(issueId);
-        User user = userService.getUserByUUID(userId);
-        return issueService.assignDeveloper(issue, user);
+        User assignedUser = userService.getUserByUUID(userId);
+        return issueService.assignDeveloper(issue, assignedUser, actingUser);
     }
     @PutMapping("/issues/{issueId}/status")
     public Issue updateIssueStatus(@PathVariable UUID issueId, @RequestParam IssueStatus status, @RequestHeader(name = "Authorization") String token){
