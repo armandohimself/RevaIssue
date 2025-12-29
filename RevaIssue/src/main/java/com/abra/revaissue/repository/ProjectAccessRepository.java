@@ -10,22 +10,18 @@ package com.abra.revaissue.repository;
  * 
  * JARGON: DBeaver is a DB client/GUI for inspecting schema + running SQL
  * ENGLISH: DBeaver is just a viewer + query tool.
- * 
- * 
- * 
  */
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.abra.revaissue.entity.ProjectMember;
+import com.abra.revaissue.entity.ProjectAccess;
 import com.abra.revaissue.enums.ProjectRole;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UUID> {
-
+public interface ProjectAccessRepository extends JpaRepository<ProjectAccess, UUID> {
     /**
      * ? public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UUID>
      * * interface
@@ -70,8 +66,8 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param projectId
      * @return
      */
+    List<ProjectAccess> findByProjectId(UUID projectId);
 
-    List<ProjectMember> findByProjectId(UUID projectId);
     /**
      * * WHY/WHAT List: ordered collection (keeps insertion order) usually backed by ArrayList
      * FEATURES:
@@ -99,7 +95,10 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param projectId
      * @return
      */
-    List<ProjectMember> findByProjectIdAndRemovedAtIsNull(UUID projectId);
+    List<ProjectAccess> findByProjectIdAndRevokedAccessAtIsNull(UUID projectId);
+
+    // List<ProjectAccess> findByProjectIdAndRevokedAccessAtIsNotNull(UUID projectId);
+
 
     /**
      * ? Find me a list of ALL the NON-ACTIVE project members on THIS projectId
@@ -119,7 +118,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param projectRole
      * @return
      */
-    List<ProjectMember> findByProjectIdAndProjectRoleAndRemovedAtIsNull(UUID projectId, ProjectRole projectRole);
+    List<ProjectAccess> findByProjectIdAndProjectRoleAndRevokedAccessAtIsNull(UUID projectId, ProjectRole projectRole);
 
     /**
      * ? Find me THIS specific userId for THIS specific projectId
@@ -128,7 +127,7 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param userId
      * @return
     */
-    Optional<ProjectMember> findByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
+    Optional<ProjectAccess> findByProjectIdAndUserIdAndRevokedAccessAtIsNull(UUID projectId, UUID userId);
     /**
     * * WHY & What is Optional: Optional means "maybe exists, maybe not" (prevents null bugs).
      * 
@@ -142,17 +141,20 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * @param userId
      * @return
      */
-    boolean existsByProjectIdAndUserIdAndRemovedAtIsNull(UUID projectId, UUID userId);
 
+    boolean existsByProjectIdAndUserIdAndRevokedAccessAtIsNull(UUID projectId, UUID userId);
+    
     /**
      * ? What projects is THIS userId assigned to?
      * * WHY: Perfect for a my projects UI view
      * @param userId
      * @return
      */
-    List<ProjectMember> findByUserIdAndRemovedAtIsNull(UUID userId);
+    List<ProjectAccess> findByUserIdAndRevokedAccessAtIsNull(UUID userId);
+}
 
-    /**
+
+/**
      * CONSIDER ADDING:
      * Useful but “later”
      * - Pagination -> Page<ProjectMember> findByProjectId(..., Pageable pageable)
@@ -164,4 +166,3 @@ public interface ProjectMemberRepository extends JpaRepository<ProjectMember, UU
      * - Complex reporting with joins across many tables
      * - Multi-tenant filtering
      */
-}

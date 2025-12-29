@@ -1,12 +1,5 @@
 package com.abra.revaissue.service;
 
-import java.time.Instant;
-import java.util.List;
-import java.util.UUID;
-
-import com.abra.revaissue.entity.Project;
-import com.abra.revaissue.enums.ProjectStatus;
-
 /**
  * ? What Is A Service?
  * It’s just a class that receives the Repository we created, uses the repo methods, and optionally sets rules.
@@ -15,9 +8,8 @@ import com.abra.revaissue.enums.ProjectStatus;
  */
 
 import com.abra.revaissue.repository.ProjectRepository;
-/**
- * Receiving the ProjectRepository
- */
+import com.abra.revaissue.entity.Project;
+import com.abra.revaissue.enums.ProjectStatus;
 
 import org.springframework.stereotype.Service;
 /**
@@ -25,35 +17,46 @@ import org.springframework.stereotype.Service;
  * * A “stereotype” is a label Spring uses to recognize “this class has a special job
  */
 
+import java.time.Instant;
+import java.util.List;
+import java.util.UUID;
+// import java.util.Optional;
+
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
+
     /**
-     * ? final means: 
+     * ? final means:
      * * This reference can’t be reassigned.
-     * Once we set projectRepo in the constructor, we will never point it to a different repo.
-     * This is called encapsulation: When you don’t want other classes reaching in and messing with your internal fields.
+     * Once we set projectRepo in the constructor, we will never point it to a
+     * different repo.
+     * This is called encapsulation: When you don’t want other classes reaching in
+     * and messing with your internal fields.
      */
-    
+
     // ! Constructor
     public ProjectService(ProjectRepository projectRepository) {
         /**
          * Constructor injection:
-         * * When Spring creates ProjectService, it will also provide the ProjectRepository automatically.
+         * * When Spring creates ProjectService, it will also provide the
+         * ProjectRepository automatically.
          * Sees that ProjectRepository is also a bean (from Spring Data creating it)
          * ! sees your constructor needs one.
          * ! It injects it (constructor injection).
          */
         this.projectRepository = projectRepository;
         /**
-         * * Why? 
-         * Because your parameter name (projectRepository) matches your field name (this.projectRepository).
-         */   
+         * * Why?
+         * Because your parameter name (projectRepository) matches your field name
+         * (this.projectRepository).
+         */
     }
 
     public Project create(Project project) {
         // Guard clauses = fail fast
-        if (project == null) throw new IllegalArgumentException("Project is required");
+        if (project == null)
+            throw new IllegalArgumentException("Project is required");
         if (project.getProjectName() == null || project.getProjectName().isBlank())
             throw new IllegalArgumentException("projectName is required");
         if (project.getCreatedByUserId() == null)
@@ -67,7 +70,8 @@ public class ProjectService {
         }
 
         // Audit timestamps
-        if (project.getCreatedAt() == null) project.setCreatedAt(now);
+        if (project.getCreatedAt() == null)
+            project.setCreatedAt(now);
         project.setUpdatedAt(now);
 
         // Persist -> save() is “free” from JpaRepository
