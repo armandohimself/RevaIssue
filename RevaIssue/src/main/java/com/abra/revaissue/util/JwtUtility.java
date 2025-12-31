@@ -9,6 +9,8 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.abra.revaissue.enums.UserEnum.Role;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -23,10 +25,11 @@ public class JwtUtility {
         this.secretKey = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateAccessToken(UUID userId, String userName) {
+    public String generateAccessToken(UUID userId, String userName, Role role) {
         return Jwts.builder()
                 .subject(userId.toString())
                 .claim("userName", userName)
+                .claim("role", role)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000)) // 15 minutes
                 .signWith(secretKey, Jwts.SIG.HS256)
@@ -47,6 +50,10 @@ public class JwtUtility {
 
     public String extractUserName(String token) {
         return getClaims(token).get("userName", String.class);
+    }
+
+    public Role extractUserRole(String token) {
+        return getClaims(token).get("role", Role.class);
     }
 
     public Date extractExpiration(String token) {
