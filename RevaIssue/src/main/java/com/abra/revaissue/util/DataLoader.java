@@ -30,4 +30,6 @@ public class DataLoader {
             userRepository.save(admin);
         }
     }
+
+    
 }

@@ -24,5 +24,4 @@ public class AuthzService {
             throw new IllegalStateException("Admin privilege required to perform action!");
         }
     }
-
 }

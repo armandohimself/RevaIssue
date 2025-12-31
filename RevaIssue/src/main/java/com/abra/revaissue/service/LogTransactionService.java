@@ -27,5 +27,4 @@ public class LogTransactionService {
         log.setDate(Instant.now());
         logTransactionRepository.save(log);
     }
-    
 }

@@ -11,7 +11,6 @@ import com.abra.revaissue.enums.ProjectRole;
 import com.abra.revaissue.enums.ProjectStatus;
 import com.abra.revaissue.repository.ProjectAccessRepository;
 import com.abra.revaissue.repository.ProjectRepository;
-import com.abra.revaissue.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -22,24 +21,40 @@ public class ProjectAccessService {
     private final ProjectRepository projectRepository;
     private final AuthzService authzService;
 
-    public ProjectAccessService(ProjectAccessRepository projectAccessRepository, ProjectRepository projectRepository, AuthzService authzService) {
+    public ProjectAccessService(ProjectAccessRepository projectAccessRepository, ProjectRepository projectRepository,
+            AuthzService authzService) {
         this.projectAccessRepository = projectAccessRepository;
         this.projectRepository = projectRepository;
         this.authzService = authzService;
     }
 
-    //! CREATE
-    public ProjectAccess assignAccess(UUID projectId, UUID userId, ProjectRole projectRole, UUID assignedByUserId) {
+    // ! CREATE
+    public ProjectAccess assignAccess(ProjectAccess projectAccess, UUID adminUserId) {
         // Guard rails
-        if (projectId == null || userId == null || projectRole == null || assignedByUserId == null) {
-            throw new IllegalArgumentException("Missing required fields!");
-        }
+        if (projectAccess == null)
+            throw new IllegalArgumentException("Project Access cannot be null!");
 
-        // * Admin-only
-        authzService.mustBeAdmin(assignedByUserId);
+        if (adminUserId == null)
+            throw new IllegalArgumentException("Missing required fields!");
+
+        if (projectAccess.getProjectId() == null)
+            throw new IllegalArgumentException("Missing required fields!");
+
+        if (projectAccess.getUserId() == null)
+            throw new IllegalArgumentException("Missing required fields!");
+
+        if (projectAccess.getProjectRole() == null)
+            throw new IllegalArgumentException("Missing required fields!");
+
+        // Admin-only
+        authzService.mustBeAdmin(adminUserId);
+
+        UUID projectId = projectAccess.getProjectId();
+        UUID userId = projectAccess.getUserId();
+        ProjectRole projectRole = projectAccess.getProjectRole();
 
         Project project = projectRepository.findById(projectId)
-            .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
 
         // If project is archived, you shouldn't be able to assign someone to it.
         if (project.getProjectStatus() == ProjectStatus.ARCHIVED) {
@@ -53,49 +68,62 @@ public class ProjectAccessService {
 
         Instant now = Instant.now();
 
-        ProjectAccess projectAccess = new ProjectAccess();
-        projectAccess.setProjectId(projectId);
-        projectAccess.setUserId(userId);
-        projectAccess.setProjectRole(projectRole);
-        projectAccess.setAssignedByUserId(assignedByUserId);
-        projectAccess.setAccessAssignedAt(now);
-        projectAccess.setRemovedByUserId(null);
-        projectAccess.setRevokedAccessAt(null);
+        ProjectAccess toSave = new ProjectAccess();
+        toSave.setProjectId(projectId);
+        toSave.setUserId(userId);
+        toSave.setProjectRole(projectRole);
+        toSave.setAssignedByUserId(adminUserId);
+        toSave.setAccessAssignedAt(now);
+        toSave.setRemovedByUserId(null);
+        toSave.setRevokedAccessAt(null);
 
-        return projectAccessRepository.save(projectAccess);
+        return projectAccessRepository.save(toSave);
     }
 
-    //! READ
-    public List<ProjectAccess> findActiveAccessByProjectId(UUID projectId) {
+    // ! READ
+    // show me a list of members active on a specific project
+    public List<ProjectAccess> findActiveAccessByProjectId(UUID projectId, UUID adminUserId) {
+
+        // * Admin-only
+        authzService.mustBeAdmin(adminUserId);
+
         return projectAccessRepository.findByProjectIdAndRevokedAccessAtIsNull(projectId);
     }
 
+    // show me a user in a project which may/not exist
     public Optional<ProjectAccess> findActiveAccessByProjectIdAndUserId(UUID projectId, UUID userId) {
         return projectAccessRepository.findByProjectIdAndUserIdAndRevokedAccessAtIsNull(projectId, userId);
     }
 
+    // show me all the testers/devs/(maybe admins) for a specific project
     public List<ProjectAccess> listActiveAccessByProjectIdAndRole(UUID projectId, ProjectRole projectRole) {
         return projectAccessRepository.findByProjectIdAndProjectRoleAndRevokedAccessAtIsNull(projectId, projectRole);
     }
 
-    //! UPDATE
-    public ProjectAccess revokeAccess(UUID projectId, UUID userId, UUID removedByUserId) {
+    // ! UPDATE
+    public ProjectAccess revokeAccess(UUID projectId, UUID userIdToRevoke, UUID removedByUserId) {
 
-        if (projectId == null || userId == null || removedByUserId == null) {
+        if (projectId == null || userIdToRevoke == null || removedByUserId == null) {
             throw new IllegalArgumentException("Missing required fields!");
         }
 
         // * Admin-only
-        authzService.mustBeAdmin(userId);
+        authzService.mustBeAdmin(removedByUserId);
 
-        ProjectAccess projectAccess = this.findActiveAccessByProjectIdAndUserId(projectId, userId)
-            .orElseThrow(() -> new IllegalArgumentException("Active access was not found!"));
+        ProjectAccess projectAccess = this.findActiveAccessByProjectIdAndUserId(projectId, userIdToRevoke)
+                .orElseThrow(() -> new IllegalArgumentException("Active project access was not found!"));
 
+        /**
+         * TODO: Add this record change to Log Transaction
+         */
         projectAccess.setRemovedByUserId(removedByUserId);
         projectAccess.setRevokedAccessAt(Instant.now());
 
         return projectAccessRepository.save(projectAccess);
     }
 
-    //! "DELETE"
+    // ! "DELETE"
+
+    // ! HELPER FUNCTIONS
+    // private ProjectRole
 }
