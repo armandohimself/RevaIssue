@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './project-card.component.html',
   styleUrl: './project-card.component.css',
 })
-export class ProjectCardComponent {}
+export class ProjectCardComponent {
+  projectName: string = "I'm a project name";
+  projectStatus: string = "ACTIVE";
+}
