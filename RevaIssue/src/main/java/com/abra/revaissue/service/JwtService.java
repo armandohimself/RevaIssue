@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.util.JwtUtility;
 
 @Service
@@ -18,8 +19,8 @@ public class JwtService {
         this.jwtUtility = jwtUtility;
     }
 
-    public String createToken(UUID userId, String userName) {
-        return jwtUtility.generateAccessToken(userId, userName);
+    public String createToken(UUID userId, String userName, Role role) {
+        return jwtUtility.generateAccessToken(userId, userName, role);
     }
 
     public boolean validateToken(String token, UUID userId) {
