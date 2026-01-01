@@ -5,14 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
-// import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-// @RequestMapping("api")
 public class RevaIssueController {
-    // services go here
-
     // So hitting "/" in the browser doesn't 404
     @GetMapping("/")
     public String apiRoot() {
@@ -26,5 +22,4 @@ public class RevaIssueController {
         out.put("time", new Date().toString());
         return out;
     }
-
 }

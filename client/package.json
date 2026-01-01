@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test", 
+    "reinstall": "rm -rf node_modules package-lock.json && npm install", 
+    "doctor": "echo \"--- Versions ---\" && node -v && npm -v && echo \"\\n--- Angular (local, via npx) ---\" && npx ng version && echo \"\\n--- Angular (global path) ---\" && which ng || true && ng version || true && echo \"\\n--- npm globals ---\" && npm root -g && npm list -g --depth=0", 
+    "doctor:full": "npx envinfo --system --binaries --npmPackages --npmGlobalPackages --SDKs --browsers \"@angular/*,rxjs,typescript\" --npmGlobalPackages \"@angular/cli\""
   },
   "prettier": {
     "printWidth": 100,
