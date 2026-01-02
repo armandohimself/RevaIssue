@@ -160,7 +160,12 @@ public class UserController {
         }
 
         ProjectRole role = ProjectRole.valueOf(projectRole);
-        ProjectAccess access = projectAccessService.assignAccess(projectId, userId, role, actingUserId);
+        ProjectAccess projectAccess = new ProjectAccess();
+        projectAccess.setProjectId(projectId);
+        projectAccess.setUserId(userId);
+        projectAccess.setProjectRole(role);
+        projectAccess.setAssignedByUserId(actingUserId);
+        ProjectAccess access = projectAccessService.assignAccess(projectAccess, actingUserId);
         return ResponseEntity.ok(access);
     }
     

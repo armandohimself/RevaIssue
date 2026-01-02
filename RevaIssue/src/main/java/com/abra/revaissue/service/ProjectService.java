@@ -6,11 +6,8 @@ import java.util.UUID;
 
 import com.abra.revaissue.dto.project.UpdateProjectRequest;
 import com.abra.revaissue.entity.Project;
-import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.ProjectStatus;
-import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.repository.ProjectRepository;
-import com.abra.revaissue.repository.UserRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -75,7 +72,7 @@ public class ProjectService {
     // * Get specific project by it's Id.
     public Project getById(UUID projectId) {
         // TODO: Update to include userId
-        return checkIfProjectExists(projectId);
+        return projectMustExist(projectId);
     }
 
     // * Get list of projects by status
@@ -100,7 +97,7 @@ public class ProjectService {
         // * Admin-only
         authzService.mustBeAdmin(userId);
 
-        Project project = checkIfProjectExists(projectId);
+        Project project = projectMustExist(projectId);
 
         Instant now = Instant.now();
 
@@ -117,7 +114,7 @@ public class ProjectService {
     // ! DELETE
 
     // ! Helper Functions
-    private Project checkIfProjectExists(UUID projectId) {
+    private Project projectMustExist(UUID projectId) {
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found!"));
 
@@ -132,13 +129,12 @@ public class ProjectService {
             if (updateProjectRequest.projectName().isBlank()) {
                 throw new IllegalArgumentException("projectName cannot be blank!");
             }
-            // TODO: Create a record
+
             project.setProjectName(updateProjectRequest.projectName());
         }
 
         // * Project Description
         if (updateProjectRequest.projectDescription() != null) {
-            // TODO: Create a record
             project.setProjectDescription(updateProjectRequest.projectDescription());
         }
     }
@@ -151,20 +147,43 @@ public class ProjectService {
         if (newProjectStatus == project.getProjectStatus())
             return;
 
-        // * Project Status
-        // TODO: Create record of who made the change + update status change
-        project.setProjectStatus(newProjectStatus);
-        project.setStatusUpdatedByUserId(userId);
-
-        // * ARCHIVED & RE-ACTIVE Status
+        // ARCHIVED PROJECT
         if (newProjectStatus == ProjectStatus.ARCHIVED) {
-            // TODO: Create a record
+
+            
+            /**
+             * TODO: Call ProjectAccessService or ProjectAccessRepo?
+             * TODO: "remove" members from project aka revokedAccessAt to Instant.now()
+             * 
+             * TODO: Separately, Log Transaction needs to added for the status change
+             * TODO: && removing everyone from this project as a result of the archive
+             * 
+             * Comeback and continue as normal setting archived id and archived at to now
+             */
+
             project.setArchivedByUserId(userId);
             project.setArchivedAt(now);
+
+            // RE-ACTIVE PROJECT
         } else if (newProjectStatus == ProjectStatus.ACTIVE) {
-            // TODO: Create a record
+
+            /**
+             * TODO: Call Log Transaction to record that admin just revived a project
+             * * No one should be added so far to this project thus no need to make revoked at null unless you want to add everyone who was on this project back on accidentally
+             * Comeback and continue as normal. 
+             */
+
             project.setArchivedByUserId(null);
             project.setArchivedAt(null);
         }
+
+        /**
+         * Should additions to ProjectStatus come up, we can update normally without issue.
+         * Regardless, a project status will be updated and the user who updated the status gets updated
+         */
+        project.setProjectStatus(newProjectStatus);
+        project.setStatusUpdatedByUserId(userId);
+
+        
     }
 }

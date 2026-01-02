@@ -31,6 +31,10 @@ public class JwtService {
         return jwtUtility.extractUserName(token);
     }
 
+    public Role getUserRoleFromToken(String token) {
+        return jwtUtility.extractUserRole(token);
+    }
+
     public UUID getUserIdFromToken(String token) {
         String userIdStr = jwtUtility.extractId(token);
         return UUID.fromString(userIdStr);
