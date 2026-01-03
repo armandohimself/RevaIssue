@@ -69,6 +69,19 @@ public class UserController {
     
     // log out - ?
 
+    // get the current user from jwt token
+    @GetMapping("/me")
+    public ResponseEntity<User> getCurrentUser(@RequestHeader(name = "Authorization") String token) {
+        String slicedToken = token.split(" ")[1];
+        UUID userId = jwtService.getUserIdFromToken(slicedToken);
+        User user = userService.getUserByUUID(userId);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(user);
+    }
+
     // get users/{id} - get user details
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUser(@PathVariable UUID userId) {
