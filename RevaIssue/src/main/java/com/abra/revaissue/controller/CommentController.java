@@ -5,11 +5,13 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +22,7 @@ import com.abra.revaissue.entity.Issue;
 import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.service.CommentService;
 import com.abra.revaissue.service.IssueService;
+import com.abra.revaissue.service.JwtService;
 import com.abra.revaissue.service.UserService;
 
 @RestController
@@ -29,18 +32,27 @@ public class CommentController {
     private final CommentService commentService;
     private final IssueService issueService;
     private final UserService userService;
+    private final JwtService jwtService;
 
     @Autowired
-    public CommentController(CommentService commentService, IssueService issueService, UserService userService) {
+    public CommentController(CommentService commentService, IssueService issueService, UserService userService,
+            JwtService jwtService) {
         this.commentService = commentService;
         this.issueService = issueService;
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping
-    public CommentDTO createComment(@RequestBody CommentRequestDTO request) {
+    public CommentDTO createComment(@RequestBody CommentRequestDTO request,
+            @RequestHeader("Authorization") String authorization) {
         // Fetch User and Issue entities
-        User user = userService.getUserByUUID(request.userId());
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid Authorization header");
+        }
+        String token = authorization.substring(7);
+        UUID userId = jwtService.getUserIdFromToken(token);
+        User user = userService.getUserByUUID(userId);
         Issue issue = issueService.getIssueEntityById(request.issueId());
         // Build Comment entity
         Comment newComment = new Comment();
@@ -64,8 +76,7 @@ public class CommentController {
     @GetMapping("/issue/{issueId}")
     public Page<CommentDTO> getCommentsByIssue(
             @PathVariable UUID issueId,
-            Pageable pageable) {
-
+            @PageableDefault(size = 10, sort = "time,asc") Pageable pageable) {
         return commentService.getCommentsByIssueId(issueId, pageable);
     }
 
