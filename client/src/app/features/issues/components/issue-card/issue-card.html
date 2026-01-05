@@ -1,0 +1,8 @@
+<div class="issue-row">
+  <span class="issue-id">{{ issue.issueId }}</span>
+  <span class="issue-name">{{ issue.name }}</span>
+  <span class="status-badge" [class]="issue.status.toLowerCase()">{{ issue.status }}</span>
+  <span class="issue-severity">{{ issue.severity }}</span>
+  <span class="issue-priority">{{ issue.priority }}</span>
+  <button class="edit-btn" (click)="onEditClick($event)">Edit</button>
+</div>

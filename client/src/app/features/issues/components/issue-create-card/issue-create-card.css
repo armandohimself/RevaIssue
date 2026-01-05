@@ -1,0 +1,101 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.card {
+  background: white;
+  border: 1px solid #ccc;
+  width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.textarea {
+  font-family: inherit;
+}
+
+.field-row {
+  display: flex;
+  gap: 15px;
+}
+
+.field-row .field {
+  flex: 1;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: black;
+}
