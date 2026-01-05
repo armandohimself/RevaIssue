@@ -25,6 +25,11 @@ export const routes: Routes = [
     path: 'user/dashboard',
     component: LoginComponent // placeholder for now - tester / dev
   },
+  {
+    path: 'issues',
+    loadChildren: () =>
+        import('./features/issues/issues.route').then(m => m.ISSUE_ROUTES)
+  }
 ];
 
 

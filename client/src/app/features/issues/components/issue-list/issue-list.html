@@ -1,0 +1,45 @@
+<div class="issues-container">
+  <h2>Issues</h2>
+  <p>Track and manage project defects and tasks.</p>
+
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search issues..."
+      [(ngModel)]="searchText"
+      class="search-input"
+    />
+    <select [(ngModel)]="statusFilter" class="status-filter">
+      <option value="">All Statuses</option>
+      <option value="OPEN">Open</option>
+      <option value="IN_PROGRESS">In Progress</option>
+      <option value="RESOLVED">Resolved</option>
+      <option value="CLOSED">Closed</option>
+    </select>
+  </div>
+
+  <div class="issues-header">
+    <span>ID</span>
+    <span>Title</span>
+    <span>Status</span>
+    <span>Severity</span>
+    <span>Priority</span>
+    <span>Actions</span>
+  </div>
+
+  <div class="issues-list">
+    @for (issue of issues(); track issue.issueId) {
+    <app-issue-card [issue]="issue" (click)="onViewIssue(issue)" (editclick)="onEditIssue($event)">
+    </app-issue-card>
+    }
+  </div>
+
+  @if (getFilteredIssues().length === 0) {
+  <p>No issues found.</p>
+  }
+</div>
+
+@if (selectedIssue()) {
+<app-issue-view-card [issue]="selectedIssue()!" (closecard)="onCloseViewCard()">
+</app-issue-view-card>
+}
