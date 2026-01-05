@@ -23,7 +23,7 @@ export class IssueList {
   severityFilter = '';
   priorityFilter = '';
 
-  testProjectId = '46f2de4b-c21b-4a1a-a08b-a1a81eaae516';
+  testProjectId = '1a3b5288-2c03-4656-8f4a-4359cddfa093';
 
   constructor(private issuesService: IssueService) {
     this.issuesService.getIssuesSubject().subscribe(issueData => {
