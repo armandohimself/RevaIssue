@@ -1,6 +1,8 @@
 // app.routes.ts is the map: when the URL is /projects, show the Projects page component.
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
+import { authGuard } from './guards/auth/auth-guard';
+import { adminGuard } from './guards/admin/admin-guard';
 
 export const routes: Routes = [
   {
@@ -16,13 +18,16 @@ export const routes: Routes = [
     path: 'projects',
     loadChildren: () =>
         import('./features/projects/projects.route').then(m => m.PROJECT_ROUTES),
+    canActivate: [authGuard]
   },
   {
     path: 'admin/dashboard',
-    component: LoginComponent // placeholder for now / admin dashboard
+    component: LoginComponent, // placeholder for now / admin dashboard
+    canActivate: [authGuard, adminGuard] // if auth is good, goes to check if user is admin
   },
   {
     path: 'user/dashboard',
-    component: LoginComponent // placeholder for now - tester / dev
+    component: LoginComponent, // placeholder for now - tester / dev
+    canActivate: [authGuard] // may need additional guards for tester / developer
   },
 ];
