@@ -1,0 +1,59 @@
+<div class="overlay" (click)="onClose()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <div class="card-header">
+      <h2>Edit Issue</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="card-body">
+      <div class="field">
+        <label for="name">Title *</label>
+        <input
+          id="name"
+          type="text"
+          [(ngModel)]="name"
+          placeholder="e.g. Login button not working"
+          class="input"
+        />
+      </div>
+
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          [(ngModel)]="description"
+          placeholder="Describe the issue..."
+          rows="5"
+          class="textarea"
+        ></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="severity">Severity</label>
+          <select id="severity" [(ngModel)]="severity" class="select">
+            <option value="INFORMATIONAL">Informational</option>
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+            <option value="CRITICAL">Critical</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="priority">Priority</label>
+          <select id="priority" [(ngModel)]="priority" class="select">
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-secondary" (click)="onClose()">Cancel</button>
+        <button class="btn-primary" (click)="onUpdate()">Update</button>
+      </div>
+    </div>
+  </div>
+</div>

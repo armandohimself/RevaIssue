@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/api")
 public class IssueController {
     private final IssueService issueService;
     private final UserService userService;

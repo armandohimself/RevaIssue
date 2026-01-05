@@ -27,6 +27,11 @@ export const routes: Routes = [
           import('./features/projects/projects.route').then((m) => m.PROJECT_ROUTES),
       },
       {
+        path: 'issues',
+        loadChildren: () =>
+            import('./features/issues/issues.route').then(m => m.ISSUE_ROUTES)
+      },
+      {
         path: 'admin/dashboard',
         // later swap placeholder for AdminDashboardComponent
         component: LoginComponent,
@@ -38,6 +43,7 @@ export const routes: Routes = [
       },
     ],
   },
+  
 
   // catch-all
   { path: '**', redirectTo: 'login' },

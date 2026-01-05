@@ -1,0 +1,69 @@
+<div class="issues-container">
+  <div class="header">
+    <div>
+      <h2>Issues</h2>
+      <p>Track and manage project defects and tasks.</p>
+    </div>
+    <button class="btn-create" (click)="onCreateIssue()">+ Create Issue</button>
+  </div>
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search issues..."
+      [(ngModel)]="searchText"
+      class="search-input"
+    />
+    <select [(ngModel)]="statusFilter" class="status-filter">
+      <option value="">Status</option>
+      <option value="OPEN">Open</option>
+      <option value="IN_PROGRESS">In Progress</option>
+      <option value="RESOLVED">Resolved</option>
+      <option value="CLOSED">Closed</option>
+    </select>
+    <select [(ngModel)]="severityFilter" class="severity-filter">
+      <option value="">Severity</option>
+      <option value="INFORMATIONAL">Informational</option>
+      <option value="LOW">Low</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="HIGH">High</option>
+      <option value="CRITICAL">Critical</option>
+    </select>
+    <select [(ngModel)]="priorityFilter" class="priority-filter">
+      <option value="">Priority</option>
+      <option value="LOW">Low</option>
+      <option value="MEDIUM">Medium</option>
+      <option value="HIGH">High</option>
+    </select>
+  </div>
+
+  <div class="issues-header">
+    <span>ID</span>
+    <span>Title</span>
+    <span>Status</span>
+    <span>Severity</span>
+    <span>Priority</span>
+    <span>Actions</span>
+  </div>
+
+  <div class="issues-list">
+    @for (issue of getFilteredIssues(); track issue.issueId) {
+    <app-issue-card [issue]="issue" (click)="onViewIssue(issue)" (editclick)="onEditIssue($event)">
+    </app-issue-card>
+    }
+  </div>
+
+  @if (getFilteredIssues().length === 0) {
+  <p>No issues found.</p>
+  }
+</div>
+
+@if (selectedIssue()) {
+<app-issue-view-card [issue]="selectedIssue()!" (closecard)="onCloseViewCard()">
+</app-issue-view-card>
+} @if (showCreateCard()) {
+<app-issue-create-card [projectId]="testProjectId" (closecard)="onCloseCreateCard()">
+</app-issue-create-card>
+} @if (editingIssue()) {
+<app-issue-edit-card [issue]="editingIssue()!" (closecard)="onCloseEditCard()">
+</app-issue-edit-card>
+}
