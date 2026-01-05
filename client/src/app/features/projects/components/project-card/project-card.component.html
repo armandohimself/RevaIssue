@@ -1,4 +1,15 @@
-<div>
-  <h3>{{ projectName }}</h3>
-  <p>Status: {{ projectStatus }}</p>
+<div class="card">
+  <h3>{{ project.projectName }}</h3>
+
+  <p><strong>Status:</strong> {{ project.projectStatus }}</p>
+
+  <!-- show description only if it exists -->
+  <p *ngIf="project.projectDescription">
+    {{ project.projectDescription }}
+  </p>
+
+  <small>
+    Created: {{ project.createdAt }} <br />
+    Updated: {{ project.updatedAt }}
+  </small>
 </div>
