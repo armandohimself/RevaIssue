@@ -1,0 +1,24 @@
+<p>comment-table works!</p>
+<div #scrollContainer class="comments-container" (scroll)="onScroll()">
+  <div *ngIf="comments().length === 0" class="no-comments">No comments yet.</div>
+
+  <div *ngFor="let comment of comments()" class="comment-item">
+    <div class="comment-header">
+      <span class="username">{{ comment.username }}</span>
+      <span class="time">{{ comment.time | date : 'short' }}</span>
+    </div>
+    <div class="comment-message">{{ comment.message }}</div>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">Loading...</div>
+</div>
+
+<div class="new-comment">
+  <textarea
+    [(ngModel)]="newMessage"
+    placeholder="Write a comment..."
+    rows="2"
+    (keyup.enter)="submitComment()"
+  ></textarea>
+  <button (click)="submitComment()" [disabled]="!newMessage.trim()">Send</button>
+</div>
