@@ -3,21 +3,27 @@ import { FormsModule } from '@angular/forms';
 import { IssueData } from '../../interfaces/issue-data';
 import { IssueService } from '../../services/issue-service';
 import { IssueCard } from "../issue-card/issue-card";
+import { IssueCreateCard } from '../issue-create-card/issue-create-card';
+import { IssueEditCard } from '../issue-edit-card/issue-edit-card';
 import { IssueViewCard } from "../issue-view-card/issue-view-card";
 
 @Component({
   selector: 'app-issue-list',
-  imports: [IssueCard, IssueViewCard, FormsModule],
+  imports: [IssueCard, IssueViewCard, FormsModule, IssueCreateCard, IssueEditCard],
   templateUrl: './issue-list.html',
   styleUrl: './issue-list.css',
 })
 export class IssueList {
   issues: WritableSignal<IssueData[]> = signal([]);
   selectedIssue: WritableSignal<IssueData | null> = signal(null);
+  showCreateCard: WritableSignal<boolean> = signal(false);
+  editingIssue: WritableSignal<IssueData | null> = signal(null);
   searchText = '';
   statusFilter = '';
+  severityFilter = '';
+  priorityFilter = '';
 
-  testProjectId = 'b26d094d-c384-4b47-9fa2-1c984053ef92';
+  testProjectId = '46f2de4b-c21b-4a1a-a08b-a1a81eaae516';
 
   constructor(private issuesService: IssueService) {
     this.issuesService.getIssuesSubject().subscribe(issueData => {
@@ -41,6 +47,14 @@ export class IssueList {
         result = result.filter(issue => issue.status === this.statusFilter);
       }
 
+      if (this.severityFilter) {
+        result = result.filter(issue => issue.severity === this.severityFilter);
+      }
+
+      if (this.priorityFilter) {
+        result = result.filter(issue => issue.priority === this.priorityFilter);
+      }
+
       return result;
   }
 
@@ -51,7 +65,19 @@ export class IssueList {
     this.selectedIssue.set(null);
   }
 
+  onCreateIssue() {
+    this.showCreateCard.set(true);
+  }
+
+  onCloseCreateCard() {
+    this.showCreateCard.set(false);
+  }
+
   onEditIssue(issue: IssueData) {
-    console.log('Edit issue:', issue);
+    this.editingIssue.set(issue);
+  }
+
+  onCloseEditCard() {
+    this.editingIssue.set(null);
   }
 }

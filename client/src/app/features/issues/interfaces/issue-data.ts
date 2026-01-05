@@ -1,6 +1,6 @@
 export type IssueStatus = 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
 export type IssuePriority = 'LOW' | 'MEDIUM' | 'HIGH';
-export type IssueSeverity = 'MINOR' | 'MAJOR' | 'CRITICAL';
+export type IssueSeverity = 'INFORMATIONAL' | 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 
 export interface IssueData {
     issueId: string;

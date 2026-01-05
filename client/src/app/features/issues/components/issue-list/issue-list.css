@@ -2,6 +2,41 @@
   padding: 20px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+.btn-create {
+  padding: 10px 20px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-create:hover {
+  background-color: #2563eb;
+}
+
 .filters {
   display: flex;
   gap: 12px;
@@ -16,7 +51,9 @@
   width: 250px;
 }
 
-.status-filter {
+.status-filter,
+.severity-filter,
+.priority-filter {
   padding: 8px 12px;
   border: 1px solid #ddd;
   border-radius: 4px;

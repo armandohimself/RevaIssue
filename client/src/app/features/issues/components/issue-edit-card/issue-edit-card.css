@@ -64,21 +64,33 @@
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: #6b7280;
+  color: #374151;
   margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-.field span,
-.field p {
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
   font-size: 16px;
   color: #111827;
-  margin: 0;
+  transition: border-color 0.2s;
 }
 
-.field p {
-  line-height: 1.6;
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  font-family: inherit;
 }
 
 .field-row {
@@ -92,31 +104,40 @@
   min-width: 150px;
 }
 
-.status-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 14px;
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 16px;
   font-weight: 500;
-  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
 }
 
-.status-badge.open {
-  background-color: #dbeafe;
-  color: #1e40af;
+.btn-primary {
+  background-color: #3b82f6;
+  color: white;
 }
 
-.status-badge.in_progress {
-  background-color: #fef3c7;
-  color: #92400e;
+.btn-primary:hover {
+  background-color: #2563eb;
 }
 
-.status-badge.resolved {
-  background-color: #d1fae5;
-  color: #065f46;
-}
-
-.status-badge.closed {
-  background-color: #e5e7eb;
+.btn-secondary {
+  background-color: #f3f4f6;
   color: #374151;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e7eb;
 }
