@@ -7,6 +7,7 @@ import com.abra.revaissue.dto.project.GrantProjectAccessRequest;
 import com.abra.revaissue.dto.project.ProjectAccessMapper;
 import com.abra.revaissue.dto.project.ProjectAccessResponse;
 import com.abra.revaissue.entity.ProjectAccess;
+import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.service.AuthzService;
 import com.abra.revaissue.service.ProjectAccessService;
 
@@ -51,6 +52,18 @@ public class ProjectAccessController {
             .toList();
 
         return ResponseEntity.ok(projectAccessList);
+    }
+
+    //! GET
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getProjectMembers(
+            @PathVariable UUID projectId,
+            @RequestHeader(name="Authorization") String token
+    ) {
+
+        UUID actingUserId = authzService.actingUserId(token);
+
+        return ResponseEntity.ok(projectAccessService.findMembersByProjectId(projectId, actingUserId));
     }
 
     /**

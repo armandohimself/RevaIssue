@@ -15,6 +15,7 @@ import { IssueService } from '../../services/issue-service';
 })
 export class IssueEditCard implements OnInit {
   @Input({ required: true }) issue!: IssueData;
+  @Input({ required: true }) projectId!: string;
   @Output() closecard = new EventEmitter<void>();
 
   name = '';
@@ -38,7 +39,7 @@ export class IssueEditCard implements OnInit {
     this.priority = this.issue.priority;
     this.selectedUserId = this.issue.assignedToUserId || null;
 
-    this.userService.getAllUsers().subscribe({
+    this.userService.getUsersByProjectId(this.projectId).subscribe({
       next: (users) => {
         this.users.set(users);
       },

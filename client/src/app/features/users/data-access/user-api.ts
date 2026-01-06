@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface CreateUserRequest {
@@ -24,6 +24,10 @@ export class UserApiService {
 
   getAllUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/all`);
+  }
+
+  getUsersByProjectId(projectId: string): Observable<User[]> {
+    return this.http.get<User[]>(`http://localhost:8081/api/projects/${projectId}/access/all`);
   }
 
   createUser(request: CreateUserRequest): Observable<User> {
