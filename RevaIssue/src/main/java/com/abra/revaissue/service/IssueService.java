@@ -6,10 +6,7 @@ import com.abra.revaissue.dto.IssueUpdateDTO;
 import com.abra.revaissue.entity.Issue;
 import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.entity.user.User;
-import com.abra.revaissue.enums.IssuePriority;
-import com.abra.revaissue.enums.IssueSeverity;
-import com.abra.revaissue.enums.IssueStatus;
-import com.abra.revaissue.enums.UserEnum;
+import com.abra.revaissue.enums.*;
 import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.IssueRepository;
 import com.abra.revaissue.util.IssueMapper;
@@ -30,12 +27,14 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final IssueMapper issueMapper;
     private final UserService userService;
+    private final LogTransactionService logTransactionService;
 
     @Autowired
-    public IssueService(IssueRepository issueRepository, IssueMapper issueMapper, UserService userService){
+    public IssueService(IssueRepository issueRepository, IssueMapper issueMapper, UserService userService, LogTransactionService logTransactionService){
         this.issueRepository = issueRepository;
         this.issueMapper = issueMapper;
         this.userService = userService;
+        this.logTransactionService = logTransactionService;
     }
     //CREATE
     public IssueResponseDTO createIssue(IssueCreateDTO dto, Project project, User actingUser){
@@ -50,6 +49,7 @@ public class IssueService {
         issue.setCreatedAt(Instant.now());
         issue.setUpdatedAt(Instant.now());
         Issue created = issueRepository.save(issue);
+        logTransactionService.logAction("Issue created", actingUser, EntityType.ISSUE, created.getIssueId());
         return issueMapper.toResponseDTO(created);
     }
     //SELECT/QUERIES
@@ -114,6 +114,7 @@ public class IssueService {
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issueMapper.updateEntity(dto, issue);
         issue.setUpdatedAt(Instant.now());
+        logTransactionService.logAction("Issue updated", actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     public IssueResponseDTO assignDeveloper(UUID issueId, UUID userId, User actingUser){
@@ -128,6 +129,7 @@ public class IssueService {
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issue.setUpdatedAt(Instant.now());
         issue.setAssignedTo(assignedUser);
+        logTransactionService.logAction("Assigned issue to user", actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     public IssueResponseDTO updateStatus(UUID issueId, IssueStatus status, User actingUser){
@@ -149,6 +151,7 @@ public class IssueService {
         }
         issue.setStatus(status);
         issue.setUpdatedAt(Instant.now());
+        logTransactionService.logAction("Issue status change", actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     //DELETE
@@ -158,6 +161,7 @@ public class IssueService {
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
             throw new UnauthorizedOperation("Only TESTERS OR ADMINS can delete issues");
         }
+        logTransactionService.logAction("Issue deleted", actingUser, EntityType.ISSUE, issue.getIssueId());
         issueRepository.delete(issue);
     }
     public Issue getIssueEntityById(UUID issueId) {
