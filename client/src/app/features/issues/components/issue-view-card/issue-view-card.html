@@ -54,6 +54,10 @@
         <label>Last Updated</label>
         <span>{{ issue.updatedAt | date : 'medium' }}</span>
       </div>
+      <div class="comments-section">
+        <h3>Comments</h3>
+        <app-comment-table [issueId]="issue.issueId"></app-comment-table>
+      </div>
     </div>
   </div>
 </div>

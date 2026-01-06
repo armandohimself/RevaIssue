@@ -15,6 +15,7 @@ interface User {
 })
 export class RoleService {
   private roleSubject = new BehaviorSubject<UserRole | null>(null);
+  private userIdSubject = new BehaviorSubject<string | null>(null);
   private apiUrl = 'http://localhost:8081/api/users/me';
 
   constructor(private http: HttpClient, private jwtStorage: JwtStorage) {}
@@ -24,16 +25,22 @@ export class RoleService {
       next: (user) => {
         console.log('User role fetched:', user.role);
         this.roleSubject.next(user.role);
+        this.userIdSubject.next(user.userId);
       },
       error: (err) => {
         console.log(err);
         this.roleSubject.next(null);
+        this.userIdSubject.next(null);
       }
     });
   }
 
   getUserRole(): UserRole | null {
     return this.roleSubject.getValue();
+  }
+
+  getUserId(): string | null {
+    return this.userIdSubject.getValue();
   }
 
   isAdmin(): boolean {
@@ -70,5 +77,6 @@ export class RoleService {
 
   clearRole(): void {
     this.roleSubject.next(null);
+    this.userIdSubject.next(null);
   }
 }

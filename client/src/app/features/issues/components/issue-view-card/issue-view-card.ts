@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CommentTable } from '../../../../components/comment-table/comment-table';
 import { IssueData } from '../../interfaces/issue-data';
 
 @Component({
   selector: 'app-issue-view-card',
-  imports: [CommonModule],
+  imports: [CommonModule, CommentTable],
   templateUrl: './issue-view-card.html',
   styleUrl: './issue-view-card.css',
 })

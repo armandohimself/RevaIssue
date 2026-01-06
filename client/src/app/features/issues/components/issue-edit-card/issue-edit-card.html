@@ -49,6 +49,15 @@
           </select>
         </div>
       </div>
+      <div class="field">
+        <label for="assignedTo">Assigned To</label>
+        <select id="assignedTo" [(ngModel)]="selectedUserId" class="select">
+          <option [value]="null">Unassigned</option>
+          @for (user of developers; track user.userId) {
+          <option [value]="user.userId">{{ user.userName }}</option>
+          }
+        </select>
+      </div>
 
       <div class="actions">
         <button mat-button color="warn" (click)="onDelete()" class="delete-btn">Delete</button>

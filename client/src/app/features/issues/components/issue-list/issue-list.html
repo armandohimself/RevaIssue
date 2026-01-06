@@ -66,6 +66,12 @@
         <mat-option value="HIGH">High</mat-option>
       </mat-select>
     </mat-form-field>
+    <div class="my-issues-toggle">
+      <label>
+        <input type="checkbox" [(ngModel)]="showMyIssuesOnly" (change)="onMyIssuesToggle()" />
+        My Issues Only
+      </label>
+    </div>
   </div>
 
   <div class="issues-header">

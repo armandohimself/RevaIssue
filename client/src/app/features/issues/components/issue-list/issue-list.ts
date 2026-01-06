@@ -45,8 +45,7 @@ export class IssueList {
   statusFilter = '';
   severityFilter = '';
   priorityFilter = '';
-
-  testProjectId = '1a3b5288-2c03-4656-8f4a-4359cddfa093';
+  showMyIssuesOnly = false;
 
   constructor(private issuesService: IssueService, private projectsApi: ProjectsApi, public roleService: RoleService) {
     this.issuesService.getIssuesSubject().subscribe(issueData => {
@@ -74,7 +73,21 @@ export class IssueList {
   }
 
   loadIssues() {
-    this.issuesService.getIssuesForProject(this.selectedProjectId);
+    if (this.showMyIssuesOnly) {
+      const userId = this.roleService.getUserId();
+      if (userId) {
+        this.issuesService.getIssuesAssignedToUser(userId);
+      } else {
+        console.error('User ID not available');
+        this.issuesService.getIssuesForProject(this.selectedProjectId);
+      }
+    } else {
+      this.issuesService.getIssuesForProject(this.selectedProjectId);
+    }
+  }
+
+  onMyIssuesToggle() {
+    this.loadIssues();
   }
 
   getSelectedProjectName(): string {
