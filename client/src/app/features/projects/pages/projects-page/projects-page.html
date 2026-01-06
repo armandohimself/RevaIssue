@@ -1,0 +1,79 @@
+<div class="projects-container">
+  <div class="header">
+    <div>
+      <h2>Projects</h2>
+      <p>Create, update, and manage project access.</p>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="onCreateClick()">
+      <mat-icon>add</mat-icon>
+      Add Project
+    </button>
+  </div>
+
+  <mat-card class="filters-card">
+    <mat-card-content class="filters">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search projects</mat-label>
+        <input matInput [ngModel]="searchText()" (ngModelChange)="searchText.set($event)" />
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [ngModel]="statusFilter()" (ngModelChange)="statusFilter.set($event)">
+          <mat-option value="">All</mat-option>
+          <mat-option value="ACTIVE">Active</mat-option>
+          <mat-option value="ARCHIVED">Archived</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-stroked-button (click)="refresh()">
+        <mat-icon>refresh</mat-icon>
+        Refresh
+      </button>
+    </mat-card-content>
+  </mat-card>
+
+  @if (loading()) {
+    <p class="loading">Loading projects...</p>
+  } @else {
+    <div class="grid">
+      @for (p of filteredProjects(); track p.projectId) {
+        <app-project-card
+          [project]="p"
+          (edit)="onEdit($event)"
+          (archive)="onArchive($event)"
+          (manageAccess)="onManageAccess($event)">
+        </app-project-card>
+      }
+    </div>
+
+    @if (filteredProjects().length === 0) {
+      <p class="empty">No projects found.</p>
+    }
+  }
+
+  <!-- overlays -->
+  @if (showCreate()) {
+    <app-project-create-card
+      (closecard)="closeCreate()"
+      (created)="refresh(); closeCreate()">
+    </app-project-create-card>
+  }
+
+  @if (editingProject()) {
+    <app-project-edit-card
+      [project]="editingProject()!"
+      (closecard)="closeEdit(false)"
+      (saved)="closeEdit(true)">
+    </app-project-edit-card>
+  }
+
+  @if (managingAccessFor()) {
+    <app-project-access-manage-card
+      [project]="managingAccessFor()!"
+      (closecard)="closeAccess()">
+    </app-project-access-manage-card>
+  }
+</div>

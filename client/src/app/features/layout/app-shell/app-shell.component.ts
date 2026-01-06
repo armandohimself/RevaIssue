@@ -9,7 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../auth/services/auth';
 import { LogoutComponent } from '../../auth/logout/logout';
 
@@ -28,7 +28,6 @@ import { LogoutComponent } from '../../auth/logout/logout';
     AsyncPipe,
     RouterOutlet,
     RouterLink,
-    RouterLinkActive
   ]
 })
 export class AppShellComponent {

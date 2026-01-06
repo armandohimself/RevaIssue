@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectFormComponent } from './project-form.component';
+import { ProjectEditCard } from './project-edit-card';
 
-describe('ProjectFormComponent', () => {
-  let component: ProjectFormComponent;
-  let fixture: ComponentFixture<ProjectFormComponent>;
+describe('ProjectEditCard', () => {
+  let component: ProjectEditCard;
+  let fixture: ComponentFixture<ProjectEditCard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectFormComponent]
+      imports: [ProjectEditCard]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ProjectFormComponent);
+    fixture = TestBed.createComponent(ProjectEditCard);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
