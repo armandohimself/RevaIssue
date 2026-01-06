@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -17,6 +17,8 @@ export class AddUserComponent {
   errorMessage = signal('');
   successMessage = signal('');
   isLoading = signal(false);
+  // to parent component
+  userCreated = output<void>();
 
   constructor(
     private userService: UserService,
@@ -44,8 +46,8 @@ export class AddUserComponent {
 
         // waits 1 second
         setTimeout(() => {
-          this.router.navigate(['/admin/users/get-all']);
-        }, 1000); // this can be removed later but just to show
+          this.userCreated.emit();
+        }, 1000);
       },
       error: (error) => {
         console.error('Failed to create user:', error);

@@ -1,0 +1,39 @@
+<div class="dashboard-container">
+  <mat-card class="dashboard-header">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>admin_panel_settings</mat-icon>
+        Admin Dashboard
+      </mat-card-title>
+    </mat-card-header>
+  </mat-card>
+
+  <mat-card class="dashboard-content">
+    <mat-tab-group
+      #tabGroup
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="onTabChange($event)"
+      animationDuration="300ms"
+    >
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">person_add</mat-icon>
+          Add User
+        </ng-template>
+        <div class="tab-content">
+          <app-add-user (userCreated)="onUserCreated()"></app-add-user>
+        </div>
+      </mat-tab>
+
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="tab-icon">people</mat-icon>
+          Manage Users
+        </ng-template>
+        <div class="tab-content">
+          <app-list-users></app-list-users>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card>
+</div>
