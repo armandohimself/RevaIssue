@@ -1,0 +1,27 @@
+<div class="overlay" (click)="onClose()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <div class="card-header">
+      <h2>Edit Project</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="card-body">
+      <div class="field">
+        <label>Project Name *</label>
+        <input class="input" type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" />
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+        <textarea class="textarea" rows="5" [ngModel]="desc()" (ngModelChange)="desc.set($event)"></textarea>
+      </div>
+
+      <div class="actions">
+        <button mat-button (click)="onClose()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="onSave()" [disabled]="saving()">
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
