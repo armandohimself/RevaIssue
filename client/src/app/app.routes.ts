@@ -7,6 +7,7 @@ import { AddUserComponent } from './features/users/add-user/add-user';
 import { ListUsersComponent } from './features/users/list-users/list-users';
 import { AppShellComponent } from './features/layout/app-shell/app-shell.component';
 import { AdminDashboardComponent } from './features/admin/dashboard/dashboard';
+import { ProjectsPage } from './features/projects/pages/projects-page/projects-page';
 
 export const routes: Routes = [
   // default landing
@@ -45,7 +46,7 @@ export const routes: Routes = [
       {
         path: 'user/dashboard',
         // later swap placeholder for UserDashboardComponent
-        component: LoginComponent
+        component: ProjectsPage
       },
       {
         path: 'admin/users/add',

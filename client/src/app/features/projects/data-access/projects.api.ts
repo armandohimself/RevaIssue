@@ -26,7 +26,7 @@ export class ProjectsApi {
   }
 
   update(projectId: string, body: UpdateProjectRequest): Observable<ProjectResponse> {
-    return this.http.put<ProjectResponse>(`${this.baseUrl}/${projectId}`, body);
+    return this.http.patch<ProjectResponse>(`${this.baseUrl}/${projectId}`, body);
   }
 
   archive(projectId: string): Observable<void> {
