@@ -12,9 +12,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
 
+    List<Project> findByProjectIdIn(List<UUID> projectIds);
+
     List<Project> findByCreatedByUserId(UUID userId);
 
     List<Project> findByProjectStatus(ProjectStatus projectStatus);
+
+    Project findByProjectId(UUID projectId);
 
     boolean existsByProjectName(String projectName);
 }
