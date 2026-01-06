@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { UserApiService } from '../data-access/user-api';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
