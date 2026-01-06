@@ -1,8 +1,24 @@
 <div class="issue-row">
   <span class="issue-id">{{ issue.issueId }}</span>
   <span class="issue-name">{{ issue.name }}</span>
-  <span class="status-badge" [class]="issue.status.toLowerCase()">{{ issue.status }}</span>
+  <select
+    [(ngModel)]="issue.status"
+    (change)="onStatusChange($event)"
+    class="status-select"
+    [class]="issue.status.toLowerCase()"
+    (click)="$event.stopPropagation()"
+  >
+    <@for (status of availableStatuses; track status) {
+    <option [value]="status">{{ status.replace('_', ' ') }}</option>
+    }
+  </select>
   <span class="issue-severity">{{ issue.severity }}</span>
   <span class="issue-priority">{{ issue.priority }}</span>
-  <button class="edit-btn" (click)="onEditClick($event)">Edit</button>
+  <span class="issue-user">{{ issue.assignedToUserName || 'Unassigned' }}</span>
+  <span class="issue-user">{{ issue.createdByUserName }}</span>
+  @if (roleService.canEditIssue()) {
+  <button mat-icon-button color="primary" (click)="onEditClick($event)" class="edit-btn">
+    <mat-icon>edit</mat-icon>
+  </button>
+  }
 </div>

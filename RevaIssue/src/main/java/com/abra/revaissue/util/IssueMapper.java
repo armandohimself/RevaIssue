@@ -38,6 +38,15 @@ public class IssueMapper {
         dto.setStatus(issue.getStatus());
         dto.setPriority(issue.getPriority());
         dto.setSeverity(issue.getSeverity());
+        dto.setUpdatedAt(issue.getUpdatedAt());
+        if (issue.getCreatedBy() != null) {
+            dto.setCreatedByUserId(issue.getCreatedBy().getUserId());
+            dto.setCreatedByUserName(issue.getCreatedBy().getUserName());
+        }
+        if (issue.getAssignedTo() != null) {
+            dto.setAssignedToUserId(issue.getAssignedTo().getUserId());
+            dto.setAssignedToUserName(issue.getAssignedTo().getUserName());
+        }
         return dto;
     }
 }

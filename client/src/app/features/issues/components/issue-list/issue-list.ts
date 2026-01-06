@@ -1,7 +1,16 @@
 import { Component, signal, WritableSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ProjectsApi } from '../../../projects/data-access/projects.api';
+import { ProjectResponse } from '../../../projects/models/project.model';
 import { IssueData } from '../../interfaces/issue-data';
 import { IssueService } from '../../services/issue-service';
+import { RoleService } from '../../services/role-service';
 import { IssueCard } from "../issue-card/issue-card";
 import { IssueCreateCard } from '../issue-create-card/issue-create-card';
 import { IssueEditCard } from '../issue-edit-card/issue-edit-card';
@@ -9,7 +18,19 @@ import { IssueViewCard } from "../issue-view-card/issue-view-card";
 
 @Component({
   selector: 'app-issue-list',
-  imports: [IssueCard, IssueViewCard, FormsModule, IssueCreateCard, IssueEditCard],
+  imports: [
+    IssueCard, 
+    IssueViewCard, 
+    FormsModule, 
+    IssueCreateCard, 
+    IssueEditCard,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCardModule,
+    MatIconModule
+  ],
   templateUrl: './issue-list.html',
   styleUrl: './issue-list.css',
 })
@@ -18,6 +39,8 @@ export class IssueList {
   selectedIssue: WritableSignal<IssueData | null> = signal(null);
   showCreateCard: WritableSignal<boolean> = signal(false);
   editingIssue: WritableSignal<IssueData | null> = signal(null);
+  projects: WritableSignal<ProjectResponse[]> = signal([]);
+  selectedProjectId = '';
   searchText = '';
   statusFilter = '';
   severityFilter = '';
@@ -25,14 +48,38 @@ export class IssueList {
 
   testProjectId = '1a3b5288-2c03-4656-8f4a-4359cddfa093';
 
-  constructor(private issuesService: IssueService) {
+  constructor(private issuesService: IssueService, private projectsApi: ProjectsApi, public roleService: RoleService) {
     this.issuesService.getIssuesSubject().subscribe(issueData => {
       this.issues.set(issueData);
     });
   }
 
   ngOnInit() {
-    this.issuesService.getIssuesForProject(this.testProjectId);
+    this.roleService.fetchUserRole();
+    this.projectsApi.list().subscribe({
+      next: (projects) => {
+        this.projects.set(projects);
+        if (projects.length > 0) {
+          this.selectedProjectId = projects[0].projectId;
+          this.loadIssues();
+        }
+      },
+      error: (err) => console.error('Error loading projects:', err)
+    });
+  }
+  onProjectChange() {
+    if (this.selectedProjectId) {
+      this.loadIssues();
+    }
+  }
+
+  loadIssues() {
+    this.issuesService.getIssuesForProject(this.selectedProjectId);
+  }
+
+  getSelectedProjectName(): string {
+    const project = this.projects().find(p => p.projectId === this.selectedProjectId);
+    return project ? project.projectName : '';
   }
   
   getFilteredIssues(): IssueData[] {

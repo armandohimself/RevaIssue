@@ -4,36 +4,68 @@
       <h2>Issues</h2>
       <p>Track and manage project defects and tasks.</p>
     </div>
-    <button class="btn-create" (click)="onCreateIssue()">+ Create Issue</button>
+    @if (roleService.canCreateIssue()) {
+    <button mat-raised-button color="primary" (click)="onCreateIssue()">
+      <mat-icon>add</mat-icon>
+      Create Issue
+    </button>
+    }
   </div>
+  <mat-card class="project-section">
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="project-select">
+        <mat-label>Project</mat-label>
+        <mat-select [(ngModel)]="selectedProjectId" (selectionChange)="onProjectChange()">
+          <mat-option value="">Select a Project</mat-option>
+          @for (project of projects(); track project.projectId) {
+          <mat-option [value]="project.projectId">{{ project.projectName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      @if (getSelectedProjectName()) {
+      <h3 class="project-title">{{ getSelectedProjectName() }}</h3>
+      }
+    </mat-card-content>
+  </mat-card>
   <div class="filters">
-    <input
-      type="text"
-      placeholder="Search issues..."
-      [(ngModel)]="searchText"
-      class="search-input"
-    />
-    <select [(ngModel)]="statusFilter" class="status-filter">
-      <option value="">Status</option>
-      <option value="OPEN">Open</option>
-      <option value="IN_PROGRESS">In Progress</option>
-      <option value="RESOLVED">Resolved</option>
-      <option value="CLOSED">Closed</option>
-    </select>
-    <select [(ngModel)]="severityFilter" class="severity-filter">
-      <option value="">Severity</option>
-      <option value="INFORMATIONAL">Informational</option>
-      <option value="LOW">Low</option>
-      <option value="MEDIUM">Medium</option>
-      <option value="HIGH">High</option>
-      <option value="CRITICAL">Critical</option>
-    </select>
-    <select [(ngModel)]="priorityFilter" class="priority-filter">
-      <option value="">Priority</option>
-      <option value="LOW">Low</option>
-      <option value="MEDIUM">Medium</option>
-      <option value="HIGH">High</option>
-    </select>
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search issues</mat-label>
+      <input matInput [(ngModel)]="searchText" />
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Status</mat-label>
+      <mat-select [(ngModel)]="statusFilter">
+        <mat-option value="">All Statuses</mat-option>
+        <mat-option value="OPEN">Open</mat-option>
+        <mat-option value="IN_PROGRESS">In Progress</mat-option>
+        <mat-option value="RESOLVED">Resolved</mat-option>
+        <mat-option value="CLOSED">Closed</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Severity</mat-label>
+      <mat-select [(ngModel)]="severityFilter">
+        <mat-option value="">All Severities</mat-option>
+        <mat-option value="INFORMATIONAL">Informational</mat-option>
+        <mat-option value="LOW">Low</mat-option>
+        <mat-option value="MEDIUM">Medium</mat-option>
+        <mat-option value="HIGH">High</mat-option>
+        <mat-option value="CRITICAL">Critical</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Priority</mat-label>
+      <mat-select [(ngModel)]="priorityFilter">
+        <mat-option value="">All Priorities</mat-option>
+        <mat-option value="LOW">Low</mat-option>
+        <mat-option value="MEDIUM">Medium</mat-option>
+        <mat-option value="HIGH">High</mat-option>
+      </mat-select>
+    </mat-form-field>
   </div>
 
   <div class="issues-header">
@@ -42,6 +74,8 @@
     <span>Status</span>
     <span>Severity</span>
     <span>Priority</span>
+    <span>Assigned To</span>
+    <span>Created By</span>
     <span>Actions</span>
   </div>
 
@@ -61,7 +95,7 @@
 <app-issue-view-card [issue]="selectedIssue()!" (closecard)="onCloseViewCard()">
 </app-issue-view-card>
 } @if (showCreateCard()) {
-<app-issue-create-card [projectId]="testProjectId" (closecard)="onCloseCreateCard()">
+<app-issue-create-card [projectId]="selectedProjectId" (closecard)="onCloseCreateCard()">
 </app-issue-create-card>
 } @if (editingIssue()) {
 <app-issue-edit-card [issue]="editingIssue()!" (closecard)="onCloseEditCard()">

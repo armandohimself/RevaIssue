@@ -91,7 +91,7 @@ public class DataLoader {
             commentRepository.save(comment);
         }
         System.out.println("Issue ID: " + savedIssue.getIssueId().toString());
-    }
+
 
         return admin;
     }

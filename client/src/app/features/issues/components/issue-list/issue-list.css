@@ -6,51 +6,50 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .header h2 {
-  margin: 0 0 5px 0;
-  font-size: 24px;
+  margin: 0 0 8px 0;
+  font-size: 28px;
 }
 
 .header p {
   margin: 0;
-  color: gray;
+  color: rgba(0, 0, 0, 0.6);
 }
 
-.btn-create {
-  padding: 10px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
+.project-section {
+  margin-bottom: 24px;
+}
+
+.project-select {
+  width: 100%;
+  max-width: 400px;
+}
+
+.project-title {
+  margin: 16px 0 0 0;
+  font-size: 20px;
+  color: #333;
 }
 
 .filters {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  align-items: flex-start;
 }
 
-.search-input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  width: 200px;
-}
-
-.status-filter,
-.severity-filter,
-.priority-filter {
-  padding: 8px;
-  border: 1px solid #ccc;
-  background: white;
-  cursor: pointer;
+.search-field {
+  flex: 1;
+  min-width: 250px;
 }
 
 .issues-header {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr 1fr 1fr auto;
+  grid-template-columns: 1fr 2fr 1fr 1fr 1fr 1fr 1fr auto;
   gap: 10px;
   padding: 10px;
   background-color: #f0f0f0;

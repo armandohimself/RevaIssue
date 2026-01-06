@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { IssueCreate, IssuePriority, IssueSeverity } from '../../interfaces/issue-data';
 import { IssueService } from '../../services/issue-service';
 
 @Component({
   selector: 'app-issue-create-card',
-  imports: [FormsModule],
+  imports: [FormsModule, MatButtonModule],
   templateUrl: './issue-create-card.html',
   styleUrl: './issue-create-card.css',
 })

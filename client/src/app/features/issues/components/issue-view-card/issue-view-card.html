@@ -37,6 +37,23 @@
           <span>{{ issue.priority }}</span>
         </div>
       </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Created By</label>
+          <span>{{ issue.createdByUserName }}</span>
+        </div>
+
+        <div class="field">
+          <label>Assigned To</label>
+          <span>{{ issue.assignedToUserName || 'Unassigned' }}</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Last Updated</label>
+        <span>{{ issue.updatedAt | date : 'medium' }}</span>
+      </div>
     </div>
   </div>
 </div>
