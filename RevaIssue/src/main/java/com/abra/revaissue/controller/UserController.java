@@ -3,6 +3,7 @@ package com.abra.revaissue.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.abra.revaissue.dto.CreateUserDTO;
 import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.TokenTransport;
 import com.abra.revaissue.dto.UpdateUserDTO;
@@ -48,15 +49,13 @@ public class UserController {
     // post users - create a new user (admin only, for onboarding testers/developers)
     @PostMapping("/create")
     public ResponseEntity<?> createUser(
-        @RequestBody User user,
-        @RequestHeader(name = "Authorization") String actingUserToken
+      @RequestBody CreateUserDTO dto,
+      @RequestHeader(name = "Authorization") String actingUserToken
     ) {
-        UUID actingUserId = authzService.actingUserId(actingUserToken);
-
-        authzService.mustBeAdmin(actingUserId);
-
-        User createdUser = userService.createUser(user, actingUserId);
-        return ResponseEntity.ok(createdUser);
+      UUID actingUserId = authzService.actingUserId(actingUserToken);
+      authzService.mustBeAdmin(actingUserId);
+      User createdUser = userService.createUser(dto, actingUserId);
+    return ResponseEntity.ok(createdUser);
     }
 
     // login - accepts username and password, returns jwt if valid

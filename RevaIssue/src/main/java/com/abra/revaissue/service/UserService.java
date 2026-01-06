@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.abra.revaissue.dto.CreateUserDTO;
 import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.TokenTransport;
 import com.abra.revaissue.dto.UpdateUserDTO;
@@ -43,10 +44,13 @@ public class UserService {
      * @param actingUser the entity of whos creating the new user
      * @return the created user entity
      */
-    public User createUser(User user, UUID actingUserId) {
-        if (user == null) {
+    public User createUser(CreateUserDTO dto, UUID actingUserId) {
+        if (dto == null) {
             return null;
         }
+        User user = new User();
+        user.setUserName(dto.getUserName());
+        user.setRole(dto.getRole());
 
         User actingUser = userRepository.findByUserId(actingUserId);
 
@@ -55,7 +59,7 @@ public class UserService {
             throw new RuntimeException("Username already taken");
         }
 
-        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         User createdUser = userRepository.save(user);
 
         if (actingUser == null) {
