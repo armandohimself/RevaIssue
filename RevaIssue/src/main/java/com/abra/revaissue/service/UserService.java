@@ -63,10 +63,10 @@ public class UserService {
         User createdUser = userRepository.save(user);
 
         if (actingUser == null) {
-            String logMessage = "User registered" + createdUser.getUserName();
+            String logMessage = "User registered " + createdUser.getUserName();
             logTransactionService.logAction(logMessage, actingUser, EntityType.USER, createdUser.getUserId());
         } else {
-            String logMessage = "User created" + createdUser.getUserName() + " by " + actingUser.getUserName();
+            String logMessage = "User created " + createdUser.getUserName() + " by " + actingUser.getUserName();
             logTransactionService.logAction(logMessage, actingUser, EntityType.USER, createdUser.getUserId());
         }
 

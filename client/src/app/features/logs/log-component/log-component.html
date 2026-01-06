@@ -1,0 +1,80 @@
+<mat-card class="logs-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>history</mat-icon>
+      Activity Logs
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (isLoading()) {
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading logs...</p>
+      </div>
+    } @else if (logs().length === 0) {
+      <div class="no-data">
+        <mat-icon>inbox</mat-icon>
+        <p>No logs found</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table mat-table [dataSource]="logs()" class="logs-table">
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon>schedule</mat-icon>
+              Date & Time
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ log.date | date:'short' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="user">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon>person</mat-icon>
+              User
+            </th>
+            <td mat-cell *matCellDef="let log">
+              {{ log.actingUser.userName }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="entityType">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon>category</mat-icon>
+              Entity Type
+            </th>
+            <td mat-cell *matCellDef="let log">
+              <mat-chip [highlighted]="true">
+                {{ log.affectedEntityType }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-icon>description</mat-icon>
+              Action
+            </th>
+            <td mat-cell *matCellDef="let log" class="message-cell">
+              {{ log.message }}
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="log-row"></tr>
+        </table>
+      </div>
+
+      <mat-paginator
+        [length]="totalElements()"
+        [pageSize]="pageSize()"
+        [pageIndex]="pageIndex()"
+        [pageSizeOptions]="[10, 20, 50, 100]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    }
+  </mat-card-content>
+</mat-card>

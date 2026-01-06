@@ -1,0 +1,100 @@
+.logs-card {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.logs-card mat-card-header {
+  margin-bottom: 1.5rem;
+}
+
+.logs-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.no-data mat-icon {
+  font-size: 4rem;
+  width: 4rem;
+  height: 4rem;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+
+.logs-table {
+  width: 100%;
+}
+
+.logs-table th {
+  background-color: var(--mat-sys-surface-container);
+  font-weight: 600;
+  padding: 1rem;
+}
+
+.logs-table th mat-icon {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.logs-table td {
+  padding: 1rem;
+}
+
+.log-row {
+  transition: background-color 0.2s;
+}
+
+.log-row:hover {
+  background-color: var(--mat-sys-surface-container-low);
+}
+
+.message-cell {
+  max-width: 400px;
+  word-wrap: break-word;
+}
+
+mat-chip {
+  font-size: 0.75rem;
+}
+
+mat-paginator {
+  background-color: transparent;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+@media (max-width: 768px) {
+  .logs-table th,
+  .logs-table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .message-cell {
+    max-width: 200px;
+  }
+}
