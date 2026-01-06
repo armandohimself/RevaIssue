@@ -71,11 +71,13 @@ public class ProjectService {
         project.setUpdatedAt(now);
         
         User actingUser = userService.getUserByUUID(actingUserId);
+        
+        project = projectRepository.save(project);
 
         String logMessage = actingUser.getUserName() + " created " + project.getProjectName();
         logTransactionService.logAction(logMessage, actingUser, EntityType.PROJECT, project.getProjectId());
 
-        return projectRepository.save(project);
+        return project;
     }
 
     // ! READ
@@ -126,10 +128,12 @@ public class ProjectService {
 
         User actingUser = userService.getUserByUUID(actingUserId);
 
+        project = projectRepository.save(project);
+        
         String logMessage = actingUser.getUserName() + " updated " + project.getProjectName();
         logTransactionService.logAction(logMessage, actingUser, EntityType.PROJECT, project.getProjectId());
 
-        return projectRepository.save(project);
+        return project;
     }
 
     //! DELETE
