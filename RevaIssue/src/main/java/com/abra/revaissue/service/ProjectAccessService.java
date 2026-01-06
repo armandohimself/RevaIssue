@@ -21,14 +21,17 @@ public class ProjectAccessService {
     private final ProjectRepository projectRepository;
     private final AuthzService authzService;
 
-    public ProjectAccessService(ProjectAccessRepository projectAccessRepository, ProjectRepository projectRepository,
-            AuthzService authzService) {
+    public ProjectAccessService(
+        ProjectAccessRepository projectAccessRepository,
+        ProjectRepository projectRepository,
+        AuthzService authzService
+    ) {
         this.projectAccessRepository = projectAccessRepository;
         this.projectRepository = projectRepository;
         this.authzService = authzService;
     }
 
-    // ! CREATE
+    //! CREATE
     public ProjectAccess assignAccess(ProjectAccess projectAccess, UUID adminUserId) {
         // Guard rails
         if (projectAccess == null)
@@ -80,7 +83,37 @@ public class ProjectAccessService {
         return projectAccessRepository.save(toSave);
     }
 
-    // ! READ
+    //! READ
+    public List<Project> listActiveProjectsForUser(UUID userId) {
+
+        /**
+         * Get ALL ACTIVE project member records for this user (not revoked)
+         * These rows contain which projects the user belongs to.
+         */
+        List<ProjectAccess> accesses = projectAccessRepository.findByUserIdAndRevokedAccessAtIsNull(userId);
+
+        /**
+         * Now pull just the projectId values out of those rows using distinct(),
+         * avoids duplicates if anything weird happened in our data.
+         */
+        List<UUID> projectIds = accesses.stream()
+            .map(ProjectAccess::getProjectId)
+            .distinct()
+            .toList();
+
+        /**
+         * If user isn't on any projects, return an empty list early
+         */
+        if (projectIds.isEmpty())
+            return List.of();
+
+        /**
+         * Otherwise fetch the actual Project entities in one query:
+         * Equivalent SQL idea: SELECT * FROM projects WHERE project_id IN ( ... );
+         */
+        return projectRepository.findByProjectIdIn(projectIds);
+    }
+
     // show me a list of members active on a specific project
     public List<ProjectAccess> findActiveAccessByProjectId(UUID projectId, UUID adminUserId) {
 
@@ -100,7 +133,7 @@ public class ProjectAccessService {
         return projectAccessRepository.findByProjectIdAndProjectRoleAndRevokedAccessAtIsNull(projectId, projectRole);
     }
 
-    // ! UPDATE
+    //! DELETE
     public ProjectAccess revokeAccess(UUID projectId, UUID userIdToRevoke, UUID removedByUserId) {
 
         if (projectId == null || userIdToRevoke == null || removedByUserId == null) {
@@ -121,9 +154,4 @@ public class ProjectAccessService {
 
         return projectAccessRepository.save(projectAccess);
     }
-
-    // ! "DELETE"
-
-    // ! HELPER FUNCTIONS
-    // private ProjectRole
 }
