@@ -1,6 +1,5 @@
 package com.abra.revaissue.repository;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -10,22 +9,31 @@ import org.springframework.stereotype.Repository;
 
 import com.abra.revaissue.entity.Comment;
 
+/**
+ * Repository interface for performing CRUD operations on Comment entities.
+ * Extends JpaRepository to leverage Spring Data JPA functionalities.
+ * Provides methods to find comments by user ID or issue ID.
+ */
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
-    // Find all comments by a userId
-    List<Comment> findByUser_UserId(UUID userId);
-
-    // Find all comments for an issue by issueId
-    List<Comment> findByIssue_IssueId(UUID issueId);
-
-    // Find all comments for an issue ordered by time ascending (oldest first)
-    List<Comment> findByIssue_IssueIdOrderByTimeAsc(UUID issueId);
-
-    // Find all comments for an issue ordered by time descending (newest first)
-    List<Comment> findByIssue_IssueIdOrderByTimeDesc(UUID issueId);
-
-    // Paginated comments for an issue (if we need it)
+    /**
+     * Retrieves a paginated set of comments for a specific issue.
+     * Useful when there are many comments and you want to load them in pages.
+     *
+     * @param issueId  the UUID of the issue
+     * @param pageable pagination and sorting information
+     * @return a Page containing Comment entities for the given issue
+     */
     Page<Comment> findByIssue_IssueId(UUID issueId, Pageable pageable);
+
+    /**
+     * Retrieves a paginated set of comments made by a specific user.
+     *
+     * @param userId   the UUID of the user
+     * @param pageable pagination and sorting information
+     * @return a Page containing Comment entities made by the user
+     */
+    Page<Comment> findByUser_UserId(UUID userId, Pageable pageable);
 
 }

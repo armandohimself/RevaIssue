@@ -1,7 +1,12 @@
 // app.routes.ts is the map: when the URL is /projects, show the Projects page component.
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
+import { authGuard } from './guards/auth/auth-guard';
+import { adminGuard } from './guards/admin/admin-guard';
+import { AddUserComponent } from './features/users/add-user/add-user';
+import { ListUsersComponent } from './features/users/list-users/list-users';
 import { AppShellComponent } from './features/layout/app-shell/app-shell.component';
+import { AdminDashboardComponent } from './features/admin/dashboard/dashboard';
 
 export const routes: Routes = [
   // default landing
@@ -20,6 +25,7 @@ export const routes: Routes = [
   {
     path: '',
     component: AppShellComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: 'projects',
@@ -33,17 +39,27 @@ export const routes: Routes = [
       },
       {
         path: 'admin/dashboard',
-        // later swap placeholder for AdminDashboardComponent
-        component: LoginComponent,
+        component: AdminDashboardComponent,
+        canActivate: [adminGuard]
       },
       {
         path: 'user/dashboard',
         // later swap placeholder for UserDashboardComponent
-        component: LoginComponent,
+        component: LoginComponent
+      },
+      {
+        path: 'admin/users/add',
+        component: AddUserComponent,
+        canActivate: [adminGuard]
+      },
+      {
+        path: 'admin/users/get-all',
+        component: ListUsersComponent,
+        canActivate: [adminGuard]
       },
     ],
   },
-  
+
 
   // catch-all
   { path: '**', redirectTo: 'login' },

@@ -91,8 +91,6 @@ public class DataLoader {
             commentRepository.save(comment);
         }
         System.out.println("Issue ID: " + savedIssue.getIssueId().toString());
-
-
         return admin;
     }
 
@@ -108,34 +106,34 @@ public class DataLoader {
         UUID adminId = admin.getUserId();
 
         Instant start = Instant.now().minus(Duration.ofDays(90));
-        int i =0;
+        int i = 0;
 
         List<ProjectSeed> seeds = List.of(
-            new ProjectSeed("RevaIssue", "Internal issue tracker for training team", ProjectStatus.ACTIVE),
-            new ProjectSeed("Project Atlas", "Roadmap + milestones for platform revamp", ProjectStatus.ACTIVE),
-            new ProjectSeed("Client Portal", "Customer login + billing history", ProjectStatus.ACTIVE),
-            new ProjectSeed("Ops Dashboard", "KPIs + health metrics for operations", ProjectStatus.ACTIVE),
-            new ProjectSeed("Auth Refactor", "Consolidate auth flows and roles", ProjectStatus.ACTIVE),
-            new ProjectSeed("SQLite Migration POC", "Experiment with SQLite persistence rules", ProjectStatus.ARCHIVED),
-            new ProjectSeed("Notification Service", "Email + in-app notifications", ProjectStatus.ACTIVE),
-            new ProjectSeed("Angular UI Kit", "Reusable components + theming", ProjectStatus.ACTIVE),
-            new ProjectSeed("API Gateway POC", "Proxy + routing rules for services", ProjectStatus.ARCHIVED),
-            new ProjectSeed("Permissions Matrix", "Role-based access control mapping", ProjectStatus.ACTIVE),
-            new ProjectSeed("Onboarding Wizard", "Guided first-time user setup", ProjectStatus.ACTIVE),
-            new ProjectSeed("Report Builder", "Create and export dynamic reports", ProjectStatus.ACTIVE),
-            new ProjectSeed("Search & Filter", "Fast search across projects/issues", ProjectStatus.ACTIVE),
-            new ProjectSeed("Audit Log v1", "Track who changed what and when", ProjectStatus.ACTIVE),
-            new ProjectSeed("Status Workflow", "ACTIVE → ARCHIVED transitions + rules", ProjectStatus.ACTIVE),
-            new ProjectSeed("Performance Sprint", "Bundle size + API latency improvements", ProjectStatus.ACTIVE),
-            new ProjectSeed("Legacy Cleanup", "Remove dead code paths", ProjectStatus.ARCHIVED),
-            new ProjectSeed("Mobile Layout", "Responsive UI for smaller screens", ProjectStatus.ACTIVE),
-            new ProjectSeed("Accessibility Pass", "Keyboard nav + ARIA improvements", ProjectStatus.ACTIVE),
-            new ProjectSeed("Data Import Tool", "CSV import for project metadata", ProjectStatus.ACTIVE),
-            new ProjectSeed("Demo Sandbox", "Safe testing environment for new devs", ProjectStatus.ACTIVE),
-            new ProjectSeed("Billing Integration", "Stripe billing integration proof", ProjectStatus.ARCHIVED),
-            new ProjectSeed("Team Directory", "Search users + roles", ProjectStatus.ACTIVE),
-            new ProjectSeed("Release Notes", "Automated changelog generation", ProjectStatus.ACTIVE)
-        );
+                new ProjectSeed("RevaIssue", "Internal issue tracker for training team", ProjectStatus.ACTIVE),
+                new ProjectSeed("Project Atlas", "Roadmap + milestones for platform revamp", ProjectStatus.ACTIVE),
+                new ProjectSeed("Client Portal", "Customer login + billing history", ProjectStatus.ACTIVE),
+                new ProjectSeed("Ops Dashboard", "KPIs + health metrics for operations", ProjectStatus.ACTIVE),
+                new ProjectSeed("Auth Refactor", "Consolidate auth flows and roles", ProjectStatus.ACTIVE),
+                new ProjectSeed("SQLite Migration POC", "Experiment with SQLite persistence rules",
+                        ProjectStatus.ARCHIVED),
+                new ProjectSeed("Notification Service", "Email + in-app notifications", ProjectStatus.ACTIVE),
+                new ProjectSeed("Angular UI Kit", "Reusable components + theming", ProjectStatus.ACTIVE),
+                new ProjectSeed("API Gateway POC", "Proxy + routing rules for services", ProjectStatus.ARCHIVED),
+                new ProjectSeed("Permissions Matrix", "Role-based access control mapping", ProjectStatus.ACTIVE),
+                new ProjectSeed("Onboarding Wizard", "Guided first-time user setup", ProjectStatus.ACTIVE),
+                new ProjectSeed("Report Builder", "Create and export dynamic reports", ProjectStatus.ACTIVE),
+                new ProjectSeed("Search & Filter", "Fast search across projects/issues", ProjectStatus.ACTIVE),
+                new ProjectSeed("Audit Log v1", "Track who changed what and when", ProjectStatus.ACTIVE),
+                new ProjectSeed("Status Workflow", "ACTIVE → ARCHIVED transitions + rules", ProjectStatus.ACTIVE),
+                new ProjectSeed("Performance Sprint", "Bundle size + API latency improvements", ProjectStatus.ACTIVE),
+                new ProjectSeed("Legacy Cleanup", "Remove dead code paths", ProjectStatus.ARCHIVED),
+                new ProjectSeed("Mobile Layout", "Responsive UI for smaller screens", ProjectStatus.ACTIVE),
+                new ProjectSeed("Accessibility Pass", "Keyboard nav + ARIA improvements", ProjectStatus.ACTIVE),
+                new ProjectSeed("Data Import Tool", "CSV import for project metadata", ProjectStatus.ACTIVE),
+                new ProjectSeed("Demo Sandbox", "Safe testing environment for new devs", ProjectStatus.ACTIVE),
+                new ProjectSeed("Billing Integration", "Stripe billing integration proof", ProjectStatus.ARCHIVED),
+                new ProjectSeed("Team Directory", "Search users + roles", ProjectStatus.ACTIVE),
+                new ProjectSeed("Release Notes", "Automated changelog generation", ProjectStatus.ACTIVE));
 
         // Convert seeds -> entities and save
         List<Project> toSave = new ArrayList<>();
@@ -167,6 +165,7 @@ public class DataLoader {
 
         projectRepository.saveAll(toSave);
     }
+
     /**
      * Tiny helper record so seeds are readable.
      */
@@ -181,5 +180,5 @@ public class DataLoader {
             this.projectStatus = projectStatus;
         }
 
-}
+    }
 }
