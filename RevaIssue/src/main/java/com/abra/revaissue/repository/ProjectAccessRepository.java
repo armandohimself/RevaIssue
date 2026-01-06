@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProjectAccessRepository extends JpaRepository<ProjectAccess, UUID> {
-    List<ProjectAccess> findByProjectId(UUID projectId);
+    List<ProjectAccess> findByProjectIdIn(UUID projectId);
 
     List<ProjectAccess> findByProjectIdAndRevokedAccessAtIsNull(UUID projectId);
 

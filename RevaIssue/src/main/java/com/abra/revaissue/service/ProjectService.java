@@ -9,6 +9,7 @@ import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.enums.ProjectStatus;
 import com.abra.revaissue.repository.ProjectRepository;
 
+// import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +26,7 @@ public class ProjectService {
     // ! CREATE
 
     // * Create project (Admin-only)
-    public Project create(Project project, UUID userId) {
+    public Project create(Project project, UUID actingUserId) {
         // Guard rails
         if (project == null) {
             throw new IllegalArgumentException("Project cannot be null!");
@@ -35,17 +36,17 @@ public class ProjectService {
             throw new IllegalArgumentException("Project name cannot be null or blank!");
         }
 
-        if (userId == null) {
-            throw new IllegalArgumentException("No userId in the header!");
+        if (actingUserId == null) {
+            throw new IllegalArgumentException("No actingUserId in the header!");
         }
 
         // * Admin-only
-        authzService.mustBeAdmin(userId);
+        authzService.mustBeAdmin(actingUserId);
 
         Instant now = Instant.now();
 
         // Set defaults
-        project.setCreatedByUserId(userId);
+        project.setCreatedByUserId(actingUserId);
 
         if (project.getProjectStatus() == null) {
             project.setProjectStatus(ProjectStatus.ACTIVE);
@@ -71,7 +72,7 @@ public class ProjectService {
 
     // * Get specific project by it's Id.
     public Project getById(UUID projectId) {
-        // TODO: Update to include userId
+        // TODO: Update to include actingUserId
         return projectMustExist(projectId);
     }
 
@@ -80,10 +81,9 @@ public class ProjectService {
         return projectRepository.findByProjectStatus(status);
     }
 
-    // ! UPDATE
-
+    //! UPDATE
     // * Update project details
-    public Project update(UUID projectId, UpdateProjectRequest updateProjectRequest, UUID userId) {
+    public Project update(UUID projectId, UpdateProjectRequest updateProjectRequest, UUID actingUserId) {
         // Guard rails
         if (projectId == null)
             throw new IllegalArgumentException("Project Id is required to update a project!");
@@ -91,11 +91,11 @@ public class ProjectService {
         if (updateProjectRequest == null)
             throw new IllegalArgumentException("updateProjectRequest is required to update a project!");
 
-        if (userId == null)
+        if (actingUserId == null)
             throw new IllegalArgumentException("User Id is required to update a project!");
 
         // * Admin-only
-        authzService.mustBeAdmin(userId);
+        authzService.mustBeAdmin(actingUserId);
 
         Project project = projectMustExist(projectId);
 
@@ -103,7 +103,7 @@ public class ProjectService {
 
         // Patch Updates
         applyPatchFields(project, updateProjectRequest);
-        applyStatusTransition(project, updateProjectRequest.projectStatus(), userId, now);
+        applyStatusTransition(project, updateProjectRequest.projectStatus(), actingUserId, now);
 
         // Audit Timestamp
         project.setUpdatedAt(now);
@@ -111,7 +111,21 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    // ! DELETE
+    //! DELETE
+    public void archive(UUID projectId, UUID actingUserId) {
+        authzService.mustBeAdmin(actingUserId);
+        Project project = projectMustExist(projectId);
+
+        Instant now = Instant.now();
+
+        project.setProjectStatus(ProjectStatus.ARCHIVED);
+        project.setArchivedByUserId(actingUserId);
+        project.setArchivedAt(now);
+        project.setStatusUpdatedByUserId(actingUserId);
+        project.setUpdatedAt(now);
+
+        projectRepository.save(project);
+    }
 
     // ! Helper Functions
     private Project projectMustExist(UUID projectId) {
@@ -139,7 +153,7 @@ public class ProjectService {
         }
     }
 
-    private void applyStatusTransition(Project project, ProjectStatus newProjectStatus, UUID userId, Instant now) {
+    private void applyStatusTransition(Project project, ProjectStatus newProjectStatus, UUID actingUserId, Instant now) {
         // Guard rail
         if (newProjectStatus == null)
             return;
@@ -150,18 +164,18 @@ public class ProjectService {
         // ARCHIVED PROJECT
         if (newProjectStatus == ProjectStatus.ARCHIVED) {
 
-            
+
             /**
              * TODO: Call ProjectAccessService or ProjectAccessRepo?
              * TODO: "remove" members from project aka revokedAccessAt to Instant.now()
-             * 
+             *
              * TODO: Separately, Log Transaction needs to added for the status change
              * TODO: && removing everyone from this project as a result of the archive
-             * 
+             *
              * Comeback and continue as normal setting archived id and archived at to now
              */
 
-            project.setArchivedByUserId(userId);
+            project.setArchivedByUserId(actingUserId);
             project.setArchivedAt(now);
 
             // RE-ACTIVE PROJECT
@@ -170,7 +184,7 @@ public class ProjectService {
             /**
              * TODO: Call Log Transaction to record that admin just revived a project
              * * No one should be added so far to this project thus no need to make revoked at null unless you want to add everyone who was on this project back on accidentally
-             * Comeback and continue as normal. 
+             * Comeback and continue as normal.
              */
 
             project.setArchivedByUserId(null);
@@ -182,8 +196,8 @@ public class ProjectService {
          * Regardless, a project status will be updated and the user who updated the status gets updated
          */
         project.setProjectStatus(newProjectStatus);
-        project.setStatusUpdatedByUserId(userId);
+        project.setStatusUpdatedByUserId(actingUserId);
 
-        
+
     }
 }

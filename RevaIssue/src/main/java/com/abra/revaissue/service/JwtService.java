@@ -3,7 +3,6 @@ package com.abra.revaissue.service;
 import java.util.Date;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.abra.revaissue.enums.UserEnum.Role;
@@ -20,10 +19,9 @@ public class JwtService {
 
     /**
      * Constructs JwtService with required JwtUtility dependency.
-     *
+     * Spring sees only one constructor, so it auto-injects @Autowired for you, it was optional at that point.
      * @param jwtUtility utility for JWT creation and validation
      */
-    @Autowired
     public JwtService(JwtUtility jwtUtility) {
         this.jwtUtility = jwtUtility;
     }
