@@ -5,6 +5,7 @@ import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;
 import lombok.Data;
 
+import java.time.Instant;
 import java.util.UUID;
 @Data
 public class IssueResponseDTO {
@@ -14,4 +15,9 @@ public class IssueResponseDTO {
     private IssueStatus status;
     private IssuePriority priority;
     private IssueSeverity severity;
+    private Instant updatedAt;
+    private UUID createdByUserId;
+    private String createdByUserName;
+    private UUID assignedToUserId;
+    private String assignedToUserName;
 }

@@ -124,4 +124,20 @@ export class IssueService {
         }
       });
   }
+  assignDeveloper(issueId: string, userId: string) {
+    this.httpClient.put<IssueData>(`api/issues/${issueId}/assign/${userId}`, {})
+      .subscribe({
+        next: (responseData) => {
+          console.log('User assigned to issue');
+          const currentIssues = this.issuesSubject.getValue();
+          const updated = currentIssues.map(issue => 
+            issue.issueId === issueId ? responseData : issue
+          );
+          this.issuesSubject.next(updated);
+        },
+        error: err => {
+          console.log(err);
+        }
+      });
+  }
 }

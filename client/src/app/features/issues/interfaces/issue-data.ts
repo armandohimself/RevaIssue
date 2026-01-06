@@ -9,6 +9,11 @@ export interface IssueData {
     status: IssueStatus;
     priority: IssuePriority;
     severity: IssueSeverity;
+    updatedAt: string;
+    createdByUserId?: string;
+    createdByUserName?: string;
+    assignedToUserId?: string;
+    assignedToUserName?: string;
 }
 export interface IssueCreate {
   name: string;
