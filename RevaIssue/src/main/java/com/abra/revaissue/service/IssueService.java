@@ -49,7 +49,8 @@ public class IssueService {
         issue.setCreatedAt(Instant.now());
         issue.setUpdatedAt(Instant.now());
         Issue created = issueRepository.save(issue);
-        logTransactionService.logAction("Issue created", actingUser, EntityType.ISSUE, created.getIssueId());
+        String logMessage = actingUser.getUserName() + " created issue: " + issue.getName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(created);
     }
     //SELECT/QUERIES
@@ -114,7 +115,8 @@ public class IssueService {
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issueMapper.updateEntity(dto, issue);
         issue.setUpdatedAt(Instant.now());
-        logTransactionService.logAction("Issue updated", actingUser, EntityType.ISSUE, issue.getIssueId());
+        String logMessage = actingUser.getUserName() + " updated issue: " + issue.getName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     public IssueResponseDTO assignDeveloper(UUID issueId, UUID userId, User actingUser){
@@ -129,7 +131,8 @@ public class IssueService {
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issue.setUpdatedAt(Instant.now());
         issue.setAssignedTo(assignedUser);
-        logTransactionService.logAction("Assigned issue to user", actingUser, EntityType.ISSUE, issue.getIssueId());
+        String logMessage = actingUser.getUserName() + " assigned " + assignedUser.getUserName() + " to " + issue.getName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     public IssueResponseDTO updateStatus(UUID issueId, IssueStatus status, User actingUser){
@@ -149,9 +152,10 @@ public class IssueService {
             case ADMIN -> {}
             default -> throw new UnauthorizedOperation("Role not permitted to change issue status");
         }
+        String logMessage = actingUser.getUserName() + " updated issue status from " + issue.getStatus() + " to " + status;
         issue.setStatus(status);
         issue.setUpdatedAt(Instant.now());
-        logTransactionService.logAction("Issue status change", actingUser, EntityType.ISSUE, issue.getIssueId());
+        logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
         return issueMapper.toResponseDTO(issueRepository.save(issue));
     }
     //DELETE
@@ -161,7 +165,8 @@ public class IssueService {
         if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
             throw new UnauthorizedOperation("Only TESTERS OR ADMINS can delete issues");
         }
-        logTransactionService.logAction("Issue deleted", actingUser, EntityType.ISSUE, issue.getIssueId());
+        String logMessage = actingUser.getUserName() + " deleted issue: " + issue.getName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
         issueRepository.delete(issue);
     }
     public Issue getIssueEntityById(UUID issueId) {
