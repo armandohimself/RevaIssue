@@ -1,15 +1,40 @@
-<div class="card">
-  <h3>{{ project.projectName }}</h3>
+<mat-card class="card">
+  <mat-card-header>
+    <mat-card-title class="title">{{ project.projectName }}</mat-card-title>
+    <mat-card-subtitle>
+      <span class="badge" [class.archived]="project.projectStatus === 'ARCHIVE'">
+        {{ project.projectStatus }}
+      </span>
+    </mat-card-subtitle>
+  </mat-card-header>
 
-  <p><strong>Status:</strong> {{ project.projectStatus }}</p>
+  <mat-card-content class="content">
+    <p class="desc">{{ project.projectDescription || 'No description.' }}</p>
+    <div class="meta">
+      <div><b>Created:</b> {{ project.createdAt | date : 'medium' }}</div>
+      <div><b>Updated:</b> {{ project.updatedAt | date : 'medium' }}</div>
+    </div>
+  </mat-card-content>
 
-  <!-- show description only if it exists -->
-  <p *ngIf="project.projectDescription">
-    {{ project.projectDescription }}
-  </p>
+  <mat-card-actions align="end" class="actions">
+    <button mat-stroked-button (click)="manageAccess.emit(project)">
+      <mat-icon>group</mat-icon>
+      Access
+    </button>
 
-  <small>
-    Created: {{ project.createdAt }} <br />
-    Updated: {{ project.updatedAt }}
-  </small>
-</div>
+    <button mat-stroked-button (click)="edit.emit(project)">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+
+    <button
+      mat-button
+      color="warn"
+      (click)="archive.emit(project)"
+      [disabled]="project.projectStatus === 'ARCHIVE'"
+    >
+      <mat-icon>archive</mat-icon>
+      Archive
+    </button>
+  </mat-card-actions>
+</mat-card>

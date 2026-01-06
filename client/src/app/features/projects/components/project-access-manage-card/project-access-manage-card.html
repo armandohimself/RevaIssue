@@ -1,0 +1,67 @@
+<div class="overlay" (click)="onClose()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <div class="card-header">
+      <div>
+        <h2>Manage Access</h2>
+        <div class="subtitle">{{ project.projectName }}</div>
+      </div>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="card-body">
+      <div class="grant-row">
+        <div class="field">
+          <label>User</label>
+          <select class="select" [ngModel]="selectedUserId()" (ngModelChange)="selectedUserId.set($event)">
+            <option value="">Select a user</option>
+            @for (u of eligibleUsers(); track u.userId) {
+              <option [value]="u.userId">{{ u.userName }} ({{ u.role }})</option>
+            }
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Project Role</label>
+          <select class="select" [ngModel]="selectedRole()" (ngModelChange)="selectedRole.set($event)">
+            <option value="DEVELOPER">DEVELOPER</option>
+            <option value="TESTER">TESTER</option>
+          </select>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="onGrant()">
+          <mat-icon>person_add</mat-icon>
+          Grant
+        </button>
+      </div>
+
+      <div class="table">
+        <div class="thead">
+          <span>User</span>
+          <span>Role</span>
+          <span>Actions</span>
+        </div>
+
+        @if (loading()) {
+          <p class="loading">Loading members...</p>
+        } @else {
+          @for (m of members(); track m.projectAccessId) {
+            <div class="trow">
+              <span class="mono">{{ userName(m.userId) }}</span>
+              <span class="pill">{{ m.projectRole }}</span>
+              <span class="actions">
+                <button mat-button color="warn" (click)="onRevoke(m.userId)">
+                  <mat-icon>person_remove</mat-icon>
+                  Revoke
+                </button>
+              </span>
+            </div>
+          }
+
+          @if (members().length === 0) {
+            <p class="empty">No active members on this project.</p>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

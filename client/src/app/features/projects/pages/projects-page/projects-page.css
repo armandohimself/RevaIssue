@@ -1,0 +1,31 @@
+.projects-container { padding: 24px; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.header h2 { margin: 0; font-size: 32px; }
+.header p { margin: 4px 0 0; opacity: 0.8; }
+
+.filters-card { margin-bottom: 16px; }
+
+.filters {
+  display: grid;
+  grid-template-columns: 1.5fr 260px 160px;
+  gap: 12px;
+  align-items: center;
+}
+
+.search-field { width: 100%; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+.loading, .empty { opacity: 0.8; margin-top: 12px; }
