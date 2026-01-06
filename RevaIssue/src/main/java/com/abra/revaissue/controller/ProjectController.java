@@ -3,6 +3,7 @@ package com.abra.revaissue.controller;
 import java.util.List;
 import java.util.UUID;
 
+import com.abra.revaissue.dto.project.AdminProjectResponse;
 import com.abra.revaissue.dto.project.CreateProjectRequest;
 import com.abra.revaissue.dto.project.ProjectMapper;
 import com.abra.revaissue.dto.project.ProjectResponse;
@@ -78,6 +79,19 @@ public class ProjectController {
 
         Project getProject = projectService.getById(projectId);
         return ResponseEntity.ok(ProjectMapper.toResponse(getProject));
+    }
+
+    @GetMapping("/{projectId}/admin")
+    public ResponseEntity<AdminProjectResponse> getAdminProject(
+        @PathVariable UUID projectId,
+        @RequestHeader(name="Authorization") String token
+    ) {
+
+        UUID actingUserId = authzService.actingUserId(token);
+        authzService.mustBeAdmin(actingUserId);
+
+        Project getProject = projectService.getById(projectId);
+        return ResponseEntity.ok(ProjectMapper.toAdminResponse(getProject));
     }
 
     // //! PATCH

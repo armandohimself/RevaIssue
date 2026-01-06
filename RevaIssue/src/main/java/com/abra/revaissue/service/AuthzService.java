@@ -10,6 +10,8 @@ import com.abra.revaissue.exception.UnauthenticatedException;
 import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.UserRepository;
 
+import io.jsonwebtoken.ExpiredJwtException;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,6 +26,7 @@ public class AuthzService {
     }
 
     // I am the source of truth!
+    //! Must Be Admin
     public void mustBeAdmin(UUID userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new IllegalArgumentException("The user was not found!"));
@@ -38,6 +41,7 @@ public class AuthzService {
         if (role != Role.ADMIN) throw new ForbiddenOperationException("Admin privileges required!");
     }
 
+    //! Acting User Token Check
     public UUID actingUserId(String authHeader) {
         // Guard rails
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -46,10 +50,13 @@ public class AuthzService {
 
         String token = authHeader.substring(7);
 
-        if(jwtService.isTokenExpired(token)) {
-            throw new UnauthenticatedException("Token expired!");
+        try {
+            if (jwtService.isTokenExpired(token)) {
+                throw new UnauthenticatedException("Token expired!");
+            }
+            return jwtService.getUserIdFromToken(token);
+        } catch (ExpiredJwtException error) {
+            throw new UnauthenticatedException("Token expired. Please log in again.");
         }
-
-        return jwtService.getUserIdFromToken(token);
     }
 }
