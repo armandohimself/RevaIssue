@@ -8,21 +8,29 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UnauthorizedOperation.class)
-    // Consider splitting this up into:
-    // UnauthenticatedException -> 401
-    // ForbiddenOperation -> 403
-    public ResponseEntity<String> handleUnauthorized(UnauthorizedOperation ex) {
+    /**
+     * missing / invalid / expired token -> UnauthenticatedException
+     */
+    @ExceptionHandler(UnauthenticatedException.class)
+    public ResponseEntity<String> handle401(UnauthenticatedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    /**
+     * valid token but someone tryin' it today -> ForbiddenOperationException
+     */
+    @ExceptionHandler(ForbiddenOperationException.class)
+    public ResponseEntity<String> handle403(ForbiddenOperationException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleBadRequest(IllegalArgumentException ex) {
+    public ResponseEntity<String> handle400(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalState(IllegalStateException ex) {
+    public ResponseEntity<String> handle409(IllegalStateException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

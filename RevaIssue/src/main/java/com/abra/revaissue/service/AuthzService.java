@@ -5,6 +5,8 @@ import java.util.UUID;
 import com.abra.revaissue.entity.user.User;
 // import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.UserEnum.Role;
+import com.abra.revaissue.exception.ForbiddenOperationException;
+import com.abra.revaissue.exception.UnauthenticatedException;
 import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.UserRepository;
 
@@ -27,25 +29,25 @@ public class AuthzService {
             .orElseThrow(() -> new IllegalArgumentException("The user was not found!"));
 
         if(user.getRole() != Role.ADMIN) {
-            throw new UnauthorizedOperation("Admin privileges required!");
+            throw new ForbiddenOperationException("Admin privileges required!");
         }
     }
 
     // Optional convenience, please use above as DB source of truth
     public void mustBeAdmin(Role role) {
-        if (role != Role.ADMIN) throw new UnauthorizedOperation("Admin privileges required!");
+        if (role != Role.ADMIN) throw new ForbiddenOperationException("Admin privileges required!");
     }
 
     public UUID actingUserId(String authHeader) {
         // Guard rails
         if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new UnauthorizedOperation("Missing or invalid Authorization header");
+            throw new UnauthenticatedException("Missing or invalid Authorization header");
         }
 
         String token = authHeader.substring(7);
 
         if(jwtService.isTokenExpired(token)) {
-            throw new UnauthorizedOperation("Token expired!");
+            throw new UnauthenticatedException("Token expired!");
         }
 
         return jwtService.getUserIdFromToken(token);
