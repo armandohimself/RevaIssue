@@ -89,8 +89,9 @@ public class CommentController {
     /**
      * Retrieves paginated comments for a specific issue.
      *
-     * @param issueId  the UUID of the issue
-     * @param pageable pagination and sorting info
+     * @param issueId       the UUID of the issue
+     * @param pageable      pagination and sorting info
+     * @param authorization JWT Bearer token header
      * @return ResponseEntity containing Page of CommentDTOs
      */
     @GetMapping("/issue/{issueId}")
@@ -112,8 +113,9 @@ public class CommentController {
     /**
      * Retrieves comments made by a specific user.
      *
-     * @param userId   the UUID of the user
-     * @param pageable pagination and sorting info
+     * @param userId        the UUID of the user
+     * @param pageable      pagination and sorting info
+     * @param authorization JWT Bearer token header
      * @return ResponseEntity containing Page of CommentDTOs
      */
     @GetMapping("/user/{userId}")
@@ -134,7 +136,8 @@ public class CommentController {
     /**
      * Deletes a comment by its UUID.
      *
-     * @param commentId the UUID of the comment
+     * @param commentId     the UUID of the comment
+     * @param authorization JWT Bearer token header
      * @return ResponseEntity with 204 No Content if deleted, or 404 Not Found
      */
     @DeleteMapping("/{commentId}")
