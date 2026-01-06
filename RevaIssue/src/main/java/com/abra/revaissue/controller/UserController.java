@@ -3,6 +3,7 @@ package com.abra.revaissue.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.abra.revaissue.dto.CreateUserDTO;
 import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.TokenTransport;
 import com.abra.revaissue.dto.UpdateUserDTO;
@@ -43,7 +44,7 @@ public class UserController {
 
     // post users - create a new user (admin only, for onboarding testers/developers)
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody User user, @RequestHeader(name = "Authorization") String actingUserToken) {
+    public ResponseEntity<?> createUser(@RequestBody CreateUserDTO dto, @RequestHeader(name = "Authorization") String actingUserToken) {
         String slicedToken = actingUserToken.split(" ")[1];
         UUID actingUserId = jwtService.getUserIdFromToken(slicedToken);
 
@@ -51,7 +52,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("The user is not an ADMIN.");
         }
 
-        User createdUser = userService.createUser(user, actingUserId);
+        User createdUser = userService.createUser(dto, actingUserId);
         return ResponseEntity.ok(createdUser);
     }
 

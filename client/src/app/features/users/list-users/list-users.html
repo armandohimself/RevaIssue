@@ -1,0 +1,49 @@
+<div class="user-list-container">
+  <h3>Users</h3>
+
+  <div *ngIf="isLoading()" class="loading">Loading users...</div>
+
+  <div *ngIf="!isLoading()">
+    <div *ngIf="users().length === 0" class="no-users">
+      No users found.
+    </div>
+
+    <table *ngIf="users().length > 0">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()">
+          <td>{{ user.userName }}</td>
+          <td>
+            <span
+              class="role-badge"
+              [class.role-admin]="user.role === 'ADMIN'"
+              [class.role-tester]="user.role === 'TESTER'"
+              [class.role-developer]="user.role === 'DEVELOPER'"
+            >
+              {{ user.role }}
+            </span>
+          </td>
+          <td>
+            <button
+              class="delete-btn"
+              (click)="deleteUser(user.userId)"
+              [disabled]="isLoading()"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="errorMessage()" class="error">
+    {{ errorMessage() }}
+  </div>
+</div>
