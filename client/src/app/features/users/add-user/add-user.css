@@ -1,31 +1,5 @@
-.user-form-container {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  max-width: 500px;
-}
-
-h3 {
-  margin-top: 0;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 500;
-}
-
-input, select {
+input {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
 }
@@ -38,16 +12,15 @@ input:disabled, select:disabled {
 button {
   width: 100%;
   padding: 0.75rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
+  color: var(--mat-sys-tertiary);
+  background-color: var(--mat-sys-tertiary-container);
   border-radius: 4px;
   font-size: 1rem;
   cursor: pointer;
 }
 
 button:hover:not(:disabled) {
-  background-color: #218838;
+  background-color: var(--mat-sys-tertiary-container);
 }
 
 button:disabled {
@@ -56,17 +29,68 @@ button:disabled {
 }
 
 .error-message {
-  color: #dc3545;
-  background-color: #f8d7da;
-  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--mat-sys-error);
+  background-color: var(--mat-sys-error-container);
+  padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
 }
 
 .success-message {
-  color: #155724;
-  background-color: #d4edda;
-  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--mat-sys-tertiary);
+  background-color: var(--mat-sys-tertiary-container);
+  padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
+}
+
+.user-form-card {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.user-form-card mat-card-header {
+  margin-bottom: 1.5rem;
+}
+
+.user-form-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.button-group button {
+  flex: 1;
+}
+
+.button-group button mat-icon {
+  margin-right: 0.5rem;
+}
+
+.button-group button mat-spinner {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+mat-option mat-icon {
+  vertical-align: middle;
+  margin-right: 0.5rem;
 }

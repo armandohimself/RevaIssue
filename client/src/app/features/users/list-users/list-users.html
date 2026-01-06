@@ -1,49 +1,74 @@
-<div class="user-list-container">
-  <h3>Users</h3>
+<mat-card class="users-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>people</mat-icon>
+      Manage Users
+    </mat-card-title>
+    <div class="header-actions">
+      <button mat-icon-button (click)="loadUsers()" [disabled]="isLoading()">
+        <mat-icon>refresh</mat-icon>
+      </button>
+    </div>
+  </mat-card-header>
 
-  <div *ngIf="isLoading()" class="loading">Loading users...</div>
-
-  <div *ngIf="!isLoading()">
-    <div *ngIf="users().length === 0" class="no-users">
-      No users found.
+  <mat-card-content>
+    <div *ngIf="isLoading()" class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading users...</p>
     </div>
 
-    <table *ngIf="users().length > 0">
-      <thead>
-        <tr>
-          <th>Username</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users()">
-          <td>{{ user.userName }}</td>
-          <td>
-            <span
-              class="role-badge"
-              [class.role-admin]="user.role === 'ADMIN'"
-              [class.role-tester]="user.role === 'TESTER'"
-              [class.role-developer]="user.role === 'DEVELOPER'"
-            >
+    <div *ngIf="!isLoading() && dataSource.data.length === 0" class="no-data">
+      <mat-icon>inbox</mat-icon>
+      <p>No users found</p>
+    </div>
+
+    <div *ngIf="!isLoading() && dataSource.data.length > 0" class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="users-table">
+        <ng-container matColumnDef="userName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <mat-icon>person</mat-icon>
+            Username
+          </th>
+          <td mat-cell *matCellDef="let user">{{ user.userName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            <mat-icon>badge</mat-icon>
+            Role
+          </th>
+          <td mat-cell *matCellDef="let user">
+            <mat-chip [color]="getRoleColor(user.role)" highlighted>
+              <mat-icon *ngIf="user.role === 'TESTER'">bug_report</mat-icon>
+              <mat-icon *ngIf="user.role === 'DEVELOPER'">code</mat-icon>
               {{ user.role }}
-            </span>
+            </mat-chip>
           </td>
-          <td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let user">
             <button
-              class="delete-btn"
-              (click)="deleteUser(user.userId)"
+              mat-icon-button
+              color="warn"
+              (click)="deleteUser(user.userId, user.userName)"
               [disabled]="isLoading()"
+              matTooltip="Delete user"
             >
-              Delete
+              <mat-icon>delete</mat-icon>
             </button>
           </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        </ng-container>
 
-  <div *ngIf="errorMessage()" class="error">
-    {{ errorMessage() }}
-  </div>
-</div>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="user-row"></tr>
+      </table>
+    </div>
+
+    <div *ngIf="errorMessage()" class="error-message">
+      <mat-icon>error</mat-icon>
+      {{ errorMessage() }}
+    </div>
+  </mat-card-content>
+</mat-card>
