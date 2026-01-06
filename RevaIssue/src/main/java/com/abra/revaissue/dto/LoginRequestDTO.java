@@ -14,7 +14,7 @@ public class LoginRequestDTO {
      * @JsonProperty("username") is optional now that I rewrote the /login route
      * This just means it also accepts username or userName in the json
      */
-    @JsonProperty("username")
+    @JsonProperty("userName")
     String userName;
     String password;
 }
