@@ -104,6 +104,10 @@
 <app-issue-create-card [projectId]="selectedProjectId" (closecard)="onCloseCreateCard()">
 </app-issue-create-card>
 } @if (editingIssue()) {
-<app-issue-edit-card [issue]="editingIssue()!" (closecard)="onCloseEditCard()">
+<app-issue-edit-card
+  [issue]="editingIssue()!"
+  [projectId]="selectedProjectId"
+  (closecard)="onCloseEditCard()"
+>
 </app-issue-edit-card>
 }

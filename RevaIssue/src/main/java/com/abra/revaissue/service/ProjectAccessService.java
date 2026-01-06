@@ -1,14 +1,18 @@
 package com.abra.revaissue.service;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.entity.ProjectAccess;
+import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.ProjectRole;
 import com.abra.revaissue.enums.ProjectStatus;
+import com.abra.revaissue.enums.UserEnum;
+import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.ProjectAccessRepository;
 import com.abra.revaissue.repository.ProjectRepository;
 
@@ -20,15 +24,18 @@ public class ProjectAccessService {
     private final ProjectAccessRepository projectAccessRepository;
     private final ProjectRepository projectRepository;
     private final AuthzService authzService;
+    private final UserService userService;
 
     public ProjectAccessService(
         ProjectAccessRepository projectAccessRepository,
         ProjectRepository projectRepository,
-        AuthzService authzService
+        AuthzService authzService,
+        UserService userService
     ) {
         this.projectAccessRepository = projectAccessRepository;
         this.projectRepository = projectRepository;
         this.authzService = authzService;
+        this.userService = userService;
     }
 
     //! CREATE
@@ -121,6 +128,21 @@ public class ProjectAccessService {
         authzService.mustBeAdmin(adminUserId);
 
         return projectAccessRepository.findByProjectIdAndRevokedAccessAtIsNull(projectId);
+    }
+
+    // show me a list of members active on a specific project tester allowed
+    public List<User> findMembersByProjectId(UUID projectId, UUID actingUserId) {
+        User actingUser = userService.getUserByUUID(actingUserId);
+        List<User> memberList = new ArrayList<>();
+        if(actingUser.getRole() != UserEnum.Role.ADMIN && projectAccessRepository.findByProjectIdAndUserIdAndRevokedAccessAtIsNull(projectId, actingUserId) == null){
+            throw new UnauthorizedOperation("Only ADMINS or members can view project members");
+        }
+        List<ProjectAccess> accessList = projectAccessRepository.findByProjectIdAndRevokedAccessAtIsNull(projectId);
+        for(ProjectAccess access: accessList){
+            User user = userService.getUserByUUID(access.getUserId());
+            memberList.add(user);
+        }
+        return memberList;
     }
 
     // show me a user in a project which may/not exist

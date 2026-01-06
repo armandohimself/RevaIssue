@@ -11,6 +11,10 @@ export class UserService {
     return this.userApi.getAllUsers();
   }
 
+  getUsersByProjectId(projectId: string) {
+    return this.userApi.getUsersByProjectId(projectId);
+  }
+
   createUser(request: any) {
     return this.userApi.createUser(request);
   }
