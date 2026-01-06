@@ -5,41 +5,64 @@ import { authGuard } from './guards/auth/auth-guard';
 import { adminGuard } from './guards/admin/admin-guard';
 import { AddUserComponent } from './features/users/add-user/add-user';
 import { ListUsersComponent } from './features/users/list-users/list-users';
+import { AppShellComponent } from './features/layout/app-shell/app-shell.component';
 
 export const routes: Routes = [
+  // default landing
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/login'
+    redirectTo: 'login',
   },
+  // public route (no shell)
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
+
+  // protected/app routes (with our shell)
   {
-    path: 'projects',
-    loadChildren: () =>
-        import('./features/projects/projects.route').then(m => m.PROJECT_ROUTES),
-    canActivate: [authGuard]
+    path: '',
+    component: AppShellComponent,
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'projects',
+        loadChildren: () =>
+          import('./features/projects/projects.route').then((m) => m.PROJECT_ROUTES),
+      },
+      {
+        path: 'issues',
+        loadChildren: () =>
+            import('./features/issues/issues.route').then(m => m.ISSUE_ROUTES)
+      },
+      {
+        path: 'admin/dashboard',
+        // later swap placeholder for AdminDashboardComponent
+        component: LoginComponent,
+        canActivate: [adminGuard]
+      },
+      {
+        path: 'user/dashboard',
+        // later swap placeholder for UserDashboardComponent
+        component: LoginComponent
+      },
+      {
+        path: 'admin/users/add',
+        component: AddUserComponent,
+        canActivate: [adminGuard]
+      },
+      {
+        path: 'admin/users/get-all',
+        component: ListUsersComponent,
+        canActivate: [adminGuard]
+      },
+    ],
   },
-  {
-    path: 'admin/dashboard',
-    component: AddUserComponent, // placeholder for now / admin dashboard
-    canActivate: [authGuard, adminGuard] // if auth is good, goes to check if user is admin
-  },
-  {
-    path: 'user/dashboard',
-    component: LoginComponent, // placeholder for now - tester / dev
-    canActivate: [authGuard] // may need additional guards for tester / developer
-  },
-  {
-    path: 'admin/users/add',
-    component: AddUserComponent,
-    canActivate: [authGuard, adminGuard]
-  },
-  {
-    path: 'admin/users/get-all',
-    component: ListUsersComponent,
-    canActivate: [authGuard, adminGuard]
-  },
+
+
+  // catch-all
+  { path: '**', redirectTo: 'login' },
 ];
+
+

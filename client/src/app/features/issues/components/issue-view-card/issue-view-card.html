@@ -1,0 +1,42 @@
+<div class="overlay" (click)="onClose()">
+  <div class="card" (click)="$event.stopPropagation()">
+    <div class="card-header">
+      <h2>Issue Details</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="card-body">
+      <div class="field">
+        <label>ID</label>
+        <span>{{ issue.issueId }}</span>
+      </div>
+
+      <div class="field">
+        <label>Title</label>
+        <span>{{ issue.name }}</span>
+      </div>
+
+      <div class="field">
+        <label>Description</label>
+        <p>{{ issue.description }}</p>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Status</label>
+          <span class="status-badge" [class]="issue.status.toLowerCase()">{{ issue.status }}</span>
+        </div>
+
+        <div class="field">
+          <label>Severity</label>
+          <span>{{ issue.severity }}</span>
+        </div>
+
+        <div class="field">
+          <label>Priority</label>
+          <span>{{ issue.priority }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
