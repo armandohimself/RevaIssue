@@ -11,7 +11,12 @@
     <mat-nav-list>
       <a mat-list-item routerLink="/projects">Projects</a>
       <a mat-list-item routerLink="/issues">Issues</a>
-      <a mat-list-item routerLink="/admin/dashboard">Admin</a>
+
+      @if (isAdmin()) {
+        <a mat-list-item routerLink="/admin/dashboard">
+          <span matListItemTItle>Admin</span>
+        </a>
+      }
       <mat-divider></mat-divider>
       <a mat-list-item (click)="onLogout()">
         <mat-icon matListItemIcon>logout</mat-icon>

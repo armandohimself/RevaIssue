@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -12,6 +12,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../auth/services/auth';
 import { LogoutComponent } from '../../auth/logout/logout';
+import { AuthApiService } from '../../auth/data-access/auth-api';
 
 @Component({
   selector: 'app-app-shell',
@@ -34,12 +35,31 @@ export class AppShellComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
+  private authApi = inject(AuthApiService);
+
+  isAdmin = signal(false);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
-    );
+  );
+
+  ngOnInit(): void {
+    this.checkUserRole();
+  }
+
+  checkUserRole(): void {
+    this.authApi.getCurrentUser().subscribe({
+      next: (user) => {
+        this.isAdmin.set(user.role === 'ADMIN');
+      },
+      error: (error) => {
+        console.error('Failed to get user info:', error);
+        this.isAdmin.set(false);
+      }
+    });
+  }
 
   onLogout(): void {
     const dialogRef = this.dialog.open(LogoutComponent);
