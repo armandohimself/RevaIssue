@@ -2,7 +2,6 @@ package com.abra.revaissue.util;
 
 import java.time.Instant;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +20,7 @@ import com.abra.revaissue.enums.IssueStatus;
 import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.repository.CommentRepository;
 import com.abra.revaissue.repository.IssueRepository;
-import com.abra.revaissue.entity.Project;
-import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.ProjectStatus;
-import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.repository.ProjectRepository;
 import com.abra.revaissue.repository.UserRepository;
 

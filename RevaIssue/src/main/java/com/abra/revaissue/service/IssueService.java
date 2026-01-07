@@ -14,14 +14,10 @@ import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.IssueRepository;
 import com.abra.revaissue.util.IssueMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.AccessDeniedException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,7 +27,6 @@ public class IssueService {
     private final IssueMapper issueMapper;
     private final UserService userService;
 
-    @Autowired
     public IssueService(IssueRepository issueRepository, IssueMapper issueMapper, UserService userService){
         this.issueRepository = issueRepository;
         this.issueMapper = issueMapper;

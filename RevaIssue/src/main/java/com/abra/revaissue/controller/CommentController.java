@@ -3,7 +3,6 @@ package com.abra.revaissue.controller;
 import java.net.URI;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -39,7 +38,6 @@ public class CommentController {
     private final UserService userService;
     private final JwtService jwtService;
 
-    @Autowired
     public CommentController(CommentService commentService, IssueService issueService, UserService userService,
             JwtService jwtService) {
         this.commentService = commentService;
