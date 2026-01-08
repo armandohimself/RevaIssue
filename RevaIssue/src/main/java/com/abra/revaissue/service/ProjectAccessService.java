@@ -168,9 +168,6 @@ public class ProjectAccessService {
         ProjectAccess projectAccess = this.findActiveAccessByProjectIdAndUserId(projectId, userIdToRevoke)
                 .orElseThrow(() -> new IllegalArgumentException("Active project access was not found!"));
 
-        /**
-         * TODO: Add this record change to Log Transaction
-         */
         projectAccess.setRemovedByUserId(removedByUserId);
         projectAccess.setRevokedAccessAt(Instant.now());
 

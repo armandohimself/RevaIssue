@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '4.0.0'
+	id 'org.springframework.boot' version '4.0.1'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -18,24 +18,104 @@ repositories {
 	mavenCentral()
 }
 
+/**
+- implementation = needed to compile + run your app
+- compileOnly = needed to compile, but NOT included at runtime
+- annotationProcessor = runs at compile-time to generate code
+- testImplementation = compile + run test code
+- testRuntimeOnly = only needed when tests execute
+ */
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	//! --- App Runtime Related ---
+
+	// Spring Web + MVC (controllers, @RestController, routing, etc.)
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Spring Data JPA (repositories, EntityManager, ORM integration)
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// SQLite dialect support for Hibernate
 	// https://mvnrepository.com/artifact/com.github.gwenn/sqlite-dialect
 	implementation "org.hibernate.orm:hibernate-community-dialects:7.1.8.Final"
+
+	// SQLite JDBC driver (lets Java actually connect to SQLite)
 	// https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc
 	implementation 'org.xerial:sqlite-jdbc:3.51.1.0'
+
+	// JWT (API = compile-time, impl/jackson = runtime)
 	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+
+	// Crypto utilities (ex: BCryptPasswordEncoder)
 	implementation 'org.springframework.security:spring-security-crypto'
+
+	// Selenium (browser automation) — this is used by tests AND can be used by tools.
+	// To use Selenium in tests, we can switch this to testImplementation later -> just haven't had time yet
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    implementation 'org.seleniumhq.selenium:selenium-java:4.39.0'
+	// testImplementation "org.seleniumhq.selenium:selenium-java:4.39.0"
+
+	//! --- Compile-Time Related ---
+
+	// Lombok annotations like @Getter/@Setter/@Builder
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	//! --- Testing Only ---
+	// Spring Boot test bundle (JUnit Jupiter, assertions, mocking, Spring test utilities)
+	// This is the "one starter to rule them all" for Spring test setup.
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+
+	// Cucumber runner support on the JUnit Platform:
+	// - suite = makes @Suite runnable (not just compilable)
+	// https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite
+    testImplementation 'org.junit.platform:junit-platform-suite'
+
+	// Cucumber step definitions API (@Given/@When/@Then) + glue code
+	// https://mvnrepository.com/artifact/io.cucumber/cucumber-java
+    testImplementation 'io.cucumber:cucumber-java:7.33.0'
+
+	// Cucumber engine that plugs into JUnit Platform so Gradle/JUnit can execute scenarios
+	// https://mvnrepository.com/artifact/io.cucumber/cucumber-junit-platform-engine
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.33.0'
+
+	// AssertJ fluent assertions (assertThat(...).isEqualTo(...))
+  	testImplementation "org.assertj:assertj-core:3.26.3"
+
+	// JUnit Platform launcher (lets Gradle/JUnit platform discover & run engines)
+	// Many setups work without explicitly listing it because starter-test pulls a lot in, but keeping this can prevent "no tests discovered" edge cases.
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	//! --- Removed / Not Used & Why ---
+	// This was one of the conflicts I was running into, "spring-boot-starter-test" already covers the normal testing stack.
+	// testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	// testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+
+	// These were overriding the versions that Spring Boot already manages (error I was running into a lot)
+	// Mixing your own JUnit versions with Boot’s managed versions causes the following errors: "No tests discovered", "engine not found", or classpath conflicts.
+	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+    // testImplementation 'org.junit.jupiter:junit-jupiter:5.14.0'
+
+	// https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite
+  // testImplementation "org.junit.platform:junit-platform-suite:1.14.1"
+}
+
+tasks.register("cucumberTest", Test) {
+	description = "Runs Cucumber BDD tests"
+  	group = "verification"
+
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	useJUnitPlatform()
+
+	// force this suite class to be picked up
+	include("com/abra/revaissue/runner/CucumberRunnerTest.class")
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	// run suites + cucumber engine
+  	failOnNoDiscoveredTests = false
 }

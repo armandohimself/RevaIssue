@@ -1,6 +1,5 @@
 package com.abra.revaissue.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class CommentService {
      * @param commentRepository     repository for Comment entities
      * @param logTransactionService service for logging transactions
      */
-    @Autowired
+
     public CommentService(CommentRepository commentRepository, LogTransactionService logTransactionService) {
         this.commentRepository = commentRepository;
         this.logTransactionService = logTransactionService;

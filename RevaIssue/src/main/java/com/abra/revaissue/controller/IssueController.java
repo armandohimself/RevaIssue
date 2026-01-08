@@ -3,7 +3,6 @@ package com.abra.revaissue.controller;
 import com.abra.revaissue.dto.IssueCreateDTO;
 import com.abra.revaissue.dto.IssueResponseDTO;
 import com.abra.revaissue.dto.IssueUpdateDTO;
-import com.abra.revaissue.entity.Issue;
 import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.IssuePriority;
@@ -13,7 +12,6 @@ import com.abra.revaissue.service.IssueService;
 import com.abra.revaissue.service.ProjectService;
 import com.abra.revaissue.service.UserService;
 import com.abra.revaissue.util.JwtUtility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,7 @@ public class IssueController {
     private final UserService userService;
     private final ProjectService projectService;
     private final JwtUtility jwtUtility;
-    @Autowired
+
     public IssueController(IssueService issueService, UserService userService, ProjectService projectService, JwtUtility jwtUtility){
         this.issueService = issueService;
         this.userService = userService;
