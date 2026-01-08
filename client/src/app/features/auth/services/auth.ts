@@ -7,7 +7,7 @@ import { JwtStorage } from '../../../services/jwt-storage';
   providedIn: 'root',
 })
 export class AuthService {
-  
+
   constructor(
     private authApi: AuthApiService,
     private jwtStorage: JwtStorage,
@@ -44,13 +44,11 @@ export class AuthService {
         this.router.navigate(['/admin/dashboard']);
         break;
       case 'TESTER':
-        this.router.navigate(['/tester/dashboard']);
+        this.router.navigate(['/user/dashboard']);
         break;
       case 'DEVELOPER':
-        this.router.navigate(['/developer/dashboard']);
+        this.router.navigate(['/user/dashboard']);
         break;
-      default:
-        this.router.navigate(['/login']);
     }
   }
 

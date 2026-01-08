@@ -58,6 +58,20 @@
         <h3>Comments</h3>
         <app-comment-table [issueId]="issue.issueId"></app-comment-table>
       </div>
+      <div class="logs-section">
+        <h3>History</h3>
+        <div class="logs-list">
+          @if (logs().length === 0) {
+          <p class="no-logs">No history available</p>
+          } @for (log of logs(); track log.logId) {
+          <div class="log-item">
+            <span class="log-date">{{ log.date | date : 'short' }}</span>
+            <span class="log-user">{{ log.actingUser.userName }}</span>
+            <span class="log-message">{{ log.message }}</span>
+          </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
 </div>

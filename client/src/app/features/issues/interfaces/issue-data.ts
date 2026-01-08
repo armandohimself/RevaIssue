@@ -28,3 +28,15 @@ export interface IssueUpdate {
   severity: IssueSeverity;
   priority: IssuePriority;
 }
+
+export interface LogTransaction {
+  logId: number;
+  message: string;
+  actingUser: {
+    userId: string;
+    userName: string;
+  };
+  affectedEntityType: string;
+  affectedEntityId: string;
+  date: string;
+}

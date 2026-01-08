@@ -40,7 +40,8 @@ public class CommentService {
     /**
      * Saves a new comment to the database.
      *
-     * @param comment the Comment entity to save
+     * @param comment    the Comment entity to save
+     * @param actingUser the user performing the action
      * @return the saved Comment entity
      */
     public Comment addComment(Comment comment, User actingUser) {
@@ -57,7 +58,8 @@ public class CommentService {
     /**
      * Deletes a comment by its UUID.
      *
-     * @param commentId the UUID of the comment to delete
+     * @param commentId  the UUID of the comment to delete
+     * @param actingUser the user performing the deletion
      * @return true if the comment existed and was deleted, false otherwise
      */
     public boolean deleteComment(UUID commentId, User actingUser) {

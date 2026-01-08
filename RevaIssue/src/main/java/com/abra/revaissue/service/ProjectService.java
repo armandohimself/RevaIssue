@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.abra.revaissue.dto.project.UpdateProjectRequest;
 import com.abra.revaissue.entity.Project;
+import com.abra.revaissue.entity.user.User;
+import com.abra.revaissue.enums.EntityType;
 import com.abra.revaissue.enums.ProjectStatus;
 import com.abra.revaissue.repository.ProjectRepository;
 
@@ -17,10 +19,19 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
     private final AuthzService authzService;
+    private final LogTransactionService logTransactionService;
+    private final UserService userService;
 
-    public ProjectService(ProjectRepository projectRepository, AuthzService authzService) {
+    public ProjectService(
+        ProjectRepository projectRepository,
+        AuthzService authzService,
+        LogTransactionService logTransactionService,
+        UserService userService
+    ) {
         this.projectRepository = projectRepository;
         this.authzService = authzService;
+        this.logTransactionService = logTransactionService;
+        this.userService = userService;
     }
 
     // ! CREATE
@@ -58,8 +69,15 @@ public class ProjectService {
         }
 
         project.setUpdatedAt(now);
+        
+        User actingUser = userService.getUserByUUID(actingUserId);
+        
+        project = projectRepository.save(project);
 
-        return projectRepository.save(project);
+        String logMessage = actingUser.getUserName() + " created " + project.getProjectName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.PROJECT, project.getProjectId());
+
+        return project;
     }
 
     // ! READ
@@ -106,7 +124,14 @@ public class ProjectService {
         // Audit Timestamp
         project.setUpdatedAt(now);
 
-        return projectRepository.save(project);
+        User actingUser = userService.getUserByUUID(actingUserId);
+
+        project = projectRepository.save(project);
+        
+        String logMessage = actingUser.getUserName() + " updated " + project.getProjectName();
+        logTransactionService.logAction(logMessage, actingUser, EntityType.PROJECT, project.getProjectId());
+
+        return project;
     }
 
     //! DELETE

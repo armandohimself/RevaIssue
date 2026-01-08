@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { AddUserComponent } from '../../users/add-user/add-user';
 import { ListUsersComponent } from '../../users/list-users/list-users';
+import { LogsComponent } from '../../logs/log-component/log-component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -17,7 +18,8 @@ import { ListUsersComponent } from '../../users/list-users/list-users';
     MatIconModule,
     MatButtonModule,
     AddUserComponent,
-    ListUsersComponent
+    ListUsersComponent,
+    LogsComponent
   ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',

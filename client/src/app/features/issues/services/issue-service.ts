@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { IssueCreate, IssueData, IssueStatus, IssueUpdate } from '../interfaces/issue-data';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Page } from '../../../interfaces/page';
+import { IssueCreate, IssueData, IssueStatus, IssueUpdate, LogTransaction } from '../interfaces/issue-data';
 
 @Injectable({
   providedIn: 'root',
@@ -139,5 +140,9 @@ export class IssueService {
           console.log(err);
         }
       });
+  }
+
+  getIssueHistory(issueId: string, page: number = 0, size: number = 20): Observable<Page<LogTransaction>> {
+    return this.httpClient.get<Page<LogTransaction>>(`api/logs/issue/${issueId}?page=${page}&size=${size}`);
   }
 }
