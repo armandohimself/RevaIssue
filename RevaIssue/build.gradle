@@ -118,3 +118,10 @@ tasks.named('test') {
 	// run suites + cucumber engine
   	failOnNoDiscoveredTests = false
 }
+
+// Allows console logs to be printed in terminal
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}
