@@ -52,10 +52,9 @@ dependencies {
 	implementation 'org.springframework.security:spring-security-crypto'
 
 	// Selenium (browser automation) — this is used by tests AND can be used by tools.
-	// To use Selenium in tests, we can switch this to testImplementation later -> just haven't had time yet
+	//! Warning the drivers may not close properly with lots of tests run by selenium.
 	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation 'org.seleniumhq.selenium:selenium-java:4.39.0'
-	// testImplementation "org.seleniumhq.selenium:selenium-java:4.39.0"
 
 	//! --- Compile-Time Related ---
 
