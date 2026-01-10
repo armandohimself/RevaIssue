@@ -17,13 +17,20 @@ class RevaIssueApplicationTests {
 		assertThat(2 + 2).isEqualTo(4);
 	}
 
-	public static void main (String[] args) {
-		WebDriver driver = new ChromeDriver();
-
-		driver.get("https://practicetestautomation.com/practice-test-login/");
-
-		System.out.println(driver.getTitle());
-
+	public static void main(String[] args) {
+		ensureBrowserQuits();
 	}
 
+	public static void ensureBrowserQuits() {
+		WebDriver driver = null;
+		try {
+			driver = new ChromeDriver();
+			driver.get("https://practicetestautomation.com/practice-test-login/");
+			System.out.println(driver.getTitle());
+		} finally {
+			if (driver != null) {
+				driver.quit();
+			}
+		}
+	}
 }
