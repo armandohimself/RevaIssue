@@ -26,8 +26,10 @@ repositories {
 - testRuntimeOnly = only needed when tests execute
  */
 dependencies {
-
 	//! --- App Runtime Related ---
+
+	// make sure rest assured is before any junit dependencies, per the documentation
+    testImplementation 'io.rest-assured:rest-assured:6.0.0'
 
 	// Spring Web + MVC (controllers, @RestController, routing, etc.)
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
@@ -82,6 +84,10 @@ dependencies {
 	// Cucumber engine that plugs into JUnit Platform so Gradle/JUnit can execute scenarios
 	// https://mvnrepository.com/artifact/io.cucumber/cucumber-junit-platform-engine
     testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.33.0'
+
+	// Cucumber Spring integration for @CucumberContextConfiguration
+	// https://mvnrepository.com/artifact/io.cucumber/cucumber-spring
+    testImplementation 'io.cucumber:cucumber-spring:7.33.0'
 
 	// AssertJ fluent assertions (assertThat(...).isEqualTo(...))
   	testImplementation "org.assertj:assertj-core:3.26.3"

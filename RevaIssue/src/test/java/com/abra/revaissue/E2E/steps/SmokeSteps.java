@@ -1,4 +1,4 @@
-package com.abra.revaissue.steps;
+package com.abra.revaissue.E2E.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -20,4 +20,11 @@ public class SmokeSteps {
   public void theScenarioShouldPass() {
     // no-op: assertion not needed for smoke test
   }
+
+  @Then("I should see the undefined snippet")
+  public void i_should_see_the_undefined_snippet() {
+      // Write code here that turns the phrase above into concrete actions
+      //throw new io.cucumber.java.PendingException();
+  }
+  
 }
