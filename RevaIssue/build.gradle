@@ -35,6 +35,9 @@ dependencies {
 	// Spring Data JPA (repositories, EntityManager, ORM integration)
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+	// Enables production ready features
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	// SQLite dialect support for Hibernate
 	// https://mvnrepository.com/artifact/com.github.gwenn/sqlite-dialect
 	implementation "org.hibernate.orm:hibernate-community-dialects:7.1.8.Final"
@@ -51,11 +54,6 @@ dependencies {
 	// Crypto utilities (ex: BCryptPasswordEncoder)
 	implementation 'org.springframework.security:spring-security-crypto'
 
-	// Selenium (browser automation) — this is used by tests AND can be used by tools.
-	//! Warning the drivers may not close properly with lots of tests run by selenium.
-	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
-    implementation 'org.seleniumhq.selenium:selenium-java:4.39.0'
-
 	//! --- Compile-Time Related ---
 
 	// Lombok annotations like @Getter/@Setter/@Builder
@@ -63,6 +61,11 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	//! --- Testing Only ---
+	// Selenium (browser automation) — this is used by tests AND can be used by tools.
+	//! Warning the drivers may not close properly with lots of tests run by selenium.
+	// https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.39.0'
+
 	// Spring Boot test bundle (JUnit Jupiter, assertions, mocking, Spring test utilities)
 	// This is the "one starter to rule them all" for Spring test setup.
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
@@ -110,7 +113,9 @@ tasks.register("cucumberTest", Test) {
 	useJUnitPlatform()
 
 	// force this suite class to be picked up
-	include("com/abra/revaissue/runner/CucumberRunnerTest.class")
+	include("**/CucumberRunnerTest.class")
+	// Can now run "./gradlew cucumberTest" without "--info" -> spits out code snippets for step(s) you can copy and paste
+	testLogging { showStandardStreams = true }
 }
 
 tasks.named('test') {

@@ -1,5 +1,7 @@
-Feature: Smoke
+Feature: Cucumber Smoke Test
 
-    Scenario: Basic Test for Blowing Smoke
-
-    Given I print hello
+  Scenario: Cucumber and JUnit Platform are wired correctly
+    Given cucumber is configured
+    When the smoke scenario runs
+    Then the scenario should pass
+    Then I should see the undefined snippet
