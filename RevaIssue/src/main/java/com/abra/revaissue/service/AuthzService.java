@@ -7,7 +7,6 @@ import com.abra.revaissue.entity.user.User;
 import com.abra.revaissue.enums.UserEnum.Role;
 import com.abra.revaissue.exception.ForbiddenOperationException;
 import com.abra.revaissue.exception.UnauthenticatedException;
-import com.abra.revaissue.exception.UnauthorizedOperation;
 import com.abra.revaissue.repository.UserRepository;
 
 import io.jsonwebtoken.ExpiredJwtException;

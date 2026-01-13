@@ -1,7 +1,6 @@
 package com.abra.revaissue.repository;
 
 import com.abra.revaissue.entity.Issue;
-import com.abra.revaissue.entity.Project;
 import com.abra.revaissue.enums.IssuePriority;
 import com.abra.revaissue.enums.IssueSeverity;
 import com.abra.revaissue.enums.IssueStatus;

@@ -84,13 +84,11 @@ public class ProjectService {
 
     // * Get all projects as list
     public List<Project> getAll() {
-        // TODO: Update to grab views based on roles
         return projectRepository.findAll();
     }
 
     // * Get specific project by it's Id.
     public Project getById(UUID projectId) {
-        // TODO: Update to include actingUserId
         return projectMustExist(projectId);
     }
 
@@ -189,28 +187,11 @@ public class ProjectService {
         // ARCHIVED PROJECT
         if (newProjectStatus == ProjectStatus.ARCHIVED) {
 
-
-            /**
-             * TODO: Call ProjectAccessService or ProjectAccessRepo?
-             * TODO: "remove" members from project aka revokedAccessAt to Instant.now()
-             *
-             * TODO: Separately, Log Transaction needs to added for the status change
-             * TODO: && removing everyone from this project as a result of the archive
-             *
-             * Comeback and continue as normal setting archived id and archived at to now
-             */
-
             project.setArchivedByUserId(actingUserId);
             project.setArchivedAt(now);
 
             // RE-ACTIVE PROJECT
         } else if (newProjectStatus == ProjectStatus.ACTIVE) {
-
-            /**
-             * TODO: Call Log Transaction to record that admin just revived a project
-             * * No one should be added so far to this project thus no need to make revoked at null unless you want to add everyone who was on this project back on accidentally
-             * Comeback and continue as normal.
-             */
 
             project.setArchivedByUserId(null);
             project.setArchivedAt(null);
