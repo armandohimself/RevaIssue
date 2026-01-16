@@ -50,6 +50,15 @@ public class CommentService {
         return savedComment;
     }
 
+    /**
+     * Retrieves a comment by its UUID.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
+     * 
+     * @param commentId the UUID of the comment
+     * @return the Comment entity
+     * @throws EntityNotFoundException if the comment is not found
+     */
     public Comment getCommentById(UUID commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new EntityNotFoundException("Comment not found"));
@@ -57,6 +66,8 @@ public class CommentService {
 
     /**
      * Deletes a comment by its UUID.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
      *
      * @param commentId  the UUID of the comment to delete
      * @param actingUser the user performing the deletion
@@ -73,6 +84,8 @@ public class CommentService {
 
     /**
      * Retrieves all comments in the system.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
      *
      * @return a list of all CommentDTOs
      */
@@ -104,6 +117,8 @@ public class CommentService {
 
     /**
      * Retrieves a paginated list of comments made by a specific user.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
      *
      * @param userId   the UUID of the user
      * @param pageable pagination and sorting information

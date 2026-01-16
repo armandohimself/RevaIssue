@@ -29,6 +29,8 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
 
     /**
      * Retrieves a paginated set of comments made by a specific user.
+     * Added here in case the method is needed.
+     * It is used in the actual application.
      *
      * @param userId   the UUID of the user
      * @param pageable pagination and sorting information

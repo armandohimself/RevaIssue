@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class JwtStorage {
-  private TOKEN_KEY = 'REVAISSUE_TOKEN';
+  private readonly TOKEN_KEY = 'REVAISSUE_TOKEN';
 
   setToken(token: string): void {
     localStorage.setItem(this.TOKEN_KEY, token);

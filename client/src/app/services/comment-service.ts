@@ -8,12 +8,12 @@ import { Page } from '../interfaces/page';
   providedIn: 'root',
 })
 export class CommentService {
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getCommentsByIssueId(
     issueId: string,
     page: number = 0,
-    size: number = 10
+    size: number = 10,
   ): Observable<Page<Comment>> {
     return this.http.get<Page<Comment>>(`comments/issue/${issueId}`, {
       params: { page, size, sort: 'time,asc' },
@@ -23,7 +23,7 @@ export class CommentService {
   getCommentsByUserId(
     userId: string,
     page: number = 0,
-    size: number = 10
+    size: number = 10,
   ): Observable<Page<Comment>> {
     return this.http.get<Page<Comment>>(`comments/user/${userId}`, {
       params: { page, size, sort: 'time,asc' },
