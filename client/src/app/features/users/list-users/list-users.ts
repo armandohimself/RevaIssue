@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, viewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, signal, viewChild, AfterViewInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +12,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { UserService } from '../services/user';
 import { User } from '../data-access/user-api';
+import { UserStateService } from '../services/user-state';
 
 @Component({
   selector: 'app-list-users',
@@ -40,8 +41,15 @@ export class ListUsersComponent implements OnInit, AfterViewInit {
 
   constructor(
     private userService: UserService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private userStateService: UserStateService
+  ) {
+    // Listen for refresh signals
+    effect(() => {
+      this.userStateService.refreshNeeded();
+      this.loadUsers();
+    });
+  }
 
   ngOnInit(): void {
     this.loadUsers();
