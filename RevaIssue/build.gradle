@@ -75,8 +75,6 @@ dependencies {
 	// Spring Boot test bundle (JUnit Jupiter, assertions, mocking, Spring test utilities)
 	// This is the "one starter to rule them all" for Spring test setup.
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
-	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
 	// Cucumber runner support on the JUnit Platform:
 	// - suite = makes @Suite runnable (not just compilable)
