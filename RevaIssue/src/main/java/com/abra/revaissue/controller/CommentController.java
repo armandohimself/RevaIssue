@@ -46,6 +46,21 @@ public class CommentController {
         this.jwtService = jwtService;
     }
 
+    private User getUserFromToken(String authorization) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            return null;
+        }
+        String token = authorization.substring(7);
+        try {
+            if (jwtService.isTokenExpired(token))
+                return null;
+            UUID userId = jwtService.getUserIdFromToken(token);
+            return userService.getUserByUUID(userId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * Creates a new comment.
      *
@@ -55,18 +70,17 @@ public class CommentController {
      */
     @PostMapping
     public ResponseEntity<CommentDTO> createComment(@RequestBody CommentRequestDTO request,
-            @RequestHeader("Authorization") String authorization) {
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+            @RequestHeader(value = "Authorization", required = false) String authorization) {
 
-        String token = authorization.substring(7);
-        if (jwtService.isTokenExpired(token)) {
+        User user = getUserFromToken(authorization);
+        if (user == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        Issue issue;
+        try {
+            issue = issueService.getIssueEntityById(request.issueId());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        UUID userId = jwtService.getUserIdFromToken(token);
-        User user = userService.getUserByUUID(userId);
-        Issue issue = issueService.getIssueEntityById(request.issueId());
 
         Comment newComment = new Comment();
         newComment.setMessage(request.message());
@@ -80,7 +94,6 @@ public class CommentController {
                 savedComment.getMessage(),
                 savedComment.getTime(),
                 savedComment.getUser().getUserName());
-
         return ResponseEntity.created(URI.create("/comments/" + newCommentDTO.commentId())).body(newCommentDTO);
     }
 
@@ -96,20 +109,18 @@ public class CommentController {
     public ResponseEntity<Page<CommentDTO>> getCommentsByIssue(
             @PathVariable UUID issueId,
             Pageable pageable,
-            @RequestHeader("Authorization") String authorization) {
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
+            @RequestHeader(value = "Authorization", required = false) String authorization) {
+        User user = getUserFromToken(authorization);
+        if (user == null)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        String token = authorization.substring(7);
-        if (jwtService.isTokenExpired(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
         Page<CommentDTO> comments = commentService.getCommentsByIssueId(issueId, pageable);
         return ResponseEntity.ok(comments);
     }
 
     /**
      * Retrieves comments made by a specific user.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
      *
      * @param userId        the UUID of the user
      * @param pageable      pagination and sorting info
@@ -133,6 +144,8 @@ public class CommentController {
 
     /**
      * Deletes a comment by its UUID.
+     * Added here in case the method is needed.
+     * It is unused in the actual application.
      *
      * @param commentId     the UUID of the comment
      * @param authorization JWT Bearer token header
