@@ -14,4 +14,4 @@ Feature: Admin Authentication (API)
         Then    the response should contain a token
         When    the client calls "/api/users/me" with that token
         Then    the response status should be 200
-        And     the current user name should be admin
+        And     the current user name should be "admin"
