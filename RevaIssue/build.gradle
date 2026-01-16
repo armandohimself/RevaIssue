@@ -31,6 +31,10 @@ dependencies {
 	// make sure rest assured is before any junit dependencies, per the documentation
     testImplementation 'io.rest-assured:rest-assured:6.0.0'
 
+	// Spring wants this in-memory database for repository tests, so we include it
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation 'com.h2database:h2:2.4.240'
+
 	// Spring Web + MVC (controllers, @RestController, routing, etc.)
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
@@ -98,8 +102,8 @@ dependencies {
 
 	//! --- Removed / Not Used & Why ---
 	// This was one of the conflicts I was running into, "spring-boot-starter-test" already covers the normal testing stack.
-	// testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
-	// testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
 	// These were overriding the versions that Spring Boot already manages (error I was running into a lot)
 	// Mixing your own JUnit versions with Boot’s managed versions causes the following errors: "No tests discovered", "engine not found", or classpath conflicts.
