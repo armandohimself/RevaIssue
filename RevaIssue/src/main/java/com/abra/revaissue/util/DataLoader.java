@@ -48,6 +48,7 @@ public class DataLoader {
     public void preload() {
         User admin = preloadAdmin();
         preloadProjects(admin);
+        preloadApiTestData();
     }
 
     /**
@@ -176,5 +177,55 @@ public class DataLoader {
             this.projectStatus = projectStatus;
         }
 
+    }
+
+    private void preloadApiTestData(){
+        User admin = addUser("apiadmin", "password", Role.ADMIN);
+        User tester = addUser("apitester", "password", Role.TESTER);
+        User dev1 = addUser("apidev1", "password", Role.DEVELOPER);
+        User dev2 = addUser("apidev2", "password", Role.DEVELOPER);
+
+        Project apiProject = new Project();
+        apiProject.setProjectName("API Test Project");
+        apiProject.setProjectDescription("Seeded for API integration tests");
+        apiProject.setProjectStatus(ProjectStatus.ACTIVE);
+
+        apiProject.setCreatedByUserId(admin.getUserId());
+        apiProject.setStatusUpdatedByUserId(admin.getUserId());
+        apiProject.setCreatedAt(Instant.now());
+        apiProject.setUpdatedAt(Instant.now());
+        apiProject = projectRepository.save(apiProject);
+
+        addIssue(apiProject, tester, dev1,"API Issue Open Low", "OPEN/LOW/LOW", IssueStatus.OPEN, IssueSeverity.LOW, IssuePriority.LOW);
+        addIssue(apiProject, tester, dev2,"API Issue Open High", "OPEN/HIGH/HIGH", IssueStatus.OPEN, IssueSeverity.HIGH, IssuePriority.HIGH);
+        addIssue(apiProject, admin, dev1,"API Issue Closed Medium", "CLOSED/MEDIUM/MEDIUM", IssueStatus.CLOSED, IssueSeverity.MEDIUM, IssuePriority.MEDIUM);
+        addIssue(apiProject, admin, dev2,"API Issue Resolved High", "RESOLVED/HIGH/MEDIUM", IssueStatus.RESOLVED, IssueSeverity.HIGH, IssuePriority.MEDIUM);
+    }
+
+    private User addUser(String username, String password, Role role){
+        User user = userRepository.findByUserName(username);
+         if (user == null) {
+            user = new User();
+            user.setUserName(username);
+            user.setPasswordHash(password);
+            user.setRole(role);
+            user = userRepository.save(user);
+        }
+        return user;
+    }
+
+    private void addIssue(Project project, User createdBy, User assignedTo, String name, String description, IssueStatus status, IssueSeverity severity, IssuePriority priority){
+        Issue issue = new Issue();
+        issue.setName(name);
+        issue.setDescription(description);
+        issue.setStatus(status);
+        issue.setSeverity(severity);
+        issue.setPriority(priority);
+        issue.setProject(project);
+        issue.setCreatedBy(createdBy);
+        issue.setAssignedTo(assignedTo);
+        issue.setCreatedAt(Instant.now());
+        issue.setUpdatedAt(Instant.now());
+        issueRepository.save(issue);
     }
 }
