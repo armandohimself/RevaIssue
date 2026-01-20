@@ -52,7 +52,7 @@ src/test/java/com/abra/revaissue
     ├── fixtures
     │   ├── Users.java                  # test data builders (admin creds, etc.)
     │   └── Projects.java               # sample payloads / reusable test data
-    ├── poms                             
+    ├── poms
     │   ├── ParentPOM.java              # shared page utilities (waits, click helpers)
     │   └── LoginPage.java              # page objects (UI screens)
     └── steps
@@ -201,8 +201,9 @@ Using your main folders:
 | `Feature File (Gherkin)` | A plain-English checklist of behavior. | A movie script. | |
 | `Step Definition (Glue code)` | The Java “translator” that makes script lines actually do things. | An actor + stage crew turning script into action | |
 | `Test Launcher` | The file that presses play and runs a set of tests. | The stage manager calling “Places!” and starting the show. | |
-| `Runner (JUnit + Cucumber)` | AKA the `test launcher/runner`, the "play" button | The theater projector operator | |
-| `RestAssured` | A Java tool to send HTTP requests and check responses. | POSTman, but automated. | |
+| `Runner (JUnit + Cucumber)` | AKA the `test launcher/runner`, the "play" button | This is the stage manager running the show. | |
+| `RestAssured` | A Java tool to send HTTP requests and check responses. | The messenger running to the backstage. Think POSTman, but automated. | |
+| `Assertions` | | The critic confirming what the audience saw. | |
 | `Mockito` | Makes fake versions of dependencies so you can test one class in isolation | testing a car’s radio by plugging it into a bench power supply instead of installing the whole car. | |
 | `Selenium` | A tool that controls a real browser like a user would. | The actor on stage actually clicking props, opening doors, moving through the set. | Validates the user experience, not just the backend response. |
 | `WebDriver` | The part of Selenium that sends the actual commands to the browser. | The director’s headset telling the actor exactly where to move and what to do. | This is the API your code talks to when it says “click”, “type”, “wait”. |
@@ -211,6 +212,65 @@ Using your main folders:
 | `Fixtures (Test Data)` | Reusable test data and builders (users, projects, payloads). | The prop room: approved props you can pull for any scene. | Stops you from hardcoding strings everywhere and makes tests consistent. |
 | `ParentPOM.java` | Shared browser helper methods all pages can use. | The standard stage directions every actor follows (“wait for spotlight”, “enter from stage left”). | Centralizes waits/click helpers so every page doesn’t reinvent the wheel. |
 | | | | |
+
+---
+
+| Jargon | Plain English | Technical way of saying it | Theater analogy | Why it matters |
+| --- | --- | --- | --- | --- |
+| Feature File (Gherkin) | Readable behavior checklist | Gherkin `.feature` spec | The script | Aligns team on expected behavior |
+| Feature | Big behavior topic | `Feature:` block | The play title | Groups related scenarios |
+| Rule | Always-true constraint | `Rule:` section | A law of the theater (“no entry without a badge”) | Clarifies business constraints |
+| Background | Shared setup for each scenario | `Background:` steps | Crew sets stage before every scene | Removes repeated setup lines |
+| Scenario | One example of behavior | `Scenario:` | One scene | Makes behavior testable |
+| Scenario Outline | Same scene, many data variations | `Scenario Outline` + `Examples` | Multiple takes with different props | Reduces duplicate scenarios |
+| Examples | Data for Scenario Outline | `Examples:` table | Prop list for each take | Easy coverage of permutations |
+| Given / When / Then | Setup / action / outcome | Gherkin step keywords | Stage set / actor action / audience result | Keeps scenarios readable |
+| And / But | Extra lines of same type | Step continuation keywords | “Also notice…” | Adds checks without new scenario |
+| Step Definition (Glue) | Java code that executes steps | Cucumber glue code | Actors performing the script | Connects text → automation |
+| Cucumber Runner / Test Launcher | Presses “play” on features | JUnit Platform Suite + Cucumber engine | Stage manager starting the show | Without it, nothing runs |
+| @SpringBootTest | Boot up Spring for tests | Spring integration test annotation | Opening the theater and powering the building | Lets you test real wiring |
+| @Test | Marks a test method | JUnit Jupiter test annotation | “This is a scene to perform” | Test discovery/execution |
+| @BeforeAll | Run once before all tests | JUnit lifecycle | One-time venue setup | Avoid repeats, stable setup |
+| @BeforeEach | Run before each test | JUnit lifecycle | Reset props before each scene | Keeps tests independent |
+| @Before (Cucumber) | Run before each scenario | Cucumber hook | Crew routine before every scene | Cleaner setup than repeating steps |
+| System.getProperty() | Read a JVM “note” | JVM system property (VM option) | Stage manager whispers instructions | Easy per-run overrides |
+| System.getenv() | Read OS environment value | Process environment variable | Poster on backstage wall | Works across tools/CI |
+| RestAssured | Automated HTTP client for tests | REST-assured library | Messenger running to backstage | Tests API behavior fast |
+| DSL (given/when/then) | Sentence-like API for requests | Domain-Specific Language | Standard stage directions format | Makes HTTP tests readable |
+| RestAssured.given() | Start building request | Request specification builder | “Prepare the messenger” | Defines headers/body/etc |
+| .contentType(JSON) | Tell server you’re sending JSON | `ContentType.JSON` header | “We speak this scene in JSON” | Server parses correctly |
+| .body(...) | Attach payload | request body | Script lines handed to messenger | Sends data to endpoint |
+| .when() | Send request | request execution phase | “Action!” | Separates setup from action |
+| .get(...) | HTTP GET | GET verb | Ask for info | Read endpoints |
+| .post(...) | HTTP POST | POST verb | Submit a form | Create/login actions |
+| .put(...) | HTTP PUT | PUT verb | Replace props list | Full update |
+| .patch(...) | HTTP PATCH | PATCH verb | Small script edit | Partial update |
+| .delete(...) | HTTP DELETE | DELETE verb | Remove a prop | Delete operations |
+| .then() | Start assertions | response validation phase | Critic starts reviewing | Verifies behavior |
+| .extract() | Pull data out | response extraction | Critic takes notes | Use response later |
+| .response() | The whole response object | `io.restassured.response.Response` | The reply letter | Inspect status/body |
+| .statusCode() | Read HTTP code | response status | “Did the scene succeed?” | First-pass validation |
+| .header(...) | Add request header | request header | Backstage pass shown at door | Auth + metadata |
+| jsonPath() | Query JSON body | JSONPath evaluator | Finding a line in the script | Access fields cleanly |
+| .getString() | Read a JSON field as string | JsonPath getter | Reading “token” from the letter | Extract token/userName |
+| jsonPath().getString() | One-liner extraction | chained JSON extraction | Open letter → read token | Common test pattern |
+| Assertions | Fail/Pass checks | JUnit Assertions | The critic’s rubric | Makes tests meaningful |
+| assertNotNull(x) | Must exist | null check | “Prop must be on stage” | Prevents hidden null bugs |
+| assertEquals(exp, act) | Must match | equality assertion | “Line must be exactly this” | Confirms exact outcomes |
+| assertFalse(cond) | Must be false | boolean assertion | “This shouldn’t happen” | Guards negative states |
+| assertTrue(cond) | Must be true | boolean assertion | “This must happen” | Confirms expected condition |
+| assertThrows(...) | Expect an error | exception assertion | “Door should be locked here” | Validates failures correctly |
+| assertAll(...) | Group assertions | aggregated assertions | Critic checks many details at once | See all failures together |
+| Hamcrest | Matcher-based assertions | `org.hamcrest` matchers | Critic uses “pattern checks” | Cleaner body assertions |
+| notNullValue() | Value must exist | Hamcrest matcher | “Token prop exists” | Common response-body check |
+| Mockito | Fake collaborators | mocking framework | Understudy stand-ins for missing actors | Isolate one class |
+| Selenium | Control a real browser | UI automation framework | Actor physically performing on stage | Validates user experience |
+| WebDriver | API controlling the browser | Selenium WebDriver | Director’s headset to actor | Enables click/type/wait |
+| BaseSeleniumTest | Shared browser setup/teardown | base test fixture | Crew opens/closes the theater each scene | Consistent stable UI tests |
+| Fixtures (Test Data) | Reusable test data | test fixtures/builders | Prop room | Avoid hardcoding everywhere |
+| ParentPOM.java | Shared page helpers | base Page Object | Standard stage directions | Centralizes waits/click helpers |
+| RequestSpecification | Built request | RestAssured request spec | Messenger’s instructions | Reuse request setup |
+| Response | Returned HTTP response | RestAssured Response | The reply letter | Inspect status/body |
 
 ---
 
@@ -231,8 +291,6 @@ This is the "smallest complete chain" when you are first starting out.
 ## Feature File
 
 ### Syntax Breakdown
-
----
 
 - `Feature`    -> describes what the app should do.
 - `Rule`       -> biz rule or constraint that MUST always be true.
@@ -257,8 +315,8 @@ This is the "smallest complete chain" when you are first starting out.
 | Command | Test Layer |
 | :------- | :----------: |
 | `./gradlew test` | Unit lane (JUnit + Mockito) -> Targets all unit tests |
-| `./gradlew test --tests "*JunitSmokeTest*"` | Unit lane (JUnit + Mockito) -> Targets one class to tests. |
-| `./gradlew test --tests "*APITest*"` | Integration/API lane (RestAssured + JUnit) - If they’re normal JUnit tests under src/test/java, run this command. |
+| `./gradlew test --tests <JunitSmokeTest>` | Unit lane (JUnit + Mockito) -> Targets one class to tests. |
+| `./gradlew test --tests <APITest>` | Integration/API lane (RestAssured + JUnit) - If they’re normal JUnit tests under src/test/java, run this command. |
 | `./gradlew cucumberTest --info` | Cucumber lane (Feature files + Steps) |
 | `./gradlew cucumberTest --info` | E2E lane (Cucumber + Selenium) -> Often also run via the same cucumber task (depends how your Gradle is set up, could be something like `e2eTest`). |
 | | |
@@ -442,11 +500,59 @@ What you should see (success criteria for this phase)
     }
 ```
 
-This is what the failed test generated for me and you will see there was a lot of duplicate methods. 
+This is what the failed test generated for me and you will see there was a lot of duplicate methods. We then copy and paste the methods into `AdminLoginSteps.java` removing the duplicates just like the following:
 
 ```java
 package com.abra.revaissue.E2E.steps;
 
+public class AdminLoginSteps {
+
+    @Given("the API base url is configured")
+    public void the_api_base_url_is_configured() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @When("the admin logs in with username {string} and password {string}")
+    public void the_admin_logs_in_with_username_and_password(String userName, String password) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+    @Then("the response status should be {int}")
+    public void the_response_status_should_be(Integer expectedStatus) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("the response should contain a token")
+    public void the_response_should_contain_a_token() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+
+    @When("the client calls {string} with that token")
+    public void the_client_calls_with_that_token(String path) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+
+    @Then("the current user name should be {string}")
+    public void the_current_user_name_should_be_admin(String expectedUserName) {
+        // Write code here that turns the phrase above into concrete actions
+        throw new io.cucumber.java.PendingException();
+    }
+}
+```
+
+Now we need to start writing our steps in a way that passes by making the step hit the backend (API lane first) then implement steps using `RestAssured` to call the login endpoint and capture the token. We will now breakdown the code below so we understand why we wrote what we wrote.
+
+We are going to use something called `Domain Specific Language (DSL)` which just means a style of code that reads like a sentence for a specific job. That's all the `@given()...@when()...@then()...` language you can see.
+
+```java
+package com.abra.revaissue.E2E.steps;
+
+// static being used here means that you want to call Assertions method's w/o having to call it like this: Assertions.assertEquals.
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -459,11 +565,17 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 public class AdminLoginSteps {
-    
+
+    /**
+     * Because each scenario is a mini story that needs memory:
+        * baseUrl = where the theater is located (host/port)
+        * lastResponse = last message received from backstage (HTTP response)
+        * token = the backstage pass you earned from login
+     */
     private String baseUrl;
     private Response lastResponse;
     private String token;
-    
+
     @Given("the API base url is configured")
     public void the_api_base_url_is_configured() {
         // Start writing code to make these tests pass, here is my implementation below
@@ -483,18 +595,24 @@ public class AdminLoginSteps {
 
         RestAssured.baseURI = baseUrl;
     }
-    
+
     @When("the admin logs in with username {string} and password {string}")
     public void the_admin_logs_in_with_username_and_password(String userName, String password) {
-        lastResponse = 
-            RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body("{\"userName\":\"" + userName + "\",\"password\":\"" + password + "\"}")
-            .when() 
-                .post("api/users/login")
-            .then()
-                .extract().response();
+        lastResponse =
+            RestAssured.given() // Start building the request
+                .contentType(ContentType.JSON)  // I'm sending JSON
+                .body("{\"userName\":\"" + userName + "\",\"password\":\"" + password + "\"}")  // the JSON payload, we escape \" because Java does not have template literals, that's why we use a Map or DTO object and could let RestAssured/Jackson serialize it.
+            .when() // now send it
+                .post("api/users/login") // send HTTP POST to that route
+            .then() // now I'm checking what came back
+                .extract().response(); // give me the whole response object so I can inspect it
     }
+
+    /**
+     * assertNotNull(x) = If this is null, stop the show and tell me.
+     * assertEquals(expected, actual) = These must match exactly.
+     * assertFalse(condition) = This condition must be false.
+     */
     @Then("the response status should be {int}")
     public void the_response_status_should_be(Integer expectedStatus) {
         assertNotNull(lastResponse, "No response captured yet. Did a When step run?");
@@ -504,6 +622,10 @@ public class AdminLoginSteps {
         );
     }
 
+    /**
+     * jsonPath() = lets you query JSON fields
+     * getString("token") pulls that field out
+     */
     @Then("the response should contain a token")
     public void the_response_should_contain_a_token() {
         assertNotNull(lastResponse, "No response captured yet. Did login run?");
@@ -513,17 +635,23 @@ public class AdminLoginSteps {
         assertFalse(token.isBlank(), "token was blank. Body: " + lastResponse.asString());
     }
 
-
+    /**
+     * .header() = adds a request header
+     * 
+     * “Head” vs “Header”
+         * HEAD is an HTTP method (like GET/POST) that returns headers only, no body.
+         * Header is metadata attached to a request/response.
+     */
     @When("the client calls {string} with that token")
     public void the_client_calls_with_that_token(String path) {
         assertNotNull(token, "No token captured. Did you run the 'token' Then step?");
 
         String authHeader = "Bearer " + token;
 
-        lastResponse = 
+        lastResponse =
             RestAssured.given()
                 .header("Authorization", authHeader) // RequestSpecification
-            .when() 
+            .when()
                 .get(path)
             .then()
                 .extract().response();
@@ -537,57 +665,284 @@ public class AdminLoginSteps {
 
         // If your JSON uses "userName" (likely) this is correct.
 
-        assertEquals(expectedUserName, actualUserName, () -> 
-            "Expected userName=" + expectedUserName + " but got " + actualUserName 
+        assertEquals(expectedUserName, actualUserName, () ->
+            "Expected userName=" + expectedUserName + " but got " + actualUserName
             + "\nBody: " + lastResponse.asString()
         );
     }
 }
 ```
 
+#### System.getProperty vs System.getenv
 
+> [!NOTE]
+>
+> A `.env` file only works if you use a library that loads it, or your shell loads it.
+> Otherwise, getenv only sees what your OS process environment already has.
 
+##### System.getProperty("baseUrl")
 
+> **`Plain English:`** a note you pass directly to the Java process.
+>
+> ---
+>
+> **`Technical Jargon:`** Reads a JVM property, usually set like:
+>
+> ```bash
+> ./gradlew cucumberTest -DbaseUrl=http://localhost:8080
+> ```
+>
+> ---
+>
+> **`Analogy:`** JVM property = stage manager whispers it into your ear right now.
 
+##### System.getenv("REVAISSUE_BASE_URL")
 
+> **`Plain English:`**
+>
+> ---
+>
+> **`Technical Jargon:`** Reads an environment variable set in your terminal session, like:
+>
+> ```bash
+> export REVAISSUE_BASE_URL=http://localhost:8080
+> ./gradlew cucumberTest
+> ```
+>
+> ---
+>
+> **`Analogy:`** env var = posted on the backstage wall before anyone arrives.
 
+##### Default API Ternary Code
 
+> ```java
+> baseUrl = (fromProp != null && !fromProp.isBlank())
+>        ? fromProp
+>        : (fromEnv != null && !fromEnv.isBlank())
+>            ? fromEnv
+>            : "http://localhost:8080";
+>
+> **`Logic:`** Use `fromProp` if it exists. Else use `fromEnv` if it exists. Else use default.
+> 
+> ---
+>
+> Cleaner version: same logic, less mental load
+> 
+> ```java
+>    if (fromProp != null && !fromProp.isBlank()) {
+>        baseUrl = fromProp;
+>    } else if (fromEnv != null && !fromEnv.isBlank()) {
+>        baseUrl = fromEnv;
+>    } else {
+>        baseUrl = "http://localhost:8080";
+>    }
 
+#### 2B) Add the prop-room “fixture” file (/E2E/fixtures/TestUser.java)
 
+> [!NOTE] Design Pattern
+>
+> We’re not using it in steps yet, but it’s the pattern you’ll use to avoid scattering “admin/password” everywhere.
+>
+> Theater: fixtures = the prop room where “Admin costume” is stored and reused.
 
+```java
+package com.abra.revaissue.E2E.fixtures;
 
+// final = nobody can extend this class.
+// It’s intended to be a pure “prop cabinet,” not a base class
+public final class TestUsers {
+    private TestUsers() {}
 
-```bash
-Scenario: Admin can login and receives a token                           # classpath:features/adminLogin.feature:4
-      ✔ Given the API base url is configured                                 # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_api_base_url_is_configured()
-      ✘ When the admin logs in with username "admin" and password "password" # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_admin_logs_in_with_username_and_password(java.lang.String,java.lang.String)
-            java.net.ConnectException: Connection refused
-... lots of errors ...
-↷ Then the response should contain a token                             # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_response_should_contain_a_token()
-      ↷ When the client calls "/api/users/me" with that token                # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_client_calls_with_that_token(java.lang.String)
-      ↷ Then the response status should be 200                               # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_response_status_should_be(java.lang.Integer)
-      ↷ And the current user name should be "admin"                          # com.abra.revaissue.E2E.steps.AdminLoginSteps.the_current_user_name_should_be_admin(java.lang.String)
-
-CucumberRunnerTest > Cucumber > Admin Authentication (API) > com.abra.revaissue.runner.CucumberRunnerTest.Admin token allows access to /me FAILED
+    // final here means it’s a constant: one shared value, not changeable.
+    public static final String ADMIN_USERNAME = "admin";
+    public static final String ADMIN_PASSWORD = "password";
+}
 ```
 
-
-
-
-
-
-
-
-
+#### 2C) Run Test Again
 
 ```bash
-Scenario Outline: Login outcome depends on credentials
-    Given the backend is running
-    When the user logs in with "<username>" and "<password>"
-    Then the status should be <status>
+.gradlew cucumberTest --info
+```
 
-Examples:
-  | username | password  | status |
-  | admin    | password  | 200    |
-  | admin    | wrong     | 401    |
-  ```
+> [!IMPORTANT] Success criteria for this phase:
+>
+> If the backend is running and baseUrl is correct → scenarios should start moving toward green.
+>
+> If backend is NOT running → you’ll see connection refused (that’s still useful: it proves wiring up to HTTP).
+>
+> At this point: feature → runner → steps → RestAssured is all connected.
+
+### Phase 3 — Add the Cucumber “Stage Manager” (Runner)
+
+You already have a Gradle task that runs CucumberRunnerTest.class, so ensure this file exists and is discoverable.
+
+```java
+package com.abra.revaissue.runner;
+
+import org.junit.platform.suite.api.Suite;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import io.cucumber.spring.CucumberContextConfiguration;
+
+import org.junit.platform.suite.api.IncludeEngines;
+import org.junit.platform.suite.api.SelectPackages;
+import org.junit.platform.suite.api.ConfigurationParameter;
+
+import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
+import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
+
+@Suite
+@IncludeEngines("cucumber")
+@SelectPackages("features") // matches our src/test/resources/features
+@ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.abra.revaissue.E2E") // so it can find out glue points and all sub-packages.
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:build/report/cucumber/cucumber.html, json:build/report/cucumber/cucumber.json")
+@CucumberContextConfiguration // if you don't include CucumberContextConfiguration the SpringBootTest annotation will have no effect
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class CucumberRunnerTest {}
+```
+
+### Phase 4 — The pure API integration test (no Cucumber, just JUnit + RestAssured)
+
+Congrats, we are almost there.
+
+```java
+package com.abra.revaissue.integrations.api;
+
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.emptyString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.abra.revaissue.dto.LoginRequestDTO;
+import com.abra.revaissue.dto.project.CreateProjectRequest;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+
+class AdminProjectAPITest {
+    
+    // store admin token in between tests so we don't repeatedly login
+    private static String adminToken;
+
+    @BeforeAll
+    static void setupServerAddress() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = 8081;
+    }
+
+    @BeforeEach
+    void setupBasePath() {
+        RestAssured.basePath = "/api";
+    }
+
+    // Helper method: logs in and returns the JWT token string.
+    private static String loginAndGetAdminToken() {
+        LoginRequestDTO credentials = new LoginRequestDTO("admin", "password");
+
+        Response loginResponse = 
+            given()
+                .contentType(ContentType.JSON)
+                .body(credentials)
+            .when()
+                .post("/users/login")
+            .then()
+                .statusCode(200)
+                .body("token", notNullValue())
+                .body("token", not(emptyString()))
+                .extract().response();
+
+        return loginResponse.jsonPath().getString("token");
+    }
+
+    @Test
+    void admin_can_create_project() {
+        if(adminToken == null) {
+            adminToken = loginAndGetAdminToken();
+        }
+
+        CreateProjectRequest payload = new CreateProjectRequest(
+            "QA Testing Project", 
+            "Created by automated test"
+        );
+
+        given()
+            .header("Authorization", "Bearer " + adminToken)
+            .contentType(ContentType.JSON)
+            .body(payload)
+        .when() 
+            .post("/projects")
+        .then()
+            .statusCode(200)
+            .body("projectName", equalTo("QA Testing Project"))
+            .body("createdByUserId", notNullValue())
+            .body("createdAt", notNullValue())
+            .body("updatedAt", notNullValue());
+    }
+}
+```
+
+After Auth is proven, we then create our AdminProjectAPITest.java and try to have an admin create a project. 
+
+Phase 1: Auth feature (done first on purpose)
+
+Auth is a gate. If auth fails, every protected endpoint test becomes confusing.
+
+✅ So yes: start with “Admin can login → token works for /me”.
+
+Phase 2: Projects feature (next)
+
+Once auth is proven, add projects:
+
+✅ “Admin can create project”
+✅ “Admin can list projects”
+✅ “Admin can update project”
+✅ “Admin can archive project (DELETE)”
+
+A practical “best practice” rule for what gets a feature file
+
+You don’t need a feature file for every single API test.
+
+Use feature files when:
+
+it’s a core user capability (login, create project, create issue)
+
+it’s role-based behavior (admin-only endpoints)
+
+it’s a workflow (OPEN → IN_PROGRESS → RESOLVED)
+
+Skip/limit feature files for:
+
+tiny mapper/util tests
+
+super low-level validation edge cases (those can stay as JUnit tests)
+
+Recommended immediate next steps (small + focused)
+1) Keep building API tests for Projects (fast)
+
+✅ create project (you have it)
+
+✅ create project without token → expect 401
+
+✅ list projects with token → 200 and contains created project
+
+2) Then write one Project feature file
+
+One file: project.feature
+
+Background: base URL + admin logged in (or “Given admin is authenticated”)
+
+Scenario: create project
+
+Scenario: list projects
+
+3) Only then consider Selenium E2E
+
+One E2E scenario: “Admin logs in on UI and sees project list / creates project”
+

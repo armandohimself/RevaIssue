@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import com.abra.revaissue.dto.LoginRequestDTO;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -12,20 +14,22 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 public class AdminLoginSteps {
-    
+
     private String baseUrl;
     private Response lastResponse;
     private String token;
-    
+
     @Given("the API base url is configured")
     public void the_api_base_url_is_configured() {
         // Start writing code to make these tests pass, here is my implementation below
 
         // 1) Prefer DatabaseURL
         String fromProp = System.getProperty("baseUrl");
+        System.out.println("baseUrl prop=" + System.getProperty("baseUrl"));
 
         // 2) Then environment variable
         String fromEnv = System.getenv("REVAISSUE_BASE_URL");
+        System.out.println("baseUrl env =" + System.getenv("REVAISSUE_BASE_URL"));
 
         // 3) Default API Base URL
         baseUrl = (fromProp != null && !fromProp.isBlank())
@@ -36,14 +40,17 @@ public class AdminLoginSteps {
 
         RestAssured.baseURI = baseUrl;
     }
-    
+
     @When("the admin logs in with username {string} and password {string}")
     public void the_admin_logs_in_with_username_and_password(String userName, String password) {
-        lastResponse = 
+        LoginRequestDTO payload = new LoginRequestDTO(userName, password);
+
+        lastResponse =
             RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body("{\"userName\":\"" + userName + "\",\"password\":\"" + password + "\"}")
-            .when() 
+                // .body("{\"userName\":\"" + userName + "\",\"password\":\"" + password + "\"}")
+                .body(payload)
+            .when()
                 .post("api/users/login")
             .then()
                 .extract().response();
@@ -73,10 +80,10 @@ public class AdminLoginSteps {
 
         String authHeader = "Bearer " + token;
 
-        lastResponse = 
+        lastResponse =
             RestAssured.given()
                 .header("Authorization", authHeader) // RequestSpecification
-            .when() 
+            .when()
                 .get(path)
             .then()
                 .extract().response();
@@ -90,8 +97,8 @@ public class AdminLoginSteps {
 
         // If your JSON uses "userName" (likely) this is correct.
 
-        assertEquals(expectedUserName, actualUserName, () -> 
-            "Expected userName=" + expectedUserName + " but got " + actualUserName 
+        assertEquals(expectedUserName, actualUserName, () ->
+            "Expected userName=" + expectedUserName + " but got " + actualUserName
             + "\nBody: " + lastResponse.asString()
         );
     }
