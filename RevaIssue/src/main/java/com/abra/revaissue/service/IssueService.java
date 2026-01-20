@@ -34,8 +34,8 @@ public class IssueService {
     //CREATE
     public IssueResponseDTO createIssue(IssueCreateDTO dto, Project project, User actingUser){
         UserEnum.Role role = actingUser.getRole();
-        if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can create issues");
+        if(role != UserEnum.Role.TESTER){
+            throw new UnauthorizedOperation("Only TESTERS can create issues");
         }
         Issue issue = issueMapper.toIssue(dto);
         issue.setProject(project);
@@ -104,8 +104,8 @@ public class IssueService {
     //UPDATE
     public IssueResponseDTO updateIssue(UUID issueId, IssueUpdateDTO dto, User actingUser){
         UserEnum.Role role = actingUser.getRole();
-        if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can update issue details");
+        if(role != UserEnum.Role.TESTER){
+            throw new UnauthorizedOperation("Only TESTERS can update issue details");
         }
         Issue issue =  issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         issueMapper.updateEntity(dto, issue);
@@ -116,8 +116,8 @@ public class IssueService {
     }
     public IssueResponseDTO assignDeveloper(UUID issueId, UUID userId, User actingUser){
         UserEnum.Role role = actingUser.getRole();
-        if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can assign issues");
+        if(role != UserEnum.Role.TESTER){
+            throw new UnauthorizedOperation("Only TESTERS can assign issues");
         }
         User assignedUser = userService.getUserByUUID(userId);
         if(assignedUser.getRole() != UserEnum.Role.DEVELOPER){
@@ -157,8 +157,8 @@ public class IssueService {
     public void deleteIssue(UUID issueId, User actingUser){
         Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new EntityNotFoundException("Issue not found"));
         UserEnum.Role role = actingUser.getRole();
-        if(role != UserEnum.Role.TESTER && role != UserEnum.Role.ADMIN){
-            throw new UnauthorizedOperation("Only TESTERS OR ADMINS can delete issues");
+        if(role != UserEnum.Role.TESTER){
+            throw new UnauthorizedOperation("Only TESTERS can delete issues");
         }
         String logMessage = actingUser.getUserName() + " deleted issue: " + issue.getName();
         logTransactionService.logAction(logMessage, actingUser, EntityType.ISSUE, issue.getIssueId());
