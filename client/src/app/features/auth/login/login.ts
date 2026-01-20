@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,11 @@ export class LoginComponent {
   errorMessage = '';
   isLoading = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   onSubmit(): void {
     if (!this.username || !this.password) {
@@ -27,6 +32,21 @@ export class LoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.login(this.username, this.password);
+    this.authService.login(this.username, this.password).subscribe({
+      next: (user) => {
+        this.isLoading = false;
+        // Route based on role
+        if (user.role === 'ADMIN') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/user/dashboard']);
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Invalid credentials';
+        this.cdr.detectChanges();
+      },
+    });
   }
 }
