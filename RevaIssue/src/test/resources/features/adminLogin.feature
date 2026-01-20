@@ -7,7 +7,7 @@ Feature: Admin Login
         Then   the admin should be redirected to the dashboard
 
     Scenario: Admin fails to login with invalid credentials
-        Given   the admin in on the login page
+        Given   the admin is on the login page
         When    the admin enter username "invalid" and password "wrong"
         And     the admin clicks on the login button
         Then    the admin should see an error message "Invalid credentials"

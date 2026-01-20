@@ -29,7 +29,7 @@ export class CommentTable implements OnInit {
   loading: boolean = false;
   hasMore: boolean = true;
 
-  constructor(private commentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) {}
 
   ngOnInit(): void {
     this.loadComments();
