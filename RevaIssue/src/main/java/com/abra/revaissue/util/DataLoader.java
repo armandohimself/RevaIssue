@@ -63,6 +63,22 @@ public class DataLoader {
             admin.setRole(Role.ADMIN);
             admin = userRepository.save(admin);
         }
+        User tester = userRepository.findByUserName("tester");
+        if (tester == null) {
+            tester = new User();
+            tester.setUserName("tester");
+            tester.setPasswordHash(passwordEncoder.encode("password"));
+            tester.setRole(Role.TESTER);
+            tester = userRepository.save(tester);
+        }
+        User developer = userRepository.findByUserName("developer");
+        if (developer == null) {
+            developer = new User();
+            developer.setUserName("developer");
+            developer.setPasswordHash(passwordEncoder.encode("password"));
+            developer.setRole(Role.DEVELOPER);
+            developer = userRepository.save(developer);
+        }
         Project project = new Project();
         project.setProjectName("Default Project");
         project.setProjectDescription("This is a default project.");

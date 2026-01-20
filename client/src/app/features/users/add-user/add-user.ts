@@ -10,6 +10,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '../services/user';
+import { UserStateService } from '../services/user-state';
 
 @Component({
   selector: 'app-add-user',
@@ -39,7 +40,8 @@ export class AddUserComponent {
 
   constructor(
     private userService: UserService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private userStateService: UserStateService
   ) {}
 
   onSubmit(): void {
@@ -68,9 +70,9 @@ export class AddUserComponent {
         this.isLoading.set(false);
         this.resetForm();
 
-        setTimeout(() => {
-          this.userCreated.emit();
-        }, 1000);
+        // Trigger refresh
+        this.userStateService.triggerRefresh();
+        this.userCreated.emit(); // auto swap tabs
       },
       error: (error) => {
         console.error('Failed to create user:', error);

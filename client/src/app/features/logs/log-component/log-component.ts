@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
@@ -8,6 +8,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatChipsModule } from '@angular/material/chips';
 import { LogService } from '../service/log-service';
 import { LogTransaction } from '../data-access/log-api-service';
+import { UserStateService } from '../../users/services/user-state';
 
 @Component({
   selector: 'app-logs',
@@ -31,7 +32,16 @@ export class LogsComponent implements OnInit {
   pageIndex = signal(0);
   displayedColumns = ['date', 'user', 'entityType', 'message'];
 
-  constructor(private logService: LogService) {}
+  constructor(
+    private logService: LogService,
+    private userStateService: UserStateService
+  ) {
+    // Listen for refresh signals
+    effect(() => {
+      this.userStateService.refreshNeeded();
+      this.loadLogs();
+    });
+  }
 
   ngOnInit(): void {
     this.loadLogs();

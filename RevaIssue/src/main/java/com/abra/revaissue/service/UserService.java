@@ -21,17 +21,22 @@ import com.abra.revaissue.repository.UserRepository;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final LogTransactionService logTransactionService;
+    private final JwtService jwtService;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Autowired
-    private LogTransactionService logTransactionService;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    public UserService( // auto wired not needed for single constructor
+        UserRepository userRepository, 
+        LogTransactionService logTransactionService,
+        JwtService jwtService,
+        BCryptPasswordEncoder passwordEncoder
+    ) {
+        this.userRepository = userRepository;
+        this.logTransactionService = logTransactionService;
+        this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     /**
      * Method accepts a user and actingUser entity and saves it to the database
