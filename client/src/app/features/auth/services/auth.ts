@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthApiService } from '../data-access/auth-api';
 import { JwtStorage } from '../../../services/jwt-storage';
+import { Observable } from 'rxjs';
+import { tap, switchMap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -14,28 +16,17 @@ export class AuthService {
     private router: Router
   ) {}
 
-  login (username: string, password: string): void {
-    this.authApi.login(username, password).subscribe({
-      next: (response) => {
-        // store the token
+  login (username: string, password: string): Observable<any> {
+    return this.authApi.login(username, password).pipe(
+      tap((response) => {
         this.jwtStorage.setToken(response.token);
-
-        // get user info (token auto-attached by interceptor)
-        this.authApi.getCurrentUser().subscribe({
-          next: (user) => {
-            // route based on the role
-            this.routeByRole(user.role);
-          },
-          error: (error) => {
-            console.error('Failed to get user info:', error);
-            this.jwtStorage.clearToken();
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Login failed:', error);
-      }
-    });
+      }),
+      switchMap(() => this.authApi.getCurrentUser()),
+      catchError((error) => {
+        this.jwtStorage.clearToken();
+        throw error;
+      })
+    );
   }
 
   private routeByRole(role: string): void {
