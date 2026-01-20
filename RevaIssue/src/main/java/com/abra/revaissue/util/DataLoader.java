@@ -223,7 +223,7 @@ public class DataLoader {
          if (user == null) {
             user = new User();
             user.setUserName(username);
-            user.setPasswordHash(password);
+            user.setPasswordHash(passwordEncoder.encode("password"));
             user.setRole(role);
             user = userRepository.save(user);
         }
