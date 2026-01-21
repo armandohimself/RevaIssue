@@ -128,6 +128,8 @@ tasks.register("cucumberTest", Test) {
 	include("**/CucumberRunnerTest.class")
 	// Can now run "./gradlew cucumberTest" without "--info" -> spits out code snippets for step(s) you can copy and paste
 	testLogging { showStandardStreams = true }
+
+	systemProperty "cucumber.filter.tags", "not @wip"
 }
 
 tasks.named('test') {

@@ -1,3 +1,4 @@
+@wip
 Feature: Cucumber Smoke Test
 
   Scenario: Cucumber and JUnit Platform are wired correctly

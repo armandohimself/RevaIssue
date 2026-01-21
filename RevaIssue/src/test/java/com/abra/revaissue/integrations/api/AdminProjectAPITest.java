@@ -115,7 +115,7 @@ class AdminProjectAPITest {
         given()
             .header("Authorization", authHeader())
         .when()
-            .get("projects")
+            .get("/projects")
         .then()
             .statusCode(200)
             // response is a JSON array of ProjectResponse objects
@@ -141,7 +141,7 @@ class AdminProjectAPITest {
         .then()
             .statusCode(200)
             .body("projectId", equalTo(projectId))
-            .body("projectName", equalTo("et Project By Id"))
+            .body("projectName", equalTo("Get Project By Id"))
             .body("projectDescription", equalTo("Used for get-by-id test"));
     }
 

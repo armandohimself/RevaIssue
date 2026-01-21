@@ -3,8 +3,10 @@ package com.abra.revaissue.E2E.steps;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.abra.revaissue.dto.LoginRequestDTO;
+import com.abra.revaissue.dto.project.CreateProjectRequest;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,11 +15,15 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-public class AdminLoginSteps {
+public class SharedAPISteps {
 
     private String baseUrl;
     private Response lastResponse;
     private String token;
+
+    private String lastProjectId;
+
+    //! ADMIN API STEPS
 
     @Given("the API base url is configured")
     public void the_api_base_url_is_configured() {
@@ -38,7 +44,13 @@ public class AdminLoginSteps {
                 ? fromEnv
                 : "http://localhost:8081";
 
+        // host+port lives here
         RestAssured.baseURI = baseUrl;
+
+        // prefix for all controllers
+        RestAssured.basePath = "/api";
+
+        System.out.println("baseUrl chosen=" + RestAssured.baseURI + RestAssured.basePath);
     }
 
     @When("the admin logs in with username {string} and password {string}")
@@ -51,7 +63,7 @@ public class AdminLoginSteps {
                 // .body("{\"userName\":\"" + userName + "\",\"password\":\"" + password + "\"}")
                 .body(payload)
             .when()
-                .post("api/users/login")
+                .post("/users/login")
             .then()
                 .extract().response();
     }
@@ -102,4 +114,62 @@ public class AdminLoginSteps {
             + "\nBody: " + lastResponse.asString()
         );
     }
+
+    //! PROJECTS API STEPS
+
+    @When("the admin creates a project named {string} with description {string}")
+    public void the_admin_creates_a_project(String name, String description) {
+        assertNotNull(token, "No token captured yet.");
+
+        CreateProjectRequest payload = new CreateProjectRequest(name, description);
+
+        lastResponse =
+            RestAssured.given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .body(payload)
+            .when()
+                .post("/projects")
+            .then()
+                .extract().response();
+
+        // remember created id for later steps if needed
+        lastProjectId = lastResponse.jsonPath().getString("projectId");
+    }
+
+    @Then("the response should contain a project id")
+    public void the_response_should_contain_a_project_id() {
+        String projectId = lastResponse.jsonPath().getString("projectId");
+        assertNotNull(projectId, "projectId was null. Body: " + lastResponse.asString());
+        assertFalse(projectId.isBlank(), "projectId was blank. Body: " + lastResponse.asString());
+    }
+
+    @When("the admin lists projects")
+    public void the_admin_lists_projects() {
+        assertNotNull(token, "No token captured yet.");
+
+        lastResponse =
+            RestAssured.given()
+                .header("Authorization", "Bearer " + token)
+            .when()
+                .get("/projects")
+            .then()
+                .extract().response();
+    }
+
+    @Then("the response should contain a project named {string}")
+    public void the_response_should_contain_a_project_named(String expectedName) {
+        assertNotNull(lastResponse, "No response captured.");
+        // Response is a JSON array; RestAssured jsonPath can pull list of names
+        var names = lastResponse.jsonPath().getList("projectName", String.class);
+        assertTrue(names.contains(expectedName),
+            () -> "Expected list to contain projectName=" + expectedName
+                + "\nActual names: " + names
+                + "\nBody: " + lastResponse.asString()
+        );
+    }
+
+    
+
+
 }
