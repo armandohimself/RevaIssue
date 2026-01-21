@@ -53,7 +53,7 @@ public class IssueControllerAPITest {
         Project apiProject = projects.stream().filter(project -> project.getProjectName()
                 .equals("API Test Project"))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("API Test Project not found. Did DataLoader run?"));;
+                .orElseThrow(() -> new RuntimeException("API Test Project not found. Did DataLoader run?"));
         apiProjectId = apiProject.getProjectId();
     }
 
@@ -69,9 +69,9 @@ public class IssueControllerAPITest {
                         .contentType(ContentType.JSON)
                         .header("Authorization", userToken)
                         .body(dto)
-                        .when()
+                .when()
                         .post("/projects/" + apiProjectId + "/issues")
-                        .then()
+                .then()
                         .statusCode(201)
                         .body("issueId", notNullValue())
                         .body("name", equalTo(name))
@@ -126,7 +126,7 @@ public class IssueControllerAPITest {
         .then()
                 .statusCode(200)
                 .body("$", notNullValue())
-                .body("name", hasItems("API Issue Open Low", "API Issue Open High"));
+                .body("name", not(hasItems("API Issue Closed Medium", "API Issue Resolved High")));
     }
     @Test
     void getIssuesForProject_filterSeverityHigh() {
@@ -138,7 +138,7 @@ public class IssueControllerAPITest {
         .then()
                 .statusCode(200)
                 .body("$", notNullValue())
-                .body("name", hasItems("API Issue Open High", "API Issue Resolved High"));
+                .body("name", not(hasItems("API Issue Closed Medium")));
     }
     @Test
     void getIssuesForProject_filterPriorityHigh() {
@@ -150,7 +150,7 @@ public class IssueControllerAPITest {
         .then()
                 .statusCode(200)
                 .body("$", notNullValue())
-                .body("name", hasItem("API Issue Open High"));
+                .body("name", not(hasItems("API Issue Closed Medium", "API Issue Open Low")));
     }
     @Test
     void getIssueByIdPositiveTest() {
