@@ -1,18 +1,15 @@
 package com.abra.revaissue.integrations.api;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.abra.revaissue.dto.LoginRequestDTO;
 import com.abra.revaissue.dto.project.CreateProjectRequest;
 
 import io.restassured.RestAssured;
@@ -124,10 +121,62 @@ class AdminProjectAPITest {
             // response is a JSON array of ProjectResponse objects
             .body("size()", greaterThan(0))
             .body("projectName", hasItem("First Project"));
-
-            //! Get by id
-
     }
 
+    //! Get by id
+
+    @Test
+    void get_project_id_returns_200_and_matching_fields() {
+
+        Response created = createProject("Get Project By Id", "Used for get-by-id test");
+        created.then().statusCode(200);
+
+        String projectId = created.jsonPath().getString("projectId");
+
+        // Act + Assert
+        given()
+            .header("Authorization", authHeader())
+        .when()
+            .get("/projects/" + projectId)
+        .then()
+            .statusCode(200)
+            .body("projectId", equalTo(projectId))
+            .body("projectName", equalTo("et Project By Id"))
+            .body("projectDescription", equalTo("Used for get-by-id test"));
+    }
+
+    //! DELETE
+
+    @Test
+    void delete_project_returns_204() {
+        // 204 means no content returned from server but successful
+
+        Response created = createProject("Project To Delete", "Used for delete test");
+        created.then().statusCode(200);
+
+        String projectId = created.jsonPath().getString("projectId");
+
+        // Act + Assert: controller returns noContent().build()
+        given()
+            .header("Authorization", authHeader())
+        .when()
+            .delete("/projects/" + projectId)
+        .then()
+            .statusCode(204);
+    }
+
+    @Test
+    void delete_project_invalid_header_returns_401() {
+        Response created = createProject("Attempt Delete Project with Bad Header", "Used for delete negative");
+        created.then().statusCode(200);
+        String projectId = created.jsonPath().getString("projectId");
+
+        given()
+            .header("Authorization", "Bearer" + adminToken) // missing space on purpose
+        .when()
+            .delete("/projects/" + projectId)
+        .then()
+            .statusCode(401);
+    }
 
 }

@@ -15,3 +15,9 @@ Feature: Admin Authentication (API)
         When    the client calls "/api/users/me" with that token
         Then    the response status should be 200
         And     the current user name should be "admin"
+
+    # Scenario: Admin fails to login with invalid credentials
+    #     Given   the admin is on the login page
+    #     When    the admin enter username "invalid" and password "wrong"
+    #     And     the admin clicks on the login button
+    #     Then    the admin should see an error message "Invalid credentials"
