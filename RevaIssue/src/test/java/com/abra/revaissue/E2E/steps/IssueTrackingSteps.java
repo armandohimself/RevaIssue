@@ -4,8 +4,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -36,8 +34,7 @@ public class IssueTrackingSteps {
     }
     @Then("The issues list contains the issue titled {string}")
     public void the_issues_list_contains_the_issue_titled(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        issuePage.containsIssueTitle(string);
+        Assertions.assertTrue(issuePage.containsIssueTitle(string));
     }
     @When("The user clicks the issue titled {string}")
     public void the_user_clicks_the_issue_titled(String string) {
@@ -61,7 +58,7 @@ public class IssueTrackingSteps {
     public void the_user_clicks_the_update_button() {
         issuePage.clickEditUpdateButton();
     }
-    @Then("Issue {string} displays severity {string}")
+    @Then("The issue {string} displays severity {string}")
     public void issue_displays_severity(String issue, String severity) {
         Assertions.assertEquals(severity, issuePage.getSeverityForIssue(issue));
     }

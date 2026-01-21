@@ -6,7 +6,7 @@ Feature: Issue Tracking - view, update, history
     And     The user selects the project "API Test Project"
 
   Scenario: User can view a list of issues for a given project
-    Then     The issues list contains the issue titled "API Issue Open Low"
+    Then    The issues list contains the issue titled "API Issue Open Low"
     And     The issues list contains the issue titled "API Issue Open High"
     And     The issues list contains the issue titled "API Issue Closed Medium"
     And     The issues list contains the issue titled "API Issue Resolved High"
@@ -24,6 +24,6 @@ Feature: Issue Tracking - view, update, history
     When    The user clicks the action button for issue "API Issue Open Low"
     And     The user selects severity "HIGH" from the dropdown
     And     The user clicks the update button
-    Then    Issue "API Issue Open Low" displays severity "HIGH"
+    Then    The issue "API Issue Open Low" displays severity "HIGH"
     And     The issue "API Issue Open Low" displays a list of history logs
     And     The history logs contain an entry mentioning "updated" and "API Issue Open Low"
