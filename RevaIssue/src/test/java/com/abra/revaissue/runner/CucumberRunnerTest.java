@@ -17,6 +17,9 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @SelectPackages("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.abra.revaissue.E2E")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, html:build/report/cucumber/cucumber.html, json:build/report/cucumber/cucumber.json")
-@CucumberContextConfiguration // if you don't include CucumberContextConfiguration the SpringBootTest annotation will have no effect
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class CucumberRunnerTest {}
+// @CucumberContextConfiguration // if you don't include
+// CucumberContextConfiguration the SpringBootTest
+// // annotation will have no effect
+// @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+public class CucumberRunnerTest {
+}
