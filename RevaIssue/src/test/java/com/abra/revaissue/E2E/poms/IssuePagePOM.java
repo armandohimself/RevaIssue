@@ -34,7 +34,8 @@ public class IssuePagePOM {
         wait.until(ExpectedConditions.elementToBeClickable(projectDropdown)).click();
         WebElement projectText = driver.findElement(By.xpath("//span[contains(text(), '" + projectName + "')]"));
         wait.until(ExpectedConditions.elementToBeClickable(projectText)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")));
     }
 
     private List<WebElement> getIssueRows() {
@@ -139,7 +140,8 @@ public class IssuePagePOM {
 
         By updateBtn = By.xpath("//app-issue-edit-card//button[.//span[@class='mdc-button__label' and text()='Update']]");
         wait.until(ExpectedConditions.elementToBeClickable(updateBtn)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("app-issue-edit-card .overlay")));
     }
 
 
@@ -205,7 +207,8 @@ public class IssuePagePOM {
 
         By createBtn = By.xpath("//app-issue-create-card//button[.//span[@class='mdc-button__label' and text()='Create']]");
         wait.until(ExpectedConditions.elementToBeClickable(createBtn)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("app-issue-create-card .overlay")));
     }
 
     public boolean isSelectStatusVisible(String title, String status){
@@ -296,7 +299,8 @@ public class IssuePagePOM {
     public void selectOption(String option){
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'mdc-list-item__primary-text') and text()='" + option + "']"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")));
     }
 
     public void filterByStatus(String status){
