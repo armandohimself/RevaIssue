@@ -20,13 +20,16 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 import java.util.List;
 import java.util.UUID;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IssueControllerAPITest {
 
+    @LocalServerPort
+    int port;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -40,11 +43,11 @@ public class IssueControllerAPITest {
     @BeforeAll
     public static void urlSetup(){
         RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8081;
     }
 
     @BeforeEach
     public void setup(){
+        RestAssured.port = port;
         RestAssured.basePath = "/api";
         User tester = userRepository.findByUserName("apitester");
         String token = jwtService.createToken(tester.getUserId(), tester.getUserName(), tester.getRole());
