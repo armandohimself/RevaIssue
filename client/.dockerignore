@@ -1,0 +1,10 @@
+.git
+.gitignore
+node_modules
+dist
+build
+.angular
+.env
+.env.local
+.DS_Store
+.vscode

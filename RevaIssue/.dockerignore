@@ -1,0 +1,11 @@
+.git
+.gitignore
+build
+.gradle
+.DS_Store
+.idea
+.vscode
+*.class
+*.jar
+*.log
+target

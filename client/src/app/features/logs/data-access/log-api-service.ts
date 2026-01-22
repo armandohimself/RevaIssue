@@ -26,7 +26,7 @@ export interface Page<T> {
   providedIn: 'root',
 })
 export class LogApiService {
-  private apiUrl = 'http://localhost:8081/api/logs';
+  private apiUrl = '/api/logs';
 
   constructor(private http: HttpClient) {}
 

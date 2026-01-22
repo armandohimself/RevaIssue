@@ -16,7 +16,7 @@ interface User {
 export class RoleService {
   private roleSubject = new BehaviorSubject<UserRole | null>(null);
   private userIdSubject = new BehaviorSubject<string | null>(null);
-  private apiUrl = 'http://localhost:8081/api/users/me';
+  private apiUrl = 'api/users/me';
 
   constructor(private http: HttpClient, private jwtStorage: JwtStorage) {}
 

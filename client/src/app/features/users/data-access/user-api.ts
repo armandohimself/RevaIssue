@@ -18,7 +18,7 @@ export interface User {
   providedIn: 'root',
 })
 export class UserApiService {
-  private apiUrl = 'http://localhost:8081/api/users';
+  private apiUrl = '/api/users';
 
   constructor(private http: HttpClient) {}
 
@@ -27,7 +27,7 @@ export class UserApiService {
   }
 
   getUsersByProjectId(projectId: string): Observable<User[]> {
-    return this.http.get<User[]>(`http://localhost:8081/api/projects/${projectId}/access/all`);
+    return this.http.get<User[]>(`/api/projects/${projectId}/access/all`);
   }
 
   createUser(request: CreateUserRequest): Observable<User> {
