@@ -1,4 +1,3 @@
-@wip
 Feature: Issue Tracking - view, update, history
   Background:
     Given   The user is on the login page
