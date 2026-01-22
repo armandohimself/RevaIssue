@@ -93,10 +93,6 @@ public class ProjectAccessService {
     //! READ
     public List<Project> listActiveProjectsForUser(UUID userId) {
 
-        /**
-         * Get ALL ACTIVE project member records for this user (not revoked)
-         * These rows contain which projects the user belongs to.
-         */
         List<ProjectAccess> accesses = projectAccessRepository.findByUserIdAndRevokedAccessAtIsNull(userId);
 
         /**
@@ -116,7 +112,6 @@ public class ProjectAccessService {
 
         /**
          * Otherwise fetch the actual Project entities in one query:
-         * Equivalent SQL idea: SELECT * FROM projects WHERE project_id IN ( ... );
          */
         return projectRepository.findByProjectIdIn(projectIds);
     }
@@ -132,9 +127,12 @@ public class ProjectAccessService {
 
     // show me a list of members active on a specific project tester allowed
     public List<User> findMembersByProjectId(UUID projectId, UUID actingUserId) {
+
         User actingUser = userService.getUserByUUID(actingUserId);
+        
         List<User> memberList = new ArrayList<>();
-        if(actingUser.getRole() != UserEnum.Role.ADMIN && projectAccessRepository.findByProjectIdAndUserIdAndRevokedAccessAtIsNull(projectId, actingUserId) == null){
+        
+        if(actingUser.getRole() != UserEnum.Role.ADMIN && projectAccessRepository.findByProjectIdAndUserIdAndRevokedAccessAtIsNull(projectId, actingUserId).isEmpty()){
             throw new UnauthorizedOperation("Only ADMINS or members can view project members");
         }
         List<ProjectAccess> accessList = projectAccessRepository.findByProjectIdAndRevokedAccessAtIsNull(projectId);

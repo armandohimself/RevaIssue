@@ -30,7 +30,7 @@ import com.abra.revaissue.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/comments")
 public class CommentController {
 
     private final CommentService commentService;

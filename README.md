@@ -9,6 +9,7 @@ RevaIssue was designed to model a real world internal issue tracking system. The
 This project was built as a team exercise to practice designing and implementing a production style application from the ground up.
 
 The primary goals were:
+
 - Modeling real user roles and permissions
 - Enforcing workflow rules through backend services
 - Designing clean REST APIs

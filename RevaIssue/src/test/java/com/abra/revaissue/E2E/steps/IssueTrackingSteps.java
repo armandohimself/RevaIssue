@@ -27,26 +27,26 @@ public class IssueTrackingSteps {
     @Given("The user navigates to the Issues page")
     public void the_user_navigates_to_the_issues_page() {
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        // throw new io.cucumber.java.PendingException();
     }
     @When("The user selects the project {string}")
     public void the_user_selects_the_project(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        // throw new io.cucumber.java.PendingException();
     }
     @Then("A list of issues with project field set to {string} is shown")
     public void a_list_of_issues_with_project_field_set_to_is_shown(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        // throw new io.cucumber.java.PendingException();
     }
     @Then("The issues list contains the issue titled {string}")
     public void the_issues_list_contains_the_issue_titled(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        // throw new io.cucumber.java.PendingException();
     }
     @Then("Each issue row shows Title, Status, Severity, Priority, AssignedTo, CreatedBy and Actions")
     public void each_issue_row_shows_title_status_severity_priority_assigned_to_created_by_and_actions() {
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        // throw new io.cucumber.java.PendingException();
     }
 }

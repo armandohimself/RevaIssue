@@ -1,0 +1,233 @@
+/* =========================================================
+   VS Code Markdown Preview Styling
+   - Calm “page” width
+   - Strong hierarchy
+   - Generous spacing
+   - Clear code blocks
+   - Theme-friendly (doesn't fight your theme)
+
+   Preview: Shift + Cmd + V
+   ========================================================= */
+
+:root {
+  /* Page shape */
+  --md-max-width: 880px;
+  --md-side-pad: 24px;
+
+  /* Readability */
+  --md-font-size: 16px;
+  --md-line-height: 1.78;
+  --md-paragraph-gap: 0.95em;
+
+  /* Nord-ish header palette */
+  --h1: #88C0D0; /* cool cyan */
+  --h2: #81A1C1; /* soft blue */
+  --h3: #A3BE8C; /* calm green */
+  --h4: #EBCB8B; /* warm sand */
+  --h5: #B48EAD; /* lavender */
+  --h6: rgba(255, 255, 255, 0.78);
+
+  /* Accent bar opacity (0..1) */
+  --bar-opacity: 0.35;
+
+  /* Blockquote readability */
+  --quote-text: rgba(216, 222, 233, 0.98);
+  --quote-bg: rgba(127, 127, 127, 0.10);
+  --quote-border: rgba(136, 192, 208, 0.55);
+
+  /* Code */
+  --code-font-size: 0.95em;
+  --code-line-height: 1.65;
+}
+
+/* Constrain line length */
+.markdown-body {
+  max-width: var(--md-max-width);
+  margin: 0 auto !important;
+  padding: var(--md-side-pad) !important;
+}
+
+/* Base readability */
+body {
+  font-size: var(--md-font-size);
+  line-height: var(--md-line-height);
+  text-rendering: optimizeLegibility;
+}
+
+/* Paragraph spacing */
+p,
+ul,
+ol,
+blockquote,
+pre,
+table {
+  margin-top: 0;
+  margin-bottom: var(--md-paragraph-gap);
+}
+
+/* Lists */
+li {
+  margin: 0.35em 0;
+}
+ul,
+ol {
+  padding-left: 1.4em;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: 1.25;
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+  letter-spacing: -0.01em;
+}
+
+/* === Header colors + scan-friendly “left bar” === */
+h1 {
+  color: var(--h1) !important;
+  font-size: 2.15rem;
+  margin-top: 0.2em;
+  padding-left: 0.55rem;
+  border-left: 5px solid rgba(136, 192, 208, var(--bar-opacity));
+}
+
+h2 {
+  color: var(--h2) !important;
+  font-size: 1.65rem;
+  padding-left: 0.55rem;
+  border-left: 5px solid rgba(129, 161, 193, var(--bar-opacity));
+  border-bottom: 1px solid rgba(127, 127, 127, 0.35);
+  padding-bottom: 0.25rem;
+}
+
+h3 {
+  color: var(--h3) !important;
+  font-size: 1.28rem;
+  padding-left: 0.55rem;
+  border-left: 5px solid rgba(163, 190, 140, var(--bar-opacity));
+}
+
+h4 {
+  color: var(--h4) !important;
+  font-size: 1.08rem;
+  padding-left: 0.55rem;
+  border-left: 5px solid rgba(235, 203, 139, var(--bar-opacity));
+}
+
+h5 {
+  color: var(--h5) !important;
+}
+
+h6 {
+  color: var(--h6) !important;
+  opacity: 0.95;
+}
+
+/* Links */
+a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+/* =========================================================
+   Blockquotes (fixes dim text after ">")
+   ========================================================= */
+blockquote {
+  margin: 0 0 1.1em;
+  padding: 0.85em 1em;
+  border-left: 4px solid var(--quote-border);
+  background: var(--quote-bg);
+  border-radius: 12px;
+
+  /* Key fix: make quote text readable */
+  color: var(--quote-text) !important;
+}
+
+/* Ensure all text inside blockquotes stays readable */
+blockquote p,
+blockquote li,
+blockquote strong,
+blockquote em,
+blockquote code {
+  color: var(--quote-text) !important;
+  opacity: 1 !important;
+}
+
+/* Prevent wash-out if theme applies opacity */
+blockquote,
+blockquote * {
+  opacity: 1 !important;
+}
+
+/* Optional: make the first line pop a bit (useful for callout markers like [!NOTE]) */
+blockquote > p:first-child {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* Code blocks */
+pre {
+  padding: 1em 1.1em;
+  border-radius: 14px;
+  line-height: var(--code-line-height);
+  font-size: var(--code-font-size);
+  overflow: auto;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+/* Inline code */
+code {
+  font-size: var(--code-font-size);
+  padding: 0.15em 0.35em;
+  border-radius: 8px;
+  background: rgba(127, 127, 127, 0.12);
+}
+
+/* Tables */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+}
+th,
+td {
+  padding: 0.65em 0.75em;
+  vertical-align: top;
+}
+
+/* HR */
+hr {
+  border: none;
+  height: 1px;
+  background: rgba(127, 127, 127, 0.35);
+  margin: 1.6em 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  border-radius: 14px;
+}
+
+/* Focus visibility */
+a:focus {
+  outline: 2px solid rgba(127, 127, 127, 0.65);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* Task lists */
+.task-list-item {
+  list-style-type: none;
+}
+.task-list-item input {
+  transform: scale(1.15);
+  margin-right: 0.6em;
+}
