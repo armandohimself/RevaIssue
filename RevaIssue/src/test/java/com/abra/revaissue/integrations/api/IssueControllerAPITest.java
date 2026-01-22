@@ -24,7 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.UUID;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class IssueControllerAPITest {
 
     @Autowired

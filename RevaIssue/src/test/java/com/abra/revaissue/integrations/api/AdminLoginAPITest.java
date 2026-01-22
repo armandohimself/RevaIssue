@@ -2,6 +2,7 @@ package com.abra.revaissue.integrations.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
@@ -20,9 +21,16 @@ class AdminLoginAPITest {
         return "http://localhost:8081";
     }
 
+    @BeforeEach
+    void setupRestAssured() {
+        RestAssured.reset();
+        RestAssured.baseURI = baseUrl();
+        RestAssured.basePath = "/api/users";
+
+    }
+
     @Test
     void login_returns_token_and_token_allows_me() {
-        RestAssured.baseURI = baseUrl();
 
         // 1) Login
         Response loginRes =
@@ -30,7 +38,7 @@ class AdminLoginAPITest {
                 .contentType(ContentType.JSON)
                 .body("{\"userName\":\"admin\",\"password\":\"password\"}")
             .when()
-                .post("/api/users/login")
+                .post("/login")
             .then()
                 .extract().response();
 
@@ -46,7 +54,7 @@ class AdminLoginAPITest {
             RestAssured.given()
                 .header("Authorization", "Bearer " + token)
             .when()
-                .get("/api/users/me")
+                .get("/me")
             .then()
                 .extract().response();
 

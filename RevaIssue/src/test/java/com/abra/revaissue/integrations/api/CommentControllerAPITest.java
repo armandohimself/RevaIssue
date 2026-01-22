@@ -26,7 +26,7 @@ import io.restassured.http.ContentType;
 
 import static org.hamcrest.Matchers.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class CommentControllerAPITest {
 
     @Autowired
