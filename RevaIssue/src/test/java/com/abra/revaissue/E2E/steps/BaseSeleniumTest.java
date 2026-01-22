@@ -17,7 +17,6 @@ import io.cucumber.spring.CucumberContextConfiguration;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class BaseSeleniumTest {
 
-
     public static WebDriver driver;
     public static IssuePagePOM issuePage;
     public static LoginPage loginPage;
@@ -35,7 +34,7 @@ public class BaseSeleniumTest {
 
     @After
     public static void tearDown() {
-        if(driver != null) {
+        if (driver != null) {
             driver.quit();
         }
     }

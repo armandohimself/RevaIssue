@@ -17,8 +17,10 @@
     >
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">person_add</mat-icon>
-          Add User
+          <span id="tab-label-add-user">
+            <mat-icon class="tab-icon">person_add</mat-icon>
+            Add User
+          </span>
         </ng-template>
         <div class="tab-content">
           <app-add-user (userCreated)="onUserCreated()"></app-add-user>
@@ -27,8 +29,10 @@
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">people</mat-icon>
-          Manage Users
+          <span id="tab-label-manage-users">
+            <mat-icon class="tab-icon">people</mat-icon>
+            Manage Users
+          </span>
         </ng-template>
         <div class="tab-content">
           <app-list-users></app-list-users>
@@ -37,8 +41,10 @@
 
       <mat-tab>
         <ng-template mat-tab-label>
-          <mat-icon class="tab-icon">history</mat-icon>
-          Logs
+          <span id="tab-label-logs">
+            <mat-icon class="tab-icon">history</mat-icon>
+            Logs
+          </span>
         </ng-template>
         <div class="tab-content">
           <app-logs></app-logs>

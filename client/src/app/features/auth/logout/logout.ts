@@ -15,8 +15,8 @@ import { MatIconModule  } from "@angular/material/icon";
       <p>Are you sure you want to log out?</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button [mat-dialog-close]="false">Cancel</button>
-      <button mat-raised-button color="primary" [mat-dialog-close]="true">Logout</button>
+      <button id="cancel-logout" mat-button [mat-dialog-close]="false">Cancel</button>
+      <button id="confirm-logout" mat-raised-button color="primary" [mat-dialog-close]="true">Logout</button>
     </mat-dialog-actions>
   `,
   styles: [`
