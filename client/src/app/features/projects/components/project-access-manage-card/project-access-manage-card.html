@@ -28,13 +28,13 @@
           </select>
         </div>
 
-        <button mat-raised-button color="primary" (click)="onGrant()">
+        <button mat-raised-button color="primary" (click)="onGrant()" data-testid="grant-access-btn">
           <mat-icon>person_add</mat-icon>
           Grant
         </button>
       </div>
 
-      <div class="table">
+      <div class="table" data-testid="member-list">
         <div class="thead">
           <span>User</span>
           <span>Role</span>
@@ -49,7 +49,7 @@
               <span class="mono">{{ userName(m.userId) }}</span>
               <span class="pill">{{ m.projectRole }}</span>
               <span class="actions">
-                <button mat-button color="warn" (click)="onRevoke(m.userId)">
+                <button mat-button color="warn" (click)="onRevoke(m.userId)" data-testid="revoke-access-btn">
                   <mat-icon>person_remove</mat-icon>
                   Revoke
                 </button>

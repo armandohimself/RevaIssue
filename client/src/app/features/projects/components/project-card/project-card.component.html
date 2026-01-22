@@ -1,8 +1,8 @@
-<mat-card class="card">
+<mat-card class="card" data-testid="project-card">
   <mat-card-header>
     <mat-card-title class="title">{{ project.projectName }}</mat-card-title>
     <mat-card-subtitle>
-      <span class="badge" [class.archived]="project.projectStatus === 'ARCHIVE'">
+      <span class="badge" [class.archived]="project.projectStatus === 'ARCHIVED'">
         {{ project.projectStatus }}
       </span>
     </mat-card-subtitle>
@@ -17,7 +17,7 @@
   </mat-card-content>
 
   <mat-card-actions align="end" class="actions">
-    <button mat-stroked-button (click)="manageAccess.emit(project)">
+    <button mat-stroked-button (click)="manageAccess.emit(project)" data-testid="manage-access-btn">
       <mat-icon>group</mat-icon>
       Access
     </button>
@@ -31,7 +31,7 @@
       mat-button
       color="warn"
       (click)="archive.emit(project)"
-      [disabled]="project.projectStatus === 'ARCHIVE'"
+      [disabled]="project.projectStatus === 'ARCHIVED'"
     >
       <mat-icon>archive</mat-icon>
       Archive
