@@ -44,8 +44,6 @@ Feature: Projects (API)
     And the project description should be "after"
     And the project status should be "ARCHIVED"
 
-    # Your PATCH response is ProjectResponse (no archivedBy/archivedAt),
-    # so we verify audit fields via the admin endpoint:
     When the admin requests the admin view for that project
     Then the response status should be 200
     And the admin project archived fields should be set

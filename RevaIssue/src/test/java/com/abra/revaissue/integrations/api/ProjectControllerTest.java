@@ -41,28 +41,33 @@ class ProjectControllerTest {
     private static final String AUTH_HEADER = "Authorization";
     private static final String BEARER_TOKEN = "Bearer test.jwt.token";
 
-    private static Project project(UUID projectId, String name, String desc, ProjectStatus status, UUID actingUserId) {
-        Project p = new Project();
-        p.setProjectId(projectId);
-        p.setProjectName(name);
-        p.setProjectDescription(desc);
-        p.setProjectStatus(status);
+    private static Project project(
+        UUID projectId, 
+        String name, 
+        String desc, 
+        ProjectStatus status, 
+        UUID actingUserId
+        ) {
 
-        p.setCreatedByUserId(actingUserId);
-        p.setStatusUpdatedByUserId(null);
-        p.setArchivedByUserId(null);
+        Project project = new Project();
+        project.setProjectId(projectId);
+        project.setProjectName(name);
+        project.setProjectDescription(desc);
+        project.setProjectStatus(status);
+
+        project.setCreatedByUserId(actingUserId);
+        project.setStatusUpdatedByUserId(null);
+        project.setArchivedByUserId(null);
 
         Instant now = Instant.parse("2026-01-01T00:00:00Z");
-        p.setCreatedAt(now);
-        p.setUpdatedAt(now);
-        p.setArchivedAt(null);
+        project.setCreatedAt(now);
+        project.setUpdatedAt(now);
+        project.setArchivedAt(null);
 
-        return p;
+        return project;
     }
 
-    // -----------------------
-    // POST /api/projects
-    // -----------------------
+    //! POST /api/projects
 
     @Test
     void create_returns_200_and_ProjectResponse_json() throws Exception {
@@ -71,10 +76,10 @@ class ProjectControllerTest {
 
         when(authzService.actingUserId(BEARER_TOKEN)).thenReturn(actingUserId);
 
-        Project saved = project(projectId, "QA Testing Project", "Created by controller test", ProjectStatus.ACTIVE, actingUserId);
+        Project saved = project(projectId, "Mobile App Redesign", "Redesigning the mobile application UI/UX", ProjectStatus.ACTIVE, actingUserId);
         when(projectService.create(any(Project.class), eq(actingUserId))).thenReturn(saved);
 
-        CreateProjectRequest req = new CreateProjectRequest("QA Testing Project", "Created by controller test");
+        CreateProjectRequest req = new CreateProjectRequest("Mobile App Redesign", "Redesigning the mobile application UI/UX");
 
         mockMvc.perform(
                 post("/api/projects")
@@ -84,8 +89,8 @@ class ProjectControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
-            .andExpect(jsonPath("$.projectName").value("QA Testing Project"))
-            .andExpect(jsonPath("$.projectDescription").value("Created by controller test"))
+            .andExpect(jsonPath("$.projectName").value("Mobile App Redesign"))
+            .andExpect(jsonPath("$.projectDescription").value("Redesigning the mobile application UI/UX"))
             .andExpect(jsonPath("$.projectStatus").value("ACTIVE"))
             .andExpect(jsonPath("$.createdByUserId").value(actingUserId.toString()))
             .andExpect(jsonPath("$.createdAt").exists())
@@ -97,7 +102,7 @@ class ProjectControllerTest {
 
     @Test
     void create_missing_auth_header_returns_400() throws Exception {
-        CreateProjectRequest req = new CreateProjectRequest("X", "Y");
+        CreateProjectRequest req = new CreateProjectRequest("Unauthorized Project", "Should not be created");
 
         mockMvc.perform(
                 post("/api/projects")
@@ -107,9 +112,7 @@ class ProjectControllerTest {
             .andExpect(status().isBadRequest()); // missing required @RequestHeader("Authorization")
     }
 
-    // -----------------------
-    // GET /api/projects
-    // -----------------------
+    //! GET /api/projects
 
     @Test
     void listAll_returns_200_and_array() throws Exception {
@@ -117,8 +120,8 @@ class ProjectControllerTest {
 
         // NOTE: Your controller signature requires the header, but does not use it.
         // We don't need to stub authzService.actingUserId for this endpoint.
-        Project p1 = project(UUID.randomUUID(), "Default Project", "Seeded", ProjectStatus.ACTIVE, actingUserId);
-        Project p2 = project(UUID.randomUUID(), "Archived One", "Still listed", ProjectStatus.ARCHIVED, actingUserId);
+        Project p1 = project(UUID.randomUUID(), "Backend API Migration", "Migrating legacy REST API to GraphQL", ProjectStatus.ACTIVE, actingUserId);
+        Project p2 = project(UUID.randomUUID(), "Legacy System Upgrade", "Archived after completion", ProjectStatus.ARCHIVED, actingUserId);
 
         when(projectService.getAll()).thenReturn(List.of(p1, p2));
 
@@ -128,7 +131,7 @@ class ProjectControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.length()").value(2))
-            .andExpect(jsonPath("$[0].projectName").value("Default Project"))
+            .andExpect(jsonPath("$[0].projectName").value("Backend API Migration"))
             .andExpect(jsonPath("$[1].projectStatus").value("ARCHIVED"));
 
         verify(projectService).getAll();
@@ -140,17 +143,15 @@ class ProjectControllerTest {
             .andExpect(status().isBadRequest());
     }
 
-    // -----------------------
-    // GET /api/projects/{id}
-    // -----------------------
+    //! GET /api/projects/{id}
 
     @Test
     void getById_returns_200_and_ProjectResponse_json() throws Exception {
         UUID actingUserId = UUID.randomUUID();
         UUID projectId = UUID.randomUUID();
 
-        Project p = project(projectId, "Get Me", "By id", ProjectStatus.ACTIVE, actingUserId);
-        when(projectService.getById(projectId)).thenReturn(p);
+        Project project = project(projectId, "Database Optimization", "Performance improvements for production database", ProjectStatus.ACTIVE, actingUserId);
+        when(projectService.getById(projectId)).thenReturn(project);
 
         mockMvc.perform(
                 get("/api/projects/{projectId}", projectId)
@@ -158,14 +159,12 @@ class ProjectControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
-            .andExpect(jsonPath("$.projectName").value("Get Me"));
+            .andExpect(jsonPath("$.projectName").value("Database Optimization"));
 
         verify(projectService).getById(projectId);
     }
 
-    // -----------------------
-    // GET /api/projects/{id}/admin
-    // -----------------------
+    //! GET /api/projects/{id}/admin
 
     @Test
     void getAdminProject_calls_mustBeAdmin_and_returns_AdminProjectResponse() throws Exception {
@@ -175,8 +174,8 @@ class ProjectControllerTest {
         when(authzService.actingUserId(BEARER_TOKEN)).thenReturn(actingUserId);
         doNothing().when(authzService).mustBeAdmin(actingUserId);
 
-        Project p = project(projectId, "Admin View", "audit view", ProjectStatus.ACTIVE, actingUserId);
-        when(projectService.getById(projectId)).thenReturn(p);
+        Project project = project(projectId, "Security Audit 2026", "Annual security compliance review", ProjectStatus.ACTIVE, actingUserId);
+        when(projectService.getById(projectId)).thenReturn(project);
 
         mockMvc.perform(
                 get("/api/projects/{projectId}/admin", projectId)
@@ -184,7 +183,7 @@ class ProjectControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
-            .andExpect(jsonPath("$.projectName").value("Admin View"))
+            .andExpect(jsonPath("$.projectName").value("Security Audit 2026"))
             .andExpect(jsonPath("$.createdByUserId").value(actingUserId.toString()))
             .andExpect(jsonPath("$.archivedByUserId").value(nullValue()))
             .andExpect(jsonPath("$.archivedAt").value(nullValue()));
@@ -194,9 +193,7 @@ class ProjectControllerTest {
         verify(projectService).getById(projectId);
     }
 
-    // -----------------------
-    // PATCH /api/projects/{id}
-    // -----------------------
+    //! PATCH /api/projects/{id}
 
     @Test
     void update_returns_200_and_updated_fields() throws Exception {
@@ -205,10 +202,10 @@ class ProjectControllerTest {
 
         when(authzService.actingUserId(BEARER_TOKEN)).thenReturn(actingUserId);
 
-        Project updated = project(projectId, "Patched", "after", ProjectStatus.ARCHIVED, actingUserId);
+        Project updated = project(projectId, "CI/CD Pipeline Setup", "Completed and archived for reference", ProjectStatus.ARCHIVED, actingUserId);
         when(projectService.update(eq(projectId), any(UpdateProjectRequest.class), eq(actingUserId))).thenReturn(updated);
 
-        UpdateProjectRequest req = new UpdateProjectRequest("Patched", "after", ProjectStatus.ARCHIVED);
+        UpdateProjectRequest req = new UpdateProjectRequest("CI/CD Pipeline Setup", "Completed and archived for reference", ProjectStatus.ARCHIVED);
 
         mockMvc.perform(
                 patch("/api/projects/{projectId}", projectId)
@@ -218,17 +215,15 @@ class ProjectControllerTest {
             )
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.projectId").value(projectId.toString()))
-            .andExpect(jsonPath("$.projectName").value("Patched"))
-            .andExpect(jsonPath("$.projectDescription").value("after"))
+            .andExpect(jsonPath("$.projectName").value("CI/CD Pipeline Setup"))
+            .andExpect(jsonPath("$.projectDescription").value("Completed and archived for reference"))
             .andExpect(jsonPath("$.projectStatus").value("ARCHIVED"));
 
         verify(authzService).actingUserId(BEARER_TOKEN);
         verify(projectService).update(eq(projectId), any(UpdateProjectRequest.class), eq(actingUserId));
     }
 
-    // -----------------------
-    // DELETE /api/projects/{id}
-    // -----------------------
+    //! DELETE /api/projects/{id}
 
     @Test
     void delete_returns_204_and_calls_archive() throws Exception {

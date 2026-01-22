@@ -49,7 +49,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void adminLoginNegativeTest() {
+    void adminLoginNegativeTest() {
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("admin");
         credentials.setPassword("wrongpassword");
@@ -64,7 +64,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void loginNonexistentUserTest() {
+    void loginNonexistentUserTest() {
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("nonexistent");
         credentials.setPassword("password");
@@ -79,7 +79,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void loginEmptyUsernameTest() {
+    void loginEmptyUsernameTest() {
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("");
         credentials.setPassword("password");
@@ -94,7 +94,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void loginEmptyPasswordTest() {
+    void loginEmptyPasswordTest() {
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("admin");
         credentials.setPassword("");
@@ -109,7 +109,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getCurrentUserSuccess() {
+    void getCurrentUserSuccess() {
         // login
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("admin");
@@ -137,7 +137,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getCurrentUserInvalidTokenTest() {
+    void getCurrentUserInvalidTokenTest() {
         given()
             .header("Authorization", "invalid.token.here")
         .when()
@@ -147,7 +147,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getCurrentUserNoTokenTest() {
+    void getCurrentUserNoTokenTest() {
         given()
         .when()
             .get("/me")
@@ -156,7 +156,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getAllUsersSuccess() {
+    void getAllUsersSuccess() {
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("admin");
         credentials.setPassword("password");
@@ -180,7 +180,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getAllUsersNoTokenTest() {
+    void getAllUsersNoTokenTest() {
         given()
         .when()
             .get("/all")
@@ -189,7 +189,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void createUserSuccess() {
+    void createUserSuccess() {
         // login
         LoginRequestDTO credentials = new LoginRequestDTO();
         credentials.setUserName("admin");
@@ -222,7 +222,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void createUserNoTokenTest() {
+    void createUserNoTokenTest() {
         CreateUserDTO newUser = new CreateUserDTO();
         newUser.setUserName("newUser");
         newUser.setPassword("password");
@@ -237,7 +237,7 @@ public class UsersAPITest {
     }
 
     @Test
-    public void getAllRoles() {
+    void getAllRoles() {
         given()
         .when()
             .get("/roles")
