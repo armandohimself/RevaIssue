@@ -21,7 +21,7 @@ export interface User {
   providedIn: 'root',
 })
 export class AuthApiService {
-  private apiUrl = 'http://localhost:8081/api/users';
+  private apiUrl = '/api/users';
 
   constructor(private http: HttpClient) {}
 

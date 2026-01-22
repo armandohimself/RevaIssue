@@ -8,7 +8,7 @@ import { IssueData } from "../interfaces/issue-data";
 })
 export class IssueService {
     private issuesSubject: BehaviorSubject<IssueData[]>;
-    private apiUrl = 'http://localhost:8081/issues';
+  private apiUrl = '/issues';
     constructor(private http: HttpClient){
         this.issuesSubject = new BehaviorSubject<IssueData[]>([]);
     }
