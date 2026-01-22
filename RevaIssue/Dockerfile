@@ -26,8 +26,13 @@ WORKDIR /app
 # Create data directory for SQLite database
 RUN mkdir -p /app/data
 
-# Copy the built JAR from builder stage
-COPY --from=builder /build/build/libs/*.jar app.jar
+# Copy all built JARs from builder stage
+COPY --from=builder /build/build/libs /app/libs
+
+RUN set -e; \
+    BOOT_JAR=$(ls /app/libs/*SNAPSHOT.jar 2>/dev/null | head -1); \
+    if [ -z "$BOOT_JAR" ]; then BOOT_JAR=$(ls /app/libs/*.jar | head -1); fi; \
+    cp "$BOOT_JAR" /app/app.jar
 
 # Expose port 8081
 EXPOSE 8081

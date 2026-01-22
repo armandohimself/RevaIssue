@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   # Frontend - Angular app
@@ -28,6 +27,8 @@ services:
     volumes:
       # Mount volume for SQLite database persistence
       - sqlite_data:/app/data
+    env_file:
+      - ./RevaIssue/.env
     environment:
       - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/data/demo-db.sqlite
     networks:
