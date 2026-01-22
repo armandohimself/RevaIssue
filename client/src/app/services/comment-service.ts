@@ -15,7 +15,7 @@ export class CommentService {
     page: number = 0,
     size: number = 10,
   ): Observable<Page<Comment>> {
-    return this.http.get<Page<Comment>>(`comments/issue/${issueId}`, {
+    return this.http.get<Page<Comment>>(`api/comments/issue/${issueId}`, {
       params: { page, size, sort: 'time,asc' },
     });
   }
@@ -25,12 +25,12 @@ export class CommentService {
     page: number = 0,
     size: number = 10,
   ): Observable<Page<Comment>> {
-    return this.http.get<Page<Comment>>(`comments/user/${userId}`, {
+    return this.http.get<Page<Comment>>(`api/comments/user/${userId}`, {
       params: { page, size, sort: 'time,asc' },
     });
   }
 
   addComment(message: string, issueId: string): Observable<Comment> {
-    return this.http.post<Comment>('comments', { message, issueId });
+    return this.http.post<Comment>('api/comments', { message, issueId });
   }
 }

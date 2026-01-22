@@ -57,12 +57,12 @@ export class RoleService {
 
   canCreateIssue(): boolean {
     const role = this.getUserRole();
-    return role === 'ADMIN' || role === 'TESTER';
+    return role === 'TESTER';
   }
 
   canEditIssue(): boolean {
     const role = this.getUserRole();
-    return role === 'ADMIN' || role === 'TESTER';
+    return role === 'TESTER';
   }
 
   getAvailableStatuses(): string[] {
