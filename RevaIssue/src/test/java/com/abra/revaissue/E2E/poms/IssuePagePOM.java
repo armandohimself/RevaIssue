@@ -29,16 +29,12 @@ public class IssuePagePOM {
         driver.get(URL);
     }
 
-//    public String getCurrentUrl(){
-//        return driver.getCurrentUrl();
-//    }
-
     public void selectProject(String projectName){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(300));
         wait.until(ExpectedConditions.elementToBeClickable(projectDropdown)).click();
         WebElement projectText = driver.findElement(By.xpath("//span[contains(text(), '" + projectName + "')]"));
         wait.until(ExpectedConditions.elementToBeClickable(projectText)).click();
-        //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".cdk-overlay-backdrop.cdk-overlay-backdrop-showing")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
     }
 
     private List<WebElement> getIssueRows() {
@@ -97,22 +93,6 @@ public class IssuePagePOM {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".issue-severity")));
         return row.findElement(By.cssSelector(".issue-severity")).getText().trim();
     }
-
-//    public String getPriorityForIssue(String title) {
-//        WebElement row = rowByTitle(title);
-//        return row.findElement(By.cssSelector(".issue-priority")).getText().trim();
-//    }
-//
-//    public String getAssignedToForIssue(String title) {
-//        WebElement row = rowByTitle(title);
-//        return row.findElements(By.cssSelector(".issue-user")).getFirst().getText().trim();
-//    }
-//
-//    public String getCreatedByForIssue(String title) {
-//        WebElement row = rowByTitle(title);
-//        return row.findElements(By.cssSelector(".issue-user")).get(1).getText().trim();
-//    }
-
     public String getSelectedStatusForIssue(String title) {
         WebElement row = rowByTitle(title);
         WebElement select = row.findElement(By.cssSelector("select.status-select"));
@@ -130,7 +110,15 @@ public class IssuePagePOM {
     public String getIssueDetailPriority() {
         return driver.findElement(By.xpath("//app-issue-view-card//label[text()='Priority']/following-sibling::span")).getText().trim();
     }
-
+    public boolean isEditButtonVisible(String title){
+        try{
+            WebElement row = rowByTitle(title);
+            WebElement updateButton = row.findElement(By.cssSelector("button.edit-btn"));
+            return updateButton.isDisplayed();
+        } catch(NoSuchElementException e){
+            return false;
+        }
+    }
     public void clickEditButtonForIssue(String title) {
         WebElement row = rowByTitle(title);
         row.findElement(By.cssSelector("button.edit-btn")).click();
@@ -147,12 +135,13 @@ public class IssuePagePOM {
     }
 
     public void clickEditUpdateButton() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
 
         By updateBtn = By.xpath("//app-issue-edit-card//button[.//span[@class='mdc-button__label' and text()='Update']]");
         wait.until(ExpectedConditions.elementToBeClickable(updateBtn)).click();
-        //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("app-issue-edit-card .overlay")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
     }
+
 
     public boolean isHistorySectionVisible() {
         return !driver.findElements(By.cssSelector("app-issue-view-card .logs-section")).isEmpty();
@@ -165,6 +154,14 @@ public class IssuePagePOM {
 
         String text = logsList.getText().toLowerCase();
         return match != null && text.contains(match.toLowerCase());
+    }
+    public boolean isCreateButtonVisible(){
+        try{
+            WebElement createButton = driver.findElement(By.xpath("//button[.//span[@class='mdc-button__label' and text()=' Create Issue ']]"));
+            return createButton.isDisplayed();
+        } catch(NoSuchElementException e){
+            return false;
+        }
     }
 
     public void clickCreateButton() {
@@ -204,11 +201,22 @@ public class IssuePagePOM {
     }
 
     public void clickCreateActionButton() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
 
         By createBtn = By.xpath("//app-issue-create-card//button[.//span[@class='mdc-button__label' and text()='Create']]");
         wait.until(ExpectedConditions.elementToBeClickable(createBtn)).click();
-        //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("app-issue-create-card .overlay")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
+    }
+
+    public boolean isSelectStatusVisible(String title, String status){
+        try{
+            WebElement row = rowByTitle(title);
+            WebElement statusSelect = row.findElement(By.cssSelector("select.status-select"));
+            Select select = new Select(statusSelect);
+            return select.getOptions().stream().skip(1).anyMatch(option -> status.equals(option.getAttribute("value")));
+        } catch(NoSuchElementException e){
+            return false;
+        }
     }
 
     public void selectStatusForIssue(String title, String status) {
@@ -286,9 +294,9 @@ public class IssuePagePOM {
     }
 
     public void selectOption(String option){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(2));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(@class, 'mdc-list-item__primary-text') and text()='" + option + "']"))).click();
-        //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".cdk-overlay-popover cdk-overlay-connected-position-bounding-box")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.issues-list div.issue-row")));
     }
 
     public void filterByStatus(String status){

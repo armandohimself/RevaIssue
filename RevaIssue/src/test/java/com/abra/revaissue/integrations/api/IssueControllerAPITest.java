@@ -226,6 +226,35 @@ public class IssueControllerAPITest {
                 .body("issueId", equalTo(issueId.toString()))
                 .body("name", equalTo("API Created Issue For Assign"));
     }
+    @Test
+    void assignDeveloperNegativeTestUserNotFound() {
+        UUID issueId = createIssueAndReturnId("API Issue For Assign User Not Found");
+
+        UUID fakeUserId = UUID.randomUUID();
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", userToken)
+        .when()
+                .put("/issues/" + issueId + "/assign/" + fakeUserId)
+        .then()
+                .statusCode(500);
+    }
+    @Test
+    void assignDeveloperNegativeTestUserIsNotDeveloper() {
+        UUID issueId = createIssueAndReturnId("API Issue For Assign Wrong Role");
+
+        User testerUser = userRepository.findByUserName("apitester");
+        UUID testerId = testerUser.getUserId();
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", userToken)
+                .when()
+                .put("/issues/" + issueId + "/assign/" + testerId)
+                .then()
+                .statusCode(403);
+    }
 
     @Test
     void getIssuesAssignedToUserPositiveTest() {
@@ -243,6 +272,21 @@ public class IssueControllerAPITest {
                         "API Issue Open Low",
                         "API Issue Closed Medium"
                 ));
+    }
+
+    @Test
+    void getIssuesAssignedToUserNegativeTestNoAssignedIssues() {
+        User adminUser = userRepository.findByUserName("apiadmin");
+        UUID adminId = adminUser.getUserId();
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/users/" + adminId + "/assigned-issues")
+                .then()
+                .statusCode(200)
+                .body("$", notNullValue())
+                .body("size()", equalTo(0));
     }
 
     @Test

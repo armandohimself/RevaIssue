@@ -14,6 +14,18 @@ Feature: Workflow Management - create issues and change status
     And     The user clicks the create button
     Then    The issues list contains the issue titled "Newly create issue from testing"
 
+  Scenario: Developer cannot open a new issue
+    Given   The user logs in with username "apidev1" and password "password"
+    And     The user navigates to the Issues page
+    And     The user selects the project "API Test Project"
+    Then    The user is unable to click the create issue button
+
+  Scenario: Admin cannot open a new issue
+    Given   The user logs in with username "admin" and password "password"
+    And     The user navigates to the Issues page
+    And     The user selects the project "API Test Project"
+    Then    The user is unable to click the create issue button
+
   Scenario Outline: Developers and testers can move an issue from one status to another
     And     The user logs in with username "<username>" and password "<password>"
     And     The user navigates to the Issues page
@@ -26,4 +38,16 @@ Feature: Workflow Management - create issues and change status
       |apitester|password|CLOSED|OPEN|OPEN|
       |apidev1|password|OPEN|IN_PROGRESS|IN PROGRESS|
       |apidev1|password|IN_PROGRESS|RESOLVED|RESOLVED|
+
+  Scenario Outline: Developers and testers cannot move an issue from unauthorized status changes
+    And     The user logs in with username "<username>" and password "<password>"
+    And     The user navigates to the Issues page
+    When    The user selects the project "API Test Project"
+    Then    The user cannot change status of issue "API Issue Open Low" to "<newStatus>"
+    Examples:
+      |username|password|newStatus|
+      |apidev1|password|CLOSED|
+      |apidev1|password|OPEN|
+      |apitester|password|IN_PROGRESS|
+      |apitester|password|RESOLVED|
 

@@ -40,4 +40,12 @@ public class IssueWorkFlowSteps {
     public void the_issue_displays_status(String issue, String status) {
         Assertions.assertEquals(status, issuePage.getSelectedStatusForIssue(issue));
     }
+    @Then("The user is unable to click the create issue button")
+    public void the_user_is_unable_to_click_the_create_issue_button() {
+        Assertions.assertFalse(issuePage.isCreateButtonVisible());
+    }
+    @Then("The user cannot change status of issue {string} to {string}")
+    public void the_user_cannot_change_status_of_issue_to(String string, String string2) {
+        Assertions.assertFalse(issuePage.isSelectStatusVisible(string, string2));
+    }
 }

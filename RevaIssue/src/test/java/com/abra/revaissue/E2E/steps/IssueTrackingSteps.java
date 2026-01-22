@@ -22,7 +22,9 @@ public class IssueTrackingSteps {
         loginPage.enterPassword(password);
         loginPage.clickLoginButton();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.urlContains("/user/dashboard"));
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("/user/dashboard"),
+                ExpectedConditions.urlContains("/admin/dashboard")));
     }
     @Given("The user navigates to the Issues page")
     public void the_user_navigates_to_the_issues_page() {
@@ -72,5 +74,9 @@ public class IssueTrackingSteps {
     public void the_history_logs_contain_an_entry_mentioning_and(String string, String string2) {
         Assertions.assertTrue(issuePage.historyContains(string));
         Assertions.assertTrue(issuePage.historyContains(string2));
+    }
+    @Then("The action button for issue {string} is not visible")
+    public void the_action_button_for_issue_is_not_visible(String string) {
+        Assertions.assertFalse(issuePage.isEditButtonVisible(string));
     }
 }
