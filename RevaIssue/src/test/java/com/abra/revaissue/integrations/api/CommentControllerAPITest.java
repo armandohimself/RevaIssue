@@ -47,8 +47,11 @@ public class CommentControllerAPITest {
 
     @BeforeEach
     public void setup() {
+
+        RestAssured.reset();
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = port;
+        RestAssured.basePath = "/api";
 
         // Prepare a user
         user = new User();
@@ -76,7 +79,7 @@ public class CommentControllerAPITest {
                 .header("Authorization", "Bearer " + adminToken)
                 .body(projectRequest)
                 .when()
-                .post("/api/projects")
+                .post("/projects")
                 .then()
                 .statusCode(200)
                 .body("projectName", equalTo("Test Project"))
@@ -97,7 +100,7 @@ public class CommentControllerAPITest {
                 .header("Authorization", "Bearer " + testerToken)
                 .body(issueRequest)
                 .when()
-                .post("/api/projects/" + projectId + "/issues")
+                .post("/projects/" + projectId + "/issues")
                 .then()
                 .statusCode(201)
                 .body("name", equalTo("Test Issue"))
@@ -115,7 +118,7 @@ public class CommentControllerAPITest {
                 .contentType(ContentType.JSON)
                 .body(credentials)
                 .when()
-                .post("/api/users/login")
+                .post("/users/login")
                 .then()
                 .statusCode(200)
                 .extract()

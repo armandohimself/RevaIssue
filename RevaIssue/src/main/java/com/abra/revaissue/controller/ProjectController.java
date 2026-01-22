@@ -59,8 +59,6 @@ public class ProjectController {
         @RequestHeader(name="Authorization") String token
     ) {
 
-        // UUID actingUserId = authzService.actingUserId(token);
-
         List<ProjectResponse> projectList = projectService.getAll()
                 .stream()
                 .map(ProjectMapper::toResponse)
@@ -74,8 +72,6 @@ public class ProjectController {
         @PathVariable UUID projectId,
         @RequestHeader(name="Authorization") String token
     ) {
-
-        // UUID actingUserId = authzService.actingUserId(token);
 
         Project getProject = projectService.getById(projectId);
         return ResponseEntity.ok(ProjectMapper.toResponse(getProject));
