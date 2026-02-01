@@ -150,7 +150,7 @@ Planned improvements include:
 **Team Name:** ABRA-STUDIO
 
 - Team Member 1: [Armando Arteaga]()
-- Team Member 2:
+- Team Member 2: [Byron Sophin](https://github.com/ByronSophin)
 - Team Member 3:
 - Team Member 4:
 
